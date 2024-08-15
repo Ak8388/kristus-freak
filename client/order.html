@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Order Form</title>
+    <link rel="stylesheet" href="css/order.css">
+</head>
+<body>
+    <h1>Custom Order Form</h1>
+    <form id="custom-order-form">
+        <div>
+            <label for="material">Material:</label>
+            <select id="material" name="material">
+                <option value="wood">Wood</option>
+                <option value="metal">Metal</option>
+                <option value="plastic">Plastic</option>
+                <!-- Tambahkan opsi lain sesuai kebutuhan -->
+            </select>
+        </div>
+        <div>
+            <label for="sizes">Size:</label>
+            <input type="text" id="sizes" name="sizes" required>
+        </div>
+        <div>
+            
+        </div>
+        <div>
+            <label for="qty">Quantity:</label>
+            <input type="number" id="qty" name="qty" required>
+        </div>
+        <div>
+            <label for="notes">Notes:</label>
+            <textarea id="notes" name="notes"></textarea>
+        </div>
+        <div>
+            <label for="estimateWorkmanship">Estimate Workmanship (days):</label>
+            <input type="number" id="estimateWorkmanship" name="estimateWorkmanship" required>
+        </div>
+        <div>
+            <label for="addressShipping">Address Shipping:</label>
+            <input type="text" id="addressShipping" name="addressShipping" required>
+        </div>
+        <button type="submit">Send Order</button>
+    </form>
+    <script src="js/custom-order.js"></script>
+</body>
+</html>
