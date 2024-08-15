@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kriserohalia/company_profile/model"
-	"github.com/kriserohalia/company_profile/util/common"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/util/common"
 )
 
 type AuthMiddleware interface {

@@ -10,7 +10,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/kriserohalia/company_profile/model"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
 )
 
 type TransactionRepo interface {

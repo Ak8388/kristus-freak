@@ -8,7 +8,8 @@
         <meta name="author" content="" />
         <title>Dashboard - Putra Jaya Admin</title>
         <!-- <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" /> -->
-        <link href="css/admin-style.css" rel="stylesheet" />
+        <link href="../css/admin-style.css" rel="stylesheet" />
+      
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -47,13 +48,33 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
-                            <a class="nav-link" href="admin.html" id="fetchProduct">
+                            <a class="nav-link" href="#" id="fetchProduct">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Data Product
                             </a>
-                            <a class="nav-link" href="detail.html" >
+                            <a class="nav-link" href="detail.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Data Detail Product
+                            </a>
+                            <a class="nav-link" href="transaction.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Data Transaction
+                            </a>
+                            <a class="nav-link" href="custom.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Data Custom
+                            </a>
+                            <a class="nav-link" href="category.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Data Category
+                            </a>
+                            <a class="nav-link" href="company-profile.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Data Company Profile
+                            </a>
+                            <a class="nav-link" href="service.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Data Service
                             </a>
                         </div>
                     </div>
@@ -70,24 +91,28 @@
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">Dashboard</li>
                         </ol>
-                        <div id="userDetails">
-                            <h2>Data User</h2>
+                        <div id="productDetails">
+                            <h2>Data DETAIL</h2>
                             <button id="showDataBtn" class="btn btn-primary">SHOW DATA</button>
-                            <button id="addUser" style="display: none;">Add Data</button>
-                            <table id="table-user" class="table table-striped mt-3">
-                                <!-- Data akan ditampilkan di sini -->
-                            </table>
+                            <button id="addCategory" style="display: none;">Add Data</button>
+
+                            <div class="table-wrapper">
+                                <table id="table-category" class="table table-striped mt-3">
+                                    <!-- Data akan ditampilkan di sini -->
+                                </table>
+                            </div>
+                            
                         </div>
                         <!-- modal add detail product -->
-                        <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+                                        <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form id="addUserForm">
+                                        <form id="addCategoryForm">
                                             <div class="mb-3">
                                                 <label for="InputIdCategory" class="form-label">Id Category</label>
                                                 <input type="number" id="InputIdCategory" class="form-control" placeholder="id berupa angka">
@@ -133,10 +158,9 @@
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="js/admin-script.js"></script>
-        <script src="js/detail-script.js"></script>
-        <script src="js/category.js"></script>
-        <script src="js/user.js"></script>
+        <script src="../js/admin-script.js"></script>
+        <script src="../js/detail-script.js"></script>
+        <script src="../js/category.js"></script>
     </body>
 </html>
  

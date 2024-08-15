@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/kriserohalia/company_profile/model"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
 )
 
 type CustomRepo interface {

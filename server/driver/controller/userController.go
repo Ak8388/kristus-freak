@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kriserohalia/company_profile/driver/middleware"
-	"github.com/kriserohalia/company_profile/usecase"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/driver/middleware"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/usecase"
 )
 
 type userController struct {

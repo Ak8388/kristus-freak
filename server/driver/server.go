@@ -5,11 +5,11 @@ import (
 	// "net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kriserohalia/company_profile/config"
-	"github.com/kriserohalia/company_profile/driver/controller"
-	"github.com/kriserohalia/company_profile/driver/middleware"
-	"github.com/kriserohalia/company_profile/manager"
-	"github.com/kriserohalia/company_profile/util/common"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/config"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/driver/controller"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/driver/middleware"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/manager"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/util/common"
 )
 
 type serverRequirement struct {

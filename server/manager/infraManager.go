@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/kriserohalia/company_profile/config"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/config"
 	_ "github.com/lib/pq"
 )
 

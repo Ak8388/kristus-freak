@@ -3,8 +3,8 @@ package usecase
 import (
 	"errors"
 
-	"github.com/kriserohalia/company_profile/model"
-	"github.com/kriserohalia/company_profile/repository"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/repository"
 )
 
 type CompanyUsecase interface {

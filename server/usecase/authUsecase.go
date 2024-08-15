@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kriserohalia/company_profile/model"
-	"github.com/kriserohalia/company_profile/repository"
-	"github.com/kriserohalia/company_profile/util/common"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/repository"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/util/common"
 	"golang.org/x/crypto/bcrypt"
 )
 

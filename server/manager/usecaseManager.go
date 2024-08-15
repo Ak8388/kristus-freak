@@ -1,8 +1,8 @@
 package manager
 
 import (
-	"github.com/kriserohalia/company_profile/usecase"
-	"github.com/kriserohalia/company_profile/util/common"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/usecase"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/util/common"
 )
 
 type UsecaseManager interface {

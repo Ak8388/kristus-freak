@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kriserohalia/company_profile/model"
-	dto "github.com/kriserohalia/company_profile/model/Dto"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model/dto"
 )
 
 type ProductDetailRepo interface {

@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/kriserohalia/company_profile/config"
-	"github.com/kriserohalia/company_profile/model"
-	utilmodel "github.com/kriserohalia/company_profile/util/utilModel"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/config"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
+	utilmodel "github.com/kriserohalia/SI-COMPANY-PROFILE/server/util/utilModel"
 )
 
 type JwtUtil interface {

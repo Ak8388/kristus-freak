@@ -1,6 +1,6 @@
 package manager
 
-import "github.com/kriserohalia/company_profile/repository"
+import "github.com/kriserohalia/SI-COMPANY-PROFILE/server/repository"
 
 type RepoManager interface {
 	AuthRepo() repository.AuthRepo

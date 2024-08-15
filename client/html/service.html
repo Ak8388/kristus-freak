@@ -8,7 +8,7 @@
         <meta name="author" content="" />
         <title>Dashboard - Putra Jaya Admin</title>
         <!-- <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" /> -->
-        <link href="css/admin-style.css" rel="stylesheet" />
+        <link href="../css/admin-style.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -43,7 +43,7 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Data</div>
-                            <a class="nav-link" href="admin.html">
+                            <a class="nav-link" href="../admin.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
@@ -91,44 +91,32 @@
                             <li class="breadcrumb-item active">Dashboard</li>
                         </ol>
                         <div id="productDetails">
-                            <h2>Data DETAIL</h2>
+                            <h2>Data Service</h2>
                             <button id="showDataBtn" class="btn btn-primary">SHOW DATA</button>
-                            <button id="addDetail" style="display: none;">Add Data</button>
+                            <button id="addService" style="display: none;">Add Data</button>
                             <div class="table-wrapper">
-                                <table id="table-detail" class="table table-striped mt-3">
+                                <table id="table-service" class="table table-striped mt-3">
                                     <!-- Data akan ditampilkan di sini -->
                                 </table>
                             </div>
-                            
+
                         </div>
                         <!-- modal add detail product -->
-                        <div class="modal fade" id="addDetailModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+                                        <h5 class="modal-title" id="addServiceModalLabel">Add Service</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form id="addDetailForm">
+                                        <form id="addServiceForm">
                                             <div class="mb-3">
-                                                <label for="InputIdProduk" class="form-label">Id Produk</label>
-                                                <input type="number" id="InputIdProduk" class="form-control" placeholder="id berupa angka">
+                                                <label for="InputName" class="form-label">Name</label>
+                                                <input type="text" id="InputName" class="form-control" placeholder="nama service">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="InputPrice" class="form-label">Price</label>
-                                                <input type="number" id="InputPrice" class="form-control" placeholder="harga">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="InputPhotos" class="form-label">Foto</label>
-                                                <input type="text" id="InputPhotos" class="form-control" placeholder="photos">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="InputStock" class="form-label">Stock</label>
-                                                <input type="number" id="InputStock" class="form-control" placeholder="stock">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="InputDescription" class="form-label">Deskripsi</label>
+                                                <label for="InputDescription" class="form-label">Description</label>
                                                 <input type="text" id="InputDescription" class="form-control" placeholder="description">
                                             </div>
                                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -138,35 +126,23 @@
                             </div>
                         </div> 
                         
-                        <!-- modal untuk edit form detail produk -->
-                        <div class="modal fade" id="editDetailModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+                        <!-- modal untuk edit form service-->
+                        <div class="modal fade" id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="editProductModalLabel">Edit  Detail Product</h5>
+                                        <h5 class="modal-title" id="editServiceModalLabel">Edit Service</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form id="editDetailForm">
+                                        <form id="editServiceForm">
                                             <div class="mb-3">
-                                                <label for="InputIdProduk" class="form-label">Id Produk</label>
-                                                <input type="number" id="editDetailIdProduk" class="form-control" placeholder="id berupa angka">
+                                                <label for="EditName" class="form-label">Name</label>
+                                                <input type="number" id="editName" class="form-control" placeholder="name service">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="InputPrice" class="form-label">Price</label>
-                                                <input type="number" id="editDetailInputPrice" class="form-control" placeholder="harga">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="InputPhotos" class="form-label">Foto</label>
-                                                <input type="text" id="editDetailInputPhotos" class="form-control" placeholder="photos">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="InputStock" class="form-label">Stock</label>
-                                                <input type="number" id="editDetailInputStock" class="form-control" placeholder="stock">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="InputDescription" class="form-label">Deskripsi</label>
-                                                <input type="text" id="editDetailInputDescription" class="form-control" placeholder="description">
+                                                <label for="EditDescription" class="form-label">Description</label>
+                                                <input type="number" id="editDescription" class="form-control" placeholder="description">
                                             </div>
                                             <button type="submit" class="btn btn-primary">Submit</button>
                                         </form>
@@ -176,22 +152,12 @@
                         </div>
                     </div>  
                 </main>
-                <!-- <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2024</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
-                            </div>
-                        </div>
-                    </div>
-                </footer> -->
+               
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="js/admin-script.js"></script>
-        <script src="js/detail-script.js"></script>
+        <script src="../js/admin-script.js"></script>
+        <script src="../js/service.js"></script>
     </body>
 </html>
+ 

@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/kriserohalia/company_profile/model"
-	"github.com/kriserohalia/company_profile/model/dto"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model/dto"
 )
 
 type ServiceRepo interface {

@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kriserohalia/company_profile/model"
-	dto "github.com/kriserohalia/company_profile/model/dto"
-	"github.com/kriserohalia/company_profile/repository"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model/dto"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/repository"
 )
 
 type ServiceUsecase interface {
