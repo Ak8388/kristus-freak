@@ -13,30 +13,32 @@ import (
 type AuthUsecase interface {
 	Login(email, password string) (model.TokenModel, error)
 	Register(regis model.Register) error
-	ResetPassword(oldPassword, newPassword,email string, id int) error
+	ResetPassword(oldPassword, newPassword, email string, id int) error
+	EmailVerify(email, stts string) (string, error)
+	ForgetPassword(email, newPassword string) error
 }
 
 type authUsecase struct {
-	authrepo repository.AuthRepo
+	authrepo       repository.AuthRepo
 	generatedToken common.JwtUtil
+	userUc         UserUsecase
 }
 
 // Login implements AuthUsecase.
 func (authusecase *authUsecase) Login(email string, password string) (model.TokenModel, error) {
 
-	result,err:= authusecase.authrepo.Login(email)
+	result, err := authusecase.authrepo.Login(email)
 	if err != nil {
-		return model.TokenModel{},err
+		return model.TokenModel{}, err
 	}
 
-
-	if err := bcrypt.CompareHashAndPassword([]byte(result.Password),[]byte(password));err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(password)); err != nil {
 		fmt.Println(err.Error())
 		return model.TokenModel{}, errors.New("email or password is wrong")
 
 	}
 
-	return authusecase.generatedToken.GenerateToken(result.Id,result.Email,result.Role)
+	return authusecase.generatedToken.GenerateToken(result.Id, result.Email, result.Role)
 }
 
 // Register implements AuthUsecase.
@@ -46,18 +48,18 @@ func (authusecase *authUsecase) Register(regis model.Register) error {
 		return errors.New("invalid password")
 	}
 
-	pass,err := bcrypt.GenerateFromPassword([]byte(regis.Password),10)
-	if err !=nil {
+	pass, err := bcrypt.GenerateFromPassword([]byte(regis.Password), 10)
+	if err != nil {
 		return err
 	}
 
 	regis.Password = string(pass)
 
-	if regis.Name == " " ||len(regis.Name) <= 0 {
+	if regis.Name == " " || len(regis.Name) <= 0 {
 		return errors.New("invalid name")
 	}
 
-	if !regis.IsValidEmail(){
+	if !regis.IsValidEmail() {
 		return errors.New("invalid email")
 
 	}
@@ -67,14 +69,14 @@ func (authusecase *authUsecase) Register(regis model.Register) error {
 }
 
 // ResetPassword implements AuthUsecase.
-func (authusecase *authUsecase) ResetPassword(oldPassword,newPassword,email string, id int) error {
+func (authusecase *authUsecase) ResetPassword(oldPassword, newPassword, email string, id int) error {
 
 	rest, err := authusecase.authrepo.Login(email)
 	if err != nil {
 		return err
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(rest.Password),[]byte(oldPassword));err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(rest.Password), []byte(oldPassword)); err != nil {
 		return errors.New("old password is wrong")
 	}
 
@@ -82,20 +84,43 @@ func (authusecase *authUsecase) ResetPassword(oldPassword,newPassword,email stri
 		return errors.New("new password must be different with old password")
 	}
 
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword),10)
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), 10)
 	if err != nil {
 		return err
 	}
 
 	newPassword = string(hashPassword)
 
-
-	return authusecase.authrepo.ResetPassword(newPassword,id)
-
-	
+	return authusecase.authrepo.ResetPassword(newPassword, id)
 }
 
-func NewAuthUsecase(authrepo repository.AuthRepo, generatedToken common.JwtUtil) AuthUsecase {
-	return &authUsecase{authrepo, generatedToken}
+func (authusecase *authUsecase) EmailVerify(email, stts string) (string, error) {
+	if stts == "regist" {
+		res, _ := authusecase.userUc.FindUserByEmail(email)
+		if res.Id > 0 {
+			return "", errors.New("email already exist")
+		}
+	} else {
+		res, _ := authusecase.userUc.FindUserByEmail(email)
+		if res.Id == 0 {
+			return "", errors.New("email not found")
+		}
+	}
+
+	return authusecase.authrepo.EmailVerify(email)
+}
+
+func (authUsecase *authUsecase) ForgetPassword(email, newPassword string) error {
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), 10)
+
+	if err != nil {
+		return err
+	}
+
+	return authUsecase.authrepo.ForgetPassword(email, string(hashPassword))
+}
+
+func NewAuthUsecase(authrepo repository.AuthRepo, userUc UserUsecase, generatedToken common.JwtUtil) AuthUsecase {
+	return &authUsecase{authrepo, generatedToken, userUc}
 
 }

@@ -9,6 +9,7 @@ import (
 
 type UserRepo interface {
 	FindById(id int) (model.User, error)
+	FindUserByEmail(email string) (model.User, error)
 	UpdateProfile(name, email string, id int) error
 	DeleteUser(id int) error
 	List() ([]model.User, error)
@@ -61,6 +62,14 @@ func (ur *userRepo) UpdateProfile(name, email string, id int) error {
 	query := "UPDATE tb_user SET name=$1, email=$2, updated_at=$3 WHERE id=$4"
 	_, err := ur.db.Exec(query, name, email, time.Now(), id)
 	return err
+}
+
+func (ur *userRepo) FindUserByEmail(email string) (user model.User, err error) {
+	qry := "Select id, email, name from tb_user where email=$1"
+
+	err = ur.db.QueryRow(qry, email).Scan(&user.Id, &user.Email, &user.Name)
+
+	return
 }
 
 func NewUserRepo(db *sql.DB) UserRepo {

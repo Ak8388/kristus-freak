@@ -42,5 +42,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event){
 function logout(){
     localStorage.removeItem('token');
     localStorage.removeItem('role');
-    window.location.href = "index.html";
+    location.href = "./index.html";
+    console.log("kristus");
 }

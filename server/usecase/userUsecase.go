@@ -9,6 +9,7 @@ import (
 
 type UserUsecase interface {
 	FindById(id int) (model.User, error)
+	FindUserByEmail(email string) (model.User, error)
 	UpdateProfile(name, email string, id int) error
 	DeleteUser(id int) error
 	List() ([]model.User, error)
@@ -21,7 +22,7 @@ type userUsecase struct {
 // List implements UserUsecase.
 func (uc *userUsecase) List() (resp []model.User, err error) {
 	resp, err = uc.userepo.List()
-	if len(resp)== 0 {
+	if len(resp) == 0 {
 		return []model.User{}, errors.New("not user created")
 	}
 
@@ -87,6 +88,10 @@ func (uc *userUsecase) UpdateProfile(name string, email string, id int) error {
 
 	return err
 
+}
+
+func (uc *userUsecase) FindUserByEmail(email string) (model.User, error) {
+	return uc.userepo.FindUserByEmail(email)
 }
 
 func NewUserUsecase(userepo repository.UserRepo) UserUsecase {

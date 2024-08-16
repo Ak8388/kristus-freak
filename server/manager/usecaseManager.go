@@ -59,7 +59,7 @@ func (ucm *usecaseManager) CategoryUsecaseManager() usecase.CategoryUseCase {
 
 // AuthUsecaseManager implements UsecaseManager.
 func (ucm *usecaseManager) AuthUsecaseManager() usecase.AuthUsecase {
-	return usecase.NewAuthUsecase(ucm.repo.AuthRepo(), ucm.jwtutil)
+	return usecase.NewAuthUsecase(ucm.repo.AuthRepo(), ucm.UserUsecaseManager(), ucm.jwtutil)
 }
 
 func (ucm *usecaseManager) UserUsecaseManager() usecase.UserUsecase {
