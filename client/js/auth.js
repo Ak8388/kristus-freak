@@ -26,9 +26,9 @@ document.getElementById('loginForm').addEventListener('submit', function(event){
         localStorage.setItem('role', role);
 
         if (role === "OWNER") {
-            window.location.href = 'admin.html';
+            window.location.href = '../admin.html';
         } else if (role === "CUSTOMER") {
-            window.location.href = 'index.html';
+            window.location.href = '../index.html';
         } else {
             alert('You don\'t have access to the dashboard');
         }

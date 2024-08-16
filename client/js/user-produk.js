@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('http://localhost:8081/api-putra-jaya/detail/list')
         .then(response => response.json())
         .then(data => {
-            console.log(data); // Melihat data dari response
-            displayProducts(data.data); // Mengakses array `data` dari response
-            updateCartCount(); // Mengupdate jumlah item di keranjang saat halaman dimuat
+            console.log(data);
+            displayProducts(data.data); 
+            updateCartCount(); 
         })
         .catch(error => console.error('Error fetching data:', error));
 });
@@ -23,35 +23,50 @@ function displayProducts(products) {
         productCard.classList.add('card');
 
         const productImage = document.createElement('img');
-        productImage.src = product.photos; // Menyesuaikan properti `photos` sesuai dengan data
+        productImage.src = product.photos; 
         productCard.appendChild(productImage);
 
         const productName = document.createElement('h3');
-        productName.textContent = product.produk_dto.name; // Menyesuaikan properti `name` sesuai dengan data
+        productName.textContent = product.produk_dto.name; 
         productCard.appendChild(productName);
 
-        const productDescription = document.createElement('p');
-        productDescription.textContent = product.description; // Menyesuaikan properti `description` sesuai dengan data
-        productCard.appendChild(productDescription);
+        // const productDescription = document.createElement('p');
+        // productDescription.textContent = product.description; // Menyesuaikan properti `description` sesuai dengan data
+        // productCard.appendChild(productDescription);
 
         const productPrice = document.createElement('p');
-        productPrice.textContent = `Price: ${product.price}`; // Menampilkan harga produk
+        productPrice.textContent = `${product.price}`; // Menampilkan harga produk
         productCard.appendChild(productPrice);
 
-        const productStock = document.createElement('p');
-        productStock.textContent = `Stock: ${product.stock}`; // Menampilkan stok produk
-        productCard.appendChild(productStock);
+        // const productStock = document.createElement('p');
+        // productStock.textContent = `Stock: ${product.stock}`; // Menampilkan stok produk
+        // productCard.appendChild(productStock);
 
         const addToCartButton = document.createElement('button');
-        addToCartButton.textContent = 'Tambah ke Keranjang';
+        addToCartButton.innerHTML = '<i class="bi bi-cart-plus-fill"></i>';
+        addToCartButton.className = 'add-to-cart-btn';
         addToCartButton.onclick = () => {
             addToCart(product);
             updateCartCount();
         };
-        productCard.appendChild(addToCartButton);
 
+        const detail = document.createElement('button');
+        detail.innerHTML = 'Detail';
+        detail.className = 'detail-btn';
+        detail.onclick = () => {
+            window.location.href = "detailproduk.html"; // Perbaiki link ke "detail.html"
+        };
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'button-container';
+
+        buttonContainer.appendChild(addToCartButton);
+        buttonContainer.appendChild(detail);
+
+        productCard.appendChild(buttonContainer);
         productContainer.appendChild(productCard);
-    });
+
+            });
 }
 
 function addToCart(product) {

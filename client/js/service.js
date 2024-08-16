@@ -20,18 +20,6 @@ document.addEventListener('DOMContentLoaded',function(){
         fetchServiceData(serviceId)
     }
 
-    // if(fetchDataBtn){
-    //     fetchDataBtn.addEventListener('click', async function(event) {
-    //         // event.preventDefault();
-    //         // fetchData();
-    //         // addService.style.display = 'inline';
-    //         fetchData();
-    //         if(addService){
-    //             addService.style.display = 'inline';
-    //         }
-    //     });
-    // }
-
     if (showDataBtn) {
         showDataBtn.addEventListener('click', function() {
             fetchData();
@@ -94,8 +82,8 @@ document.addEventListener('DOMContentLoaded',function(){
             event.preventDefault();
 
             const id = editServiceForm.dataset.serviceId;
-            const name = document.getElementById('EditName').value;
-            const description = document.getElementById('EditDescription').value;
+            const name = document.getElementById('editName').value;
+            const description = document.getElementById('editDescription').value;
 
             try {
                 const response = await fetch(`http://localhost:8081/api-putra-jaya/service/update/${id}`, {
@@ -185,8 +173,8 @@ async function fetchData(){
             console.log(product);
 
             // Isi form edit dengan data produk
-            document.getElementById('EditName').value = product.service_name;
-            document.getElementById('EditDescription').value = product.service_description;
+            document.getElementById('editName').value = product.service_name;
+            document.getElementById('editDescription').value = product.service_description;
             editServiceForm.dataset.serviceId = id;
 
 

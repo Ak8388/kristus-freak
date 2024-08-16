@@ -1,0 +1,127 @@
+#cart-container {
+    padding: 20px;
+    background-color: #f9f9f9; 
+    border: 1px solid #ddd; 
+    border-radius: 5px; 
+    max-width: 100%; 
+    margin: 20px auto; 
+    box-sizing: border-box; 
+}
+
+.cart-item {
+    display: flex;
+    align-items: center; 
+    padding: 10px;
+    border: 1px solid #ddd; 
+    border-radius: 5px;
+    margin-bottom: 10px; 
+    background-color: #fff; 
+}
+
+.product-checkbox {
+    margin-right: 15px; 
+}
+
+.product-details {
+    display: flex;
+    align-items: center; 
+    width: 100%; 
+}
+
+.product-image {
+    width: 100px; 
+    height: 100px; 
+    object-fit: cover; 
+    margin-right: 15px; 
+    border-radius: 5px;
+}
+
+.details-content {
+    display: flex;
+    flex-direction: column; /* Menyusun konten secara vertikal */
+    flex: 1;
+}
+
+.details-content p {
+    margin: 5px 0; 
+}
+
+
+
+.quantity-control {
+    display: flex;
+    align-items: center; 
+    margin: 10px 0; 
+}
+
+.quantity-btn {
+    background-color: transparent; 
+    color: #fff; 
+    border: 2px solid #007bff; 
+    border-radius: 5px; 
+    padding: 5px 10px;
+    margin: 0 5px; 
+    cursor: pointer; 
+}
+
+.quantity {
+    font-size: 16px;
+    margin: 0 10px; 
+    min-width: 30px; 
+    text-align: center; 
+}
+
+.product-image {
+    width: 100px;
+    height: 100px; 
+    object-fit: cover; 
+    margin-right: 15px; 
+    border-radius: 5px;
+}
+
+
+#summary-container {
+    display: flex;
+    padding: 20px;
+    background-color: #f9f9f9; 
+    border: 1px solid #ddd; 
+    border-radius: 5px;
+    max-width: 100%; 
+    margin: 20px auto;
+    box-sizing: border-box; 
+    justify-content: space-between; 
+}
+
+#summary-container > div {
+    flex: 1;
+    margin: 0 10px; 
+    text-align: center; 
+}
+
+#summary-container .checkout-btn {
+    width: 100%;
+    max-width: 200px; 
+}
+
+
+.checkout-btn {
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    width: 100%; 
+    padding: 10px;
+    background-color: black; 
+    color: #fff; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer;
+    margin-top: 20px; 
+    font-size: 16px; 
+    font-weight: bold; 
+}
+
+
+.checkout-btn:disabled {
+    background-color: #ccc; 
+    cursor: not-allowed; 
+}

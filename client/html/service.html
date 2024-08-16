@@ -9,6 +9,7 @@
         <title>Dashboard - Putra Jaya Admin</title>
         <!-- <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" /> -->
         <link href="../css/admin-style.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -93,7 +94,7 @@
                         <div id="productDetails">
                             <h2>Data Service</h2>
                             <button id="showDataBtn" class="btn btn-primary">SHOW DATA</button>
-                            <button id="addService" style="display: none;">Add Data</button>
+                            <button id="addService" style="display: none;" class="btn btn-primary"><i class="fas fa-plus"></i> Add Data</button>
                             <div class="table-wrapper">
                                 <table id="table-service" class="table table-striped mt-3">
                                     <!-- Data akan ditampilkan di sini -->
@@ -101,7 +102,7 @@
                             </div>
 
                         </div>
-                        <!-- modal add detail product -->
+                        <!-- modal add service -->
                         <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -138,11 +139,11 @@
                                         <form id="editServiceForm">
                                             <div class="mb-3">
                                                 <label for="EditName" class="form-label">Name</label>
-                                                <input type="number" id="editName" class="form-control" placeholder="name service">
+                                                <input type="text" id="editName" class="form-control" placeholder="name service">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="EditDescription" class="form-label">Description</label>
-                                                <input type="number" id="editDescription" class="form-control" placeholder="description">
+                                                <input type="text" id="editDescription" class="form-control" placeholder="description">
                                             </div>
                                             <button type="submit" class="btn btn-primary">Submit</button>
                                         </form>
