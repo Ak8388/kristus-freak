@@ -15,7 +15,7 @@ type ProductDetailRepo interface {
 	FindById(Id int) (model.ProductDetail, error)
 	List() ([]dto.DetailProductDto, error)
 	Delete(Id int) error
-	Update(Id, IdCategory ,price,stock int, photos, description string) error
+	Update(Id, IdProduk, price, stock, weight int, photos, description string) error
 }
 
 type productDetailRepo struct {
@@ -24,11 +24,10 @@ type productDetailRepo struct {
 
 // Add implements ProductDetailRepo.
 func (pd *productDetailRepo) Add(resp model.ProductDetail) error {
-    query := "INSERT INTO tb_produk_detail (id_produk, price, photos, stock, description, created_at) VALUES ($1, $2, $3, $4, $5, $6)"
-    _, err := pd.db.Exec(query, resp.IdProduk, resp.Price, resp.Photos, resp.Stock, resp.Description, resp.CreatedAt)
-    return err
+	query := "INSERT INTO tb_produk_detail (id_produk, price, photos, stock, description, weight, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7)"
+	_, err := pd.db.Exec(query, resp.IdProduk, resp.Price, resp.Photos, resp.Stock, resp.Description, &resp.Weight, resp.CreatedAt)
+	return err
 }
-
 
 // Delete implements ProductDetailRepo.
 func (pd *productDetailRepo) Delete(Id int) error {
@@ -40,68 +39,69 @@ func (pd *productDetailRepo) Delete(Id int) error {
 // FindById implements ProductDetailRepo.
 func (pd *productDetailRepo) FindById(Id int) (resp model.ProductDetail, err error) {
 	query := "SELECT * FROM tb_produk_detail WHERE id=$1"
-	 err = pd.db.QueryRow(query,Id).Scan(&resp.Id,&resp.IdProduk,&resp.Price,&resp.Photos,&resp.Stock,&resp.Description, &resp.CreatedAt,&resp.UpdatedAt, &resp.DeletedAt)
+	err = pd.db.QueryRow(query, Id).Scan(&resp.Id, &resp.IdProduk, &resp.Price, &resp.Photos, &resp.Stock, &resp.Description, &resp.CreatedAt, &resp.UpdatedAt, &resp.DeletedAt, &resp.Weight)
 
-	return 
+	return
 }
 
 // List implements ProductDetailRepo.
 func (pd *productDetailRepo) List() (resp []dto.DetailProductDto, err error) {
-    query := `
-        SELECT pd.id, pd.id_produk, pd.price, pd.photos, pd.stock, pd.description, 
+	query := `
+        SELECT pd.id, pd.id_produk, pd.price, pd.photos, pd.stock, pd.description,pd.weight, 
                p.id_category, p.name, c.name 
         FROM tb_produk_detail pd 
         JOIN tb_produk p ON pd.id_produk = p.id 
         JOIN tb_category c ON p.id_category = c.id
     `
-    rows, err := pd.db.Query(query)
-    if err != nil {
-        fmt.Println(err)
-        return nil, fmt.Errorf("error querying the database: %v", err)
-    }
-    defer rows.Close()
+	rows, err := pd.db.Query(query)
+	if err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("error querying the database: %v", err)
+	}
+	defer rows.Close()
 
-    for rows.Next() {
-        var detail dto.DetailProductDto
-        err := rows.Scan(
-            &detail.Id, 
-            &detail.IdProduk,
-            &detail.Price, 
-            &detail.Photos, 
-            &detail.Stock, 
-            &detail.Description,
-            &detail.ProductDto.IdCategory, 
-            &detail.ProductDto.Name, 
-            &detail.ProductDto.CategoryDto.Name,
-        )
-        if err != nil {
-            return nil, fmt.Errorf("error scanning row: %v", err)
-        }
-        resp = append(resp, detail)
-        fmt.Println("ISINYA:", detail)
-    }
+	for rows.Next() {
+		var detail dto.DetailProductDto
+		err := rows.Scan(
+			&detail.Id,
+			&detail.IdProduk,
+			&detail.Price,
+			&detail.Photos,
+			&detail.Stock,
+			&detail.Description,
+			&detail.Weight,
+			&detail.ProductDto.IdCategory,
+			&detail.ProductDto.Name,
+			&detail.ProductDto.CategoryDto.Name,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning row: %v", err)
+		}
+		resp = append(resp, detail)
+		fmt.Println("ISINYA:", detail)
+	}
 
-    if err = rows.Err(); err != nil {
-        return nil, fmt.Errorf("error after iterating rows: %v", err)
-    }
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error after iterating rows: %v", err)
+	}
 	if len(resp) == 0 {
-        // Handle case when no details are found
-        emptyResponse := map[string]interface{}{
-            "message": "nothing details created",
-            "data":    []dto.DetailProductDto{},
-        }
-        emptyResponseJSON, _ := json.Marshal(emptyResponse)
-        fmt.Println(string(emptyResponseJSON))
-        return nil, nil // Or return an appropriate error/message
-    }
+		// Handle case when no details are found
+		emptyResponse := map[string]interface{}{
+			"message": "nothing details created",
+			"data":    []dto.DetailProductDto{},
+		}
+		emptyResponseJSON, _ := json.Marshal(emptyResponse)
+		fmt.Println(string(emptyResponseJSON))
+		return nil, nil // Or return an appropriate error/message
+	}
 
-    return resp, nil
+	return resp, nil
 }
 
 // Update implements ProductDetailRepo.
-func (pd *productDetailRepo) Update(Id, IdProduk ,price,stock int, photos, description string) error {
-	query := "UPDATE tb_produk_detail SET id_produk=$1,price=$2,photos=$3,stock=$4,description=$5,updated_at=$6 WHERE id=$7"
-	_, err := pd.db.Exec(query,IdProduk,price,photos,stock,description,time.Now(),Id)
+func (pd *productDetailRepo) Update(Id, IdProduk, price, stock, weight int, photos, description string) error {
+	query := "UPDATE tb_produk_detail SET id_produk=$1,price=$2,photos=$3,stock=$4,description=$5,updated_at=$6,weight=$7 WHERE id=$8"
+	_, err := pd.db.Exec(query, IdProduk, price, photos, stock, description, time.Now(), weight, Id)
 	return err
 }
 

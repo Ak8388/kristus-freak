@@ -15,6 +15,7 @@ type UsecaseManager interface {
 	TransactionManager() usecase.TransactionUsecase
 	CompanyManager() usecase.CompanyUsecase
 	ServiceManager() usecase.ServiceUsecase
+	DeliveryUsecaseManager() usecase.DeliveryUsecase
 }
 
 type usecaseManager struct {
@@ -64,6 +65,10 @@ func (ucm *usecaseManager) AuthUsecaseManager() usecase.AuthUsecase {
 
 func (ucm *usecaseManager) UserUsecaseManager() usecase.UserUsecase {
 	return usecase.NewUserUsecase(ucm.repo.UserRepo())
+}
+
+func (ucm *usecaseManager) DeliveryUsecaseManager() usecase.DeliveryUsecase {
+	return usecase.NewDeliveryCostUsecase(ucm.repo.DelivRepo())
 }
 
 func NewUsecaseManager(repo RepoManager, jwtutil common.JwtUtil) UsecaseManager {

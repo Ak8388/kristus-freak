@@ -21,9 +21,78 @@ function handleFormSubmit(event) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, address, phone, totalAmount, items })
     })
-    .then(response => response.json())
-    .then(data => {
-        window.location.href = data.redirectUrl;
-    })
-    .catch(error => console.error('Error:', error));
+        .then(response => response.json())
+        .then(data => {
+            window.location.href = data.redirectUrl;
+        })
+        .catch(error => console.error('Error:', error));
 }
+
+document.addEventListener('DOMContentLoaded', async e => {
+    const token = localStorage.getItem('token');
+    try {
+        await fetch('http://localhost:8081/api-putra-jaya/delivery/province', {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('error');
+                } else {
+                    return res.json();
+                }
+            })
+            .then(resData => {
+                const prov = document.getElementById('province');
+                const optionProv1 = document.createElement('option');
+                optionProv1.value = "";
+                optionProv1.innerText = "Select Provinces";
+                prov.append(optionProv1);
+
+                resData.data.rajaongkir.results.map(res => {
+                    const optionName = document.createElement('option');
+                    optionName.value = res.province_id;
+                    optionName.innerText = res.province;
+
+                    prov.appendChild(optionName);
+                })
+
+                prov.addEventListener('change', async (e) => {
+                    await fetch(`http://localhost:8081/api-putra-jaya/delivery/city/${prov.value}`, {
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        }
+                    })
+                        .then(res => {
+                            if (!res.ok) {
+                                throw new Error('error');
+                            } else {
+                                return res.json();
+                            }
+                        })
+                        .then(res => {
+                            const city = document.getElementById('city');
+                            city.removeAttribute('disabled');
+                            city.innerHTML = "";
+
+                            const cityOpt1 = document.createElement('option');
+                            cityOpt1.value = "";
+                            cityOpt1.innerText = "Select City";
+                            city.append(cityOpt1);
+
+                            res.data.rajaongkir.results.map(resCity => {
+                                const optionName = document.createElement('option');
+                                optionName.value = resCity.city_id;
+                                optionName.innerText = resCity.city_name;
+                                
+                                city.appendChild(optionName);
+                            })
+
+                        })
+                })
+            })
+    } catch (error) {
+        alert('internal server error');
+    }
+})
