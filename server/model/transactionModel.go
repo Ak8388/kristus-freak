@@ -2,7 +2,7 @@ package model
 
 type Transaction struct {
 	DetailTransaction DetailTransaction `json:"transaction_details"`
-	ItemDetails       ItemDetails       `json:"item_details"`
+	ItemDetails       []ItemDetails     `json:"item_details"`
 	CustomerDetail    CustomerDetail    `json:"customer_details"`
 }
 

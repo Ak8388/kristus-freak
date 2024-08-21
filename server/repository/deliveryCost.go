@@ -97,7 +97,8 @@ func (d *deliveryRepo) GetCost(reqData model.CostRequest) (model.ResponseCost, e
 	client := &http.Client{}
 	url := "https://api.rajaongkir.com/starter/cost"
 
-	strPayload := fmt.Sprintf("origin=%s&destination=%s&weight=%s&courier=%s", reqData.Origin, reqData.Destination, reqData.Weight, reqData.Courier)
+	// fmt.Println("This Weight=", weight)
+	strPayload := fmt.Sprintf("origin=%s&destination=%s&weight=%d&courier=%s", reqData.Origin, reqData.Destination, reqData.Weight, reqData.Courier)
 	payload := strings.NewReader(strPayload)
 
 	req, err := http.NewRequest("POST", url, payload)

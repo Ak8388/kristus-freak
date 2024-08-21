@@ -3,7 +3,7 @@ package model
 type CostRequest struct {
 	Origin      string `json:"origin"`
 	Destination string `json:"destination"`
-	Weight      string `json:"weight"`
+	Weight      int    `json:"weight"`
 	Courier     string `json:"courier"`
 }
 

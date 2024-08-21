@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,6 +43,7 @@ func (d *deliveryController) getCost(c *gin.Context) {
 	var reqData model.CostRequest
 
 	if err := c.ShouldBindJSON(&reqData); err != nil {
+		fmt.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -49,6 +51,7 @@ func (d *deliveryController) getCost(c *gin.Context) {
 	res, err := d.deliveryUsecase.GetCost(reqData)
 
 	if err != nil {
+		fmt.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
