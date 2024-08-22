@@ -29,6 +29,7 @@ function displayProducts(products) {
         const productName = document.createElement('h3');
         productName.textContent = product.produk_dto.name; 
         productCard.appendChild(productName);
+        console.log("This Prod :",products);
 
         // const productDescription = document.createElement('p');
         // productDescription.textContent = product.description; // Menyesuaikan properti `description` sesuai dengan data
@@ -72,7 +73,8 @@ function displayProducts(products) {
 function addToCart(product) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     const existingProductIndex = cart.findIndex(item => item.id === product.id);
-
+    console.log("This cart 2:",cart);
+    console.log("This Prod 3:",product);
     if (existingProductIndex >= 0) {
         cart[existingProductIndex].quantity += 1;
     } else {

@@ -15,7 +15,7 @@ type DetailUsecase interface {
 	FindById(Id int) (model.ProductDetail, error)
 	List() ([]dto.DetailProductDto, error)
 	Delete(Id int) error
-	Update(Id, IdProduk, price, stock int, photos, description string) error
+	Update(Id, IdProduk, price, stock, weight int, photos, description string) error
 }
 
 type detailUsecase struct {
@@ -24,39 +24,38 @@ type detailUsecase struct {
 
 // Add implements DetailUsecase.
 func (uc *detailUsecase) Add(resp model.ProductDetail) error {
-    // Validasi bahwa Price adalah nilai numerik
-    if resp.Price <= 0 {
-        return errors.New("invalid price:price must be greater than zero")
-    }
+	// Validasi bahwa Price adalah nilai numerik
+	if resp.Price <= 0 {
+		return errors.New("invalid price:price must be greater than zero")
+	}
 
-    // Validasi dan trim untuk Photos
-    trimmedPhotos := strings.TrimSpace(resp.Photos)
-    if trimmedPhotos == "" {
-        return errors.New("invalid photos: photos cannot be empty")
-    }
-    resp.Photos = trimmedPhotos
+	// Validasi dan trim untuk Photos
+	trimmedPhotos := strings.TrimSpace(resp.Photos)
+	if trimmedPhotos == "" {
+		return errors.New("invalid photos: photos cannot be empty")
+	}
+	resp.Photos = trimmedPhotos
 
-    // Validasi untuk Stock
-    if resp.Stock <= 0 {
-        return errors.New("invalid stock: stock must be greater than zero")
-    }
+	// Validasi untuk Stock
+	if resp.Stock <= 0 {
+		return errors.New("invalid stock: stock must be greater than zero")
+	}
 
-    // Validasi dan trim untuk Description
-    trimmedDescription := strings.TrimSpace(resp.Description)
-    if trimmedDescription == "" {
-        return errors.New("invalid description: description cannot be empty")
-    }
-    resp.Description = trimmedDescription
+	// Validasi dan trim untuk Description
+	trimmedDescription := strings.TrimSpace(resp.Description)
+	if trimmedDescription == "" {
+		return errors.New("invalid description: description cannot be empty")
+	}
+	resp.Description = trimmedDescription
 
-    // Set CreatedAt jika nil
-    now := time.Now()
-    if resp.CreatedAt == nil {
-        resp.CreatedAt = &now
-    }
+	// Set CreatedAt jika nil
+	now := time.Now()
+	if resp.CreatedAt == nil {
+		resp.CreatedAt = &now
+	}
 
-    return uc.rp.Add(resp)
+	return uc.rp.Add(resp)
 }
-
 
 // Delete implements DetailUsecase.
 func (uc *detailUsecase) Delete(Id int) error {
@@ -106,7 +105,7 @@ func (uc *detailUsecase) List() (resp []dto.DetailProductDto, err error) {
 }
 
 // Update implements DetailUsecase.
-func (uc *detailUsecase) Update(Id, IdProduk , price , stock int, photos string, description string) error {
+func (uc *detailUsecase) Update(Id, IdProduk, price, stock, weight int, photos, description string) error {
 	resp, err := uc.rp.FindById(Id)
 	if resp.Id == 0 {
 		return errors.New("details is not found")
@@ -118,7 +117,7 @@ func (uc *detailUsecase) Update(Id, IdProduk , price , stock int, photos string,
 		return errors.New("user account is deleted")
 	}
 
-	err = uc.rp.Update(Id,IdProduk,price,stock,photos,description)
+	err = uc.rp.Update(Id, IdProduk, price, stock, weight, photos, description)
 	if err != nil {
 		return err
 	}
