@@ -19,14 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
             cartContainer.innerHTML = '';
             cart.forEach((product, index) => {
                 const subtotal = product.price * product.quantity;
+                console.log(product);
+                
                 const productDiv = document.createElement('div');
                 productDiv.classList.add('cart-item');
                 productDiv.innerHTML = `
                     <input type="checkbox" class="product-checkbox" id="product-${index}" onchange="updateSummary()" />
                     <div class="product-details">
-                        <img src="${product.produk_dto.image}" alt="${product.produk_dto.name}" class="product-image">
+                        <img src="../../server/${product.photos}" alt="${product.name}" class="product-image">
                         <div class="details-content">
-                            <p><strong>${product.produk_dto.name}</strong></p>
+                            <p><strong>${product.name}</strong></p>
                             <p>Harga: Rp${product.price}</p>
                             <div class="quantity-control">
                                 <button class="quantity-btn" onclick="changeQuantity(${index}, -1)">-</button>
@@ -65,14 +67,18 @@ document.addEventListener('DOMContentLoaded', () => {
     window.updateSummary = function() {
         let totalQuantity = 0;
         let totalPrice = 0;
-
+        let datacheck = []
         cart.forEach((product, index) => {
             if (document.getElementById(`product-${index}`).checked) {
                 totalQuantity += product.quantity;
                 totalPrice += product.price * product.quantity;
+                const data = {'id':product.id,'description':product.description,'id_category':product.id_category,'name':product.name,'photos':product.photos,'price':product.price,'quantity':product.quantity,'stock':product.stock, 'weight':product.weight}
+                datacheck.push(data);
             }
         });
-
+        
+        localStorage.setItem('cartFix',JSON.stringify(datacheck));
+        
         summaryContainer.innerHTML = `
             <h3>Total Produk: ${totalQuantity}</h3>
             <h3>Subtotal: Rp${totalPrice}</h3>

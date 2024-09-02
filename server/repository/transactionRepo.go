@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model/dto"
 )
 
 type TransactionRepo interface {
@@ -55,10 +56,10 @@ func (tr *transactionRepo) CreatePayment(resp model.Transaction) (model.Response
 
 	err = json.Unmarshal(body, &respCreatePayment)
 
-	query := "INSERT INTO tb_transaksi (product_id,id_user,amount,type_product,qty,addres_shipping,note,order_id,status_id ) values($1,$2,$3,$4,$5,$6,$7,$8,$9)"
+	query := "INSERT INTO tb_transaksi (product_id, id_user, amount, type_product, qty, addres_shipping, note, order_id, status_id, post_code, phone_number, customer_name) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)"
 	for _, data := range resp.ItemDetails {
 		if data.Name != "shipping cost" {
-			_, err = tr.db.Exec(query, data.Id, resp.CustomerDetail.Id, resp.DetailTransaction.GrossAmount, data.TypeProduct, data.Qty, resp.CustomerDetail.ShippingAddress, data.Note, resp.DetailTransaction.OrderID, 1)
+			_, err = tr.db.Exec(query, data.Id, resp.CustomerDetail.Id, resp.DetailTransaction.GrossAmount, data.TypeProduct, data.Qty, resp.CustomerDetail.ShippingAddress, data.Note, resp.DetailTransaction.OrderID, 1, resp.CustomerDetail.PostCode, resp.CustomerDetail.PhoneNumber, resp.CustomerDetail.Name)
 			if err != nil {
 				return model.ResponseCreatePayment{}, err
 			}
@@ -70,18 +71,21 @@ func (tr *transactionRepo) CreatePayment(resp model.Transaction) (model.Response
 // TrackingTransaction implements TransactionRepo.
 func (tr *transactionRepo) TrackingTransaction(resp model.TrackingPaymentStatus) error {
 	if resp.TransactionStatus == "capture" || resp.TransactionStatus == "settlement" {
-		var prodId, qty, stock []int
+		var stock []int
+		var DTOUpd []dto.DtoUpdate
 		query := "UPDATE tb_transaksi SET status_id=$1, updated_at=$2 WHERE order_id=$3"
-		qry2 := "Select product_id, qty From tb_transaksi Where order_id=$1"
-		qryForStock := "Select stock from tb_produk_detail where id_produk=$1"
-		qry3 := "Update tb_produk_detail Set stock=$1 - $2 Where id_produk=$3"
+		qry2 := "Select id, product_id, qty, id_user, customer_name, phone_number, addres_shipping, post_code From tb_transaksi Where order_id=$1"
+		qryForStock := "Select stock from tb_product where id=$1"
+		qry3 := "Update tb_product Set stock=$1 - $2 Where id=$3"
+		qry4 := "Insert Into (idUser, idTransaction, name, noTelp, address, postCode, status, expedition) Values($1,$2,$3,$4,$5,$6,$7,$8)"
+
 		tx, err := tr.db.Begin()
 
 		if err != nil {
 			return err
 		}
 
-		err = tx.QueryRow(query, 2, time.Now(), resp.OrderId).Scan(&prodId, &qty)
+		_, err = tx.Exec(query, 2, time.Now(), resp.OrderId)
 
 		if err != nil {
 			tx.Rollback()
@@ -96,31 +100,23 @@ func (tr *transactionRepo) TrackingTransaction(resp model.TrackingPaymentStatus)
 		}
 
 		for row.Next() {
-			var prodId2, qty2 int
+			dtoUpd := dto.DtoUpdate{}
 
-			err = row.Scan(&prodId2, &qty2)
+			err = row.Scan(&dtoUpd.ID, &dtoUpd.ProdID, &dtoUpd.Qty, &dtoUpd.UserID, &dtoUpd.CusName, &dtoUpd.PhoneNumber, &dtoUpd.AddressShipp, &dtoUpd.PostCode)
 
 			if err != nil {
 				tx.Rollback()
 				return err
 			}
 
-			prodId = append(prodId, prodId2)
-			qty = append(qty, qty2)
+			DTOUpd = append(DTOUpd, dtoUpd)
 		}
 
 		row.Close()
 
-		rows, err := tx.Query(qryForStock, prodId)
-
-		if err != nil {
-			tx.Rollback()
-			return err
-		}
-
-		for rows.Next() {
+		for _, id := range DTOUpd {
 			var stock2 int
-			err = rows.Scan(&stock2)
+			err = tx.QueryRow(qryForStock, id.ProdID).Scan(&stock2)
 
 			if err != nil {
 				tx.Rollback()
@@ -130,15 +126,21 @@ func (tr *transactionRepo) TrackingTransaction(resp model.TrackingPaymentStatus)
 			stock = append(stock, stock2)
 		}
 
-		rows.Close()
-
-		for index, id := range prodId {
-			_, err := tx.Exec(qry3, stock[index], qty[index], id)
+		for index, id := range DTOUpd {
+			_, err := tx.Exec(qry3, stock[index], id.Qty, id.ProdID)
 
 			if err != nil {
 				tx.Rollback()
 				return err
 			}
+
+			_, err = tx.Exec(qry4, id.UserID, id.ID, id.CusName, id.PhoneNumber, id.AddressShipp, id.PostCode, "1", "JNE")
+
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+
 		}
 	}
 

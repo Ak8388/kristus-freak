@@ -23,7 +23,10 @@ type ItemDetails struct {
 
 type CustomerDetail struct {
 	Id              int    `json:"id"`
+	Name            string `json:"name"`
+	PhoneNumber     string `json:"phoneNumber"`
 	ShippingAddress string `json:"shipping_address"`
+	PostCode        string `json:"postCode"`
 }
 
 type TrackingPaymentStatus struct {

@@ -10,7 +10,6 @@ type UsecaseManager interface {
 	UserUsecaseManager() usecase.UserUsecase
 	CategoryUsecaseManager() usecase.CategoryUseCase
 	ProductUsecaseManager() usecase.ProductUsecase
-	DetailUsecaseManager() usecase.DetailUsecase
 	CustomUsecaseManager() usecase.CustomUsecase
 	TransactionManager() usecase.TransactionUsecase
 	CompanyManager() usecase.CompanyUsecase
@@ -41,11 +40,6 @@ func (ucm *usecaseManager) TransactionManager() usecase.TransactionUsecase {
 // CustomUsecaseManager implements UsecaseManager.
 func (ucm *usecaseManager) CustomUsecaseManager() usecase.CustomUsecase {
 	return usecase.NewCustomUsecase(ucm.repo.CustomRepo())
-}
-
-// DetailUsecaseManager implements UsecaseManager.
-func (ucm *usecaseManager) DetailUsecaseManager() usecase.DetailUsecase {
-	return usecase.NewDetailUseacase(ucm.repo.DetailRepo())
 }
 
 // ProductUsecaseManager implements UsecaseManager.

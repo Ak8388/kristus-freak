@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('http://localhost:8081/api-putra-jaya/detail/list')
+    fetch('http://localhost:8081/api-putra-jaya/product/list')
         .then(response => response.json())
         .then(data => {
             console.log(data);
@@ -21,13 +21,14 @@ function displayProducts(products) {
     products.forEach(product => {
         const productCard = document.createElement('div');
         productCard.classList.add('card');
-
+        console.log(product);
+        
         const productImage = document.createElement('img');
-        productImage.src = product.photos; 
+        productImage.src = "../../server/"+product.photos; 
         productCard.appendChild(productImage);
 
         const productName = document.createElement('h3');
-        productName.textContent = product.produk_dto.name; 
+        productName.textContent = product.name; 
         productCard.appendChild(productName);
         console.log("This Prod :",products);
 

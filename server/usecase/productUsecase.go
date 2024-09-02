@@ -25,19 +25,19 @@ type productUsecase struct {
 // AddProduk implements ProductUsecase.
 func (pu *productUsecase) AddProduk(resp model.Product) error {
 	trimmedName := strings.TrimSpace(resp.Name)
-    if trimmedName == "" {
-        fmt.Println("CEKKKKCOK! " + resp.Name) // Bisa diganti dengan logger
-        return errors.New("invalid name")
-    }
+	if trimmedName == "" {
+		fmt.Println("CEKKKKCOK! " + resp.Name) // Bisa diganti dengan logger
+		return errors.New("invalid name")
+	}
 
-    resp.Name = trimmedName
+	resp.Name = trimmedName
 
 	now := time.Now()
-    if resp.CreatedAt == nil {
-        resp.CreatedAt = &now
-    }
-  
-    return pu.rp.AddProduk(resp)
+	if resp.CreatedAt == nil {
+		resp.CreatedAt = &now
+	}
+
+	return pu.rp.AddProduk(resp)
 }
 
 // DeleteProduct implements ProductUsecase.
@@ -61,22 +61,21 @@ func (pu *productUsecase) DeleteProduct(Id int) error {
 
 // FindById implements ProductUsecase.
 func (pu *productUsecase) FindById(Id int) (resp model.Product, err error) {
-    resp, err = pu.rp.FindById(Id)
-    if err != nil {
-        return model.Product{}, err
-    }
+	resp, err = pu.rp.FindById(Id)
+	if err != nil {
+		return model.Product{}, err
+	}
 
-    if resp.Id == 0 {
-        return model.Product{}, errors.New("product is not found")
-    }
+	if resp.Id == 0 {
+		return model.Product{}, errors.New("product is not found")
+	}
 
-    if resp.DeletedAt != nil {
-        return model.Product{}, errors.New("product is deleted")
-    }
+	if resp.DeletedAt != nil {
+		return model.Product{}, errors.New("product is deleted")
+	}
 
-    return resp, nil
+	return resp, nil
 }
-
 
 // ListProduct implements ProductUsecase.
 func (pu *productUsecase) ListProduct() (resp []model.Product, err error) {
@@ -99,7 +98,6 @@ func (pu *productUsecase) ListProduct() (resp []model.Product, err error) {
 	return
 }
 
-
 // UpdateProduct implements ProductUsecase.
 func (pu *productUsecase) UpdateProduct(IdCategory int, Name string, Id int) error {
 	resp, err := pu.rp.FindById(Id)
@@ -113,7 +111,7 @@ func (pu *productUsecase) UpdateProduct(IdCategory int, Name string, Id int) err
 		return errors.New("product is deleted")
 	}
 
-	err = pu.rp.UpdateProduct(IdCategory,Name,Id)
+	err = pu.rp.UpdateProduct(IdCategory, Name, Id)
 	if err != nil {
 		return err
 	}

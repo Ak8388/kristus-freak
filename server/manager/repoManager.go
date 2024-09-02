@@ -7,7 +7,6 @@ type RepoManager interface {
 	UserRepo() repository.UserRepo
 	CategoryRepo() repository.CategoryRepo
 	ProductRepo() repository.ProdukRepo
-	DetailRepo() repository.ProductDetailRepo
 	CustomRepo() repository.CustomRepo
 	TransactionRepo() repository.TransactionRepo
 	CompanyRepo() repository.CompanyRepo
@@ -37,11 +36,6 @@ func (repo *repoManager) TransactionRepo() repository.TransactionRepo {
 // CustomRepo implements RepoManager.
 func (repo *repoManager) CustomRepo() repository.CustomRepo {
 	return repository.NewCustomRepo(repo.infra.Connection())
-}
-
-// DetailRepo implements RepoManager.
-func (repo *repoManager) DetailRepo() repository.ProductDetailRepo {
-	return repository.NewProductDetail(repo.infra.Connection())
 }
 
 // ProductRepo implements RepoManager.
