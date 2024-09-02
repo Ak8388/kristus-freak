@@ -11,7 +11,7 @@ type ProdukRepo interface {
 	AddProduk(model.Product) error
 	FindById(Id int) (model.Product, error)
 	ListProduct() ([]model.Product, error)
-	UpdateProduct(IdCategory int, Name string,Id int) error
+	UpdateProduct(IdCategory int, Name string, Id int) error
 	DeleteProduct(Id int) error
 }
 
@@ -20,10 +20,9 @@ type productRepo struct {
 }
 
 // AddProduk implements ProdukRepo.
-func ( pr *productRepo) AddProduk(resp model.Product) error {
-
-	query := "INSERT INTO tb_produk (id_category, name) values ($1,$2)"
-	_, err := pr.db.Exec(query,resp.IdCategory, resp.Name)
+func (pr *productRepo) AddProduk(resp model.Product) error {
+	query := "INSERT INTO tb_produk (id_category, name, price, photos, stock, description, weight) values ($1,$2,$3,$4,$5,$6,$7)"
+	_, err := pr.db.Exec(query, resp.IdCategory, resp.Name, resp.Price, resp.Photos, resp.Stock, resp.Description, resp.Weight)
 	return err
 }
 
@@ -35,17 +34,18 @@ func (pr *productRepo) DeleteProduct(Id int) error {
 }
 
 // FindById implements ProdukRepo.
-func (pr *productRepo) FindById(Id int) ( resp model.Product, err error) {
+func (pr *productRepo) FindById(Id int) (resp model.Product, err error) {
 	query := "SELECT * FROM tb_produk WHERE id=$1"
-	 err = pr.db.QueryRow(query,Id).Scan(&resp.Id,&resp.IdCategory, &resp.Name,&resp.CreatedAt,&resp.UpdatedAt, &resp.DeletedAt)
+	err = pr.db.QueryRow(query, Id).Scan(&resp.Id, &resp.IdCategory, &resp.Name, &resp.Price, &resp.Photos, &resp.Stock, &resp.Description, &resp.Weight, &resp.CreatedAt, &resp.UpdatedAt, &resp.DeletedAt)
 
-	return 
+	return
 }
 
 // ListProduct implements ProdukRepo.
 func (pr *productRepo) ListProduct() (resp []model.Product, err error) {
-	query := "SELECT id,id_category, name, created_at,updated_at,deleted_at FROM tb_produk"
+	query := "SELECT * FROM tb_produk Where deleted_at IS NULL"
 	rows, err := pr.db.Query(query)
+
 	if err != nil {
 		return nil, err
 	}
@@ -54,21 +54,21 @@ func (pr *productRepo) ListProduct() (resp []model.Product, err error) {
 
 	for rows.Next() {
 		var cat model.Product
-		if err := rows.Scan(&cat.Id,&cat.IdCategory, &cat.Name, &cat.CreatedAt, &cat.UpdatedAt, &cat.DeletedAt); err != nil {
+
+		if err := rows.Scan(&cat.Id, &cat.IdCategory, &cat.Name, &cat.Price, &cat.Photos, &cat.Stock, &cat.Description, &cat.Weight, &cat.CreatedAt, &cat.UpdatedAt, &cat.DeletedAt); err != nil {
 			return nil, err
-
 		}
-		resp = append(resp, cat)
 
+		resp = append(resp, cat)
 	}
 
 	return resp, nil
 }
 
 // UpdateProduct implements ProdukRepo.
-func (pr *productRepo) UpdateProduct(IdCategory int, Name string,Id int) error {
+func (pr *productRepo) UpdateProduct(IdCategory int, Name string, Id int) error {
 	query := "UPDATE tb_produk SET id_category=$1,name=$2,updated_at=$3 WHERE id=$4"
-	_, err := pr.db.Exec(query,IdCategory, Name, time.Now(), Id)
+	_, err := pr.db.Exec(query, IdCategory, Name, time.Now(), Id)
 	return err
 }
 

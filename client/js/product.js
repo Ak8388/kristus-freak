@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const fetchDataBtn = document.getElementById('fetchProduct');
     const addDataBtn = document.getElementById('addDataBtn');
     const urlParams = new URLSearchParams(window.location.search);
+    const token = localStorage.getItem('token');
     const productId = urlParams.get('id');
     const addProductForm = document.getElementById('addProductForm');
     const editProductForm = document.getElementById('editProductForm');
@@ -37,18 +38,40 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (addProductForm) {
         addProductForm.addEventListener('submit', async function(event) {
-            event.preventDefault(); // Mencegah form dari submit secara default
+            event.preventDefault();
 
             const name = document.getElementById('InputNameProduct').value;
             const idCategory = document.getElementById('InputIdCategory').value;
+            const price = document.getElementById('price').value;
+            const photos = document.getElementById('photos');
+            const stock = document.getElementById('stock').value;
+            const description = document.getElementById('description').value;
+            const weight = document.getElementById('weight').value;
+
+            const formData = new FormData();
+
+            if (photos.files.length > 0) {
+                formData.append('photos', photos.files[0]);
+            }
+
+            const objData = {
+                'id_category':parseInt(idCategory),
+                'name':name,
+                'price':parseInt(price),
+                'weight':parseInt(weight),
+                'stock':parseInt(stock),
+                'description':description,
+            }
+
+            formData.append('json', JSON.stringify(objData));
 
             try {
                 const response = await fetch('http://localhost:8081/api-putra-jaya/product/add', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Authorization': 'Bearer '+token
                     },
-                    body: JSON.stringify({ id_category: parseInt(idCategory, 10), name: name })
+                    body: formData
                 });
 
                 if (!response.ok) {
@@ -160,10 +183,15 @@ async function fetchData() {
             console.log(product);
 
             // Isi form edit dengan data produk
-            document.getElementById('EditInputIdCategory').value = product.id_category;
-            document.getElementById('EditInputNameProduct').value = product.name;
-            editProductForm.dataset.productId = id;
+            document.getElementById('EditInputIdCategory').value = product.data.id_category;
+            document.getElementById('EditInputNameProduct').value = product.data.name;
+            document.getElementById('Editprice').value = product.data.price;
+            document.getElementById('Editstock').value = product.data.stock;
+            document.getElementById('Editdescription').value = product.data.description;
+            document.getElementById('Editweight').value = product.data.weight;
 
+            editProductForm.dataset.productId = id;
+            
             const editProductModal = new bootstrap.Modal(document.getElementById('editProductModal'), {
                 backdrop: 'static',
                 keyboard: false

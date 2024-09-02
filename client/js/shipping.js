@@ -5,40 +5,44 @@ async function handleFormSubmit(event) {
     const name = document.getElementById('name').value;
     const address = document.getElementById('address').value;
     const phone = document.getElementById('phone').value;
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const postCode = document.getElementById('post-code').value;
+
+    const cart = JSON.parse(localStorage.getItem('cartFix')) || [];
     const sc = localStorage.getItem('shipping-cost');
     let totalAmount = cart.reduce((total, product) => total + (product.price * product.quantity), 0);
-    console.log(sc);
     totalAmount += parseInt(sc);
-    console.log(totalAmount);
     const addressFix = document.getElementById('province').value + document.getElementById('city').value + address;
-    console.log(cart);
 
     const items = cart.map(product => ({
-        id: parseInt(product.id),
-        name: product.produk_dto.name,
-        price: parseInt(product.price),
-        quantity: parseInt(product.quantity),
-        shipingCost: parseInt(sc),
-        type_product: "1", // Sesuaikan jika ada informasi yang lebih spesifik
-        note: "notes product" // Sesuaikan jika ada catatan khusus
+        'id': parseInt(product.id),
+        'name': product.name,
+        'price': parseInt(product.price),
+        'quantity': parseInt(product.quantity),
+        'shipingCost': parseInt(sc),
+        'type_product': "1", // Sesuaikan jika ada informasi yang lebih spesifik
+        'note': "notes product" // Sesuaikan jika ada catatan khusus
     }));
+
     items.push({
-        name: 'shipping cost',
-        price: parseInt(sc),
-        quantity: 1,
-        shipingCost: 0,
-        type_product: "1", // Sesuaikan jika ada informasi yang lebih spesifik
-        note: "notes product"
+        'name': 'shipping cost',
+        'price': parseInt(sc),
+        'quantity': 1,
+        'shipingCost': 0,
+        'type_product': "1", // Sesuaikan jika ada informasi yang lebih spesifik
+        'note': "notes product"
     })
+    
     const cusDetail = {
-        id: 0,
-        shipping_address: addressFix,
+        'id': 0,
+        'name':name,
+        'phoneNumber':phone,
+        'shipping_address': addressFix,
+        'postCode':postCode
     }
 
     const transDetail = {
-        order_id: "",
-        gross_amount: totalAmount,
+        'order_id': "",
+        'gross_amount': totalAmount,
     }
 
     await fetch('http://localhost:8081/api-putra-jaya/transaction/add', {
@@ -82,23 +86,23 @@ document.addEventListener('DOMContentLoaded', async e => {
                     const optionName = document.createElement('option');
                     optionName.value = res.province_id;
                     optionName.innerText = res.province;
-
+                    
                     prov.appendChild(optionName);
                 })
-
+                
                 prov.addEventListener('change', async (e) => {
                     await fetch(`http://localhost:8081/api-putra-jaya/delivery/city/${prov.value}`, {
                         headers: {
                             "Authorization": "Bearer " + token
                         }
                     })
-                        .then(res => {
-                            if (!res.ok) {
-                                throw new Error('error');
-                            } else {
-                                return res.json();
-                            }
-                        })
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error('error');
+                        } else {
+                            return res.json();
+                        }
+                    })
                         .then(res => {
                             const city = document.getElementById('city');
                             city.removeAttribute('disabled');
@@ -113,16 +117,16 @@ document.addEventListener('DOMContentLoaded', async e => {
                                 const optionName = document.createElement('option');
                                 optionName.value = resCity.city_id;
                                 optionName.innerText = resCity.city_name;
-
+                                
                                 city.appendChild(optionName);
                             })
-
+                            
                             city.addEventListener('change', async a => {
-                                console.log(city.value);
-                                const cart = JSON.parse(localStorage.getItem('cart')) || [];
+                                const cart = JSON.parse(localStorage.getItem('cartFix')) || [];
                                 let sum = 0;
-
-                                cart.map(total => {
+                                console.log(cart);
+                                
+                                await cart.map(total => {
                                     sum += (total.weight * total.quantity);
                                 })
 

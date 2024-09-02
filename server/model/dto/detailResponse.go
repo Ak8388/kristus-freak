@@ -16,7 +16,7 @@ type DetailProductDto struct {
 	ProductDto  ProductDto `json:"produk_dto"`
 	Price       int        `json:"price"`
 	Photos      string     `json:"photos"`
-	Weight      int        `json:"weight"`
+	Weight      any        `json:"weight"`
 	Stock       int        `json:"stock"`
 	Description string     `json:"description"`
 }
