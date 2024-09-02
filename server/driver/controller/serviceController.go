@@ -18,7 +18,7 @@ type serviceController struct {
 }
 
 func (sc *serviceController) addService(ctx *gin.Context){
-	var resp model.Service
+	var resp model.Services
 
 	if err := ctx.ShouldBindJSON(&resp);err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message" :err.Error()})

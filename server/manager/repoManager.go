@@ -13,10 +13,16 @@ type RepoManager interface {
 	CompanyRepo() repository.CompanyRepo
 	ServiceRepo() repository.ServiceRepo
 	DelivRepo() repository.DeliveryRepo
+	PortfolioRepo() repository.PortfolioRepo
 }
 
 type repoManager struct {
 	infra Inframanager
+}
+
+// PortfolioRepo implements RepoManager.
+func (repo *repoManager) PortfolioRepo() repository.PortfolioRepo {
+	return repository.NewPortfolioRepo(repo.infra.Connection())
 }
 
 // ServiceRepo implements RepoManager.

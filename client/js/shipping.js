@@ -51,7 +51,7 @@ async function handleFormSubmit(event) {
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            // window.location.href = data.redirectUrl;
+            window.location.href = data.data.redirect_url;
         })
         .catch(error => console.error('Error:', error));
 }

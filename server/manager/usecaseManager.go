@@ -16,11 +16,17 @@ type UsecaseManager interface {
 	CompanyManager() usecase.CompanyUsecase
 	ServiceManager() usecase.ServiceUsecase
 	DeliveryUsecaseManager() usecase.DeliveryUsecase
+	PortfolioManager() usecase.PortfolioUsecase
 }
 
 type usecaseManager struct {
 	repo    RepoManager
 	jwtutil common.JwtUtil
+}
+
+// PortfolioManager implements UsecaseManager.
+func (ucm *usecaseManager) PortfolioManager() usecase.PortfolioUsecase {
+	return usecase.NewPortfolioUsecase(ucm.repo.PortfolioRepo())
 }
 
 // ServiceManager implements UsecaseManager.

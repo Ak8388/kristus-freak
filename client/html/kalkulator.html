@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prakiraan Harga</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .result-item {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Prakiraan Harga Bengkel Las</h1>
+        <div class="form-group">
+            <label for="service">Pilih Layanan</label>
+            <select id="service">
+                <option value="">Pilih Layanan</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="material">Pilih Jenis Material</label>
+            <select id="material">
+                <!-- Options will be populated by JavaScript -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="distance">Pilih Jarak / Ukuran</label>
+            <select id="distance">
+                <!-- Options will be populated by JavaScript -->
+            </select>
+        </div>
+        <button onclick="calculatePrice()">Hitung Prakiraan Harga</button>
+
+        <div class="results" id="results">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        async function loadServices() {
+            try {
+                const response = await fetch('http://localhost:8081/api-putra-jaya/service/list');
+                const result = await response.json();
+
+                const serviceSelect = document.getElementById('service');
+
+                // Memeriksa apakah data ada dan bukan null
+                if (result.data && Array.isArray(result.data)) {
+                    result.data.forEach(service => {
+                        const option = document.createElement('option');
+                        option.value = service.id;
+                        option.text = service.name;
+                        serviceSelect.appendChild(option);
+                    });
+                } else {
+                    console.error('Data services tidak ditemukan atau dalam format yang salah');
+                }
+            } catch (error) {
+                console.error('Error saat memuat services:', error);
+            }
+        }
+
+        // Memuat data services saat halaman dibuka
+        window.onload = loadServices;
+    </script>
+
+</body>
+</html>
