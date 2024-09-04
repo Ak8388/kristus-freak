@@ -2,18 +2,18 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
-	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model/dto"
 )
 
 type ServiceRepo interface {
-	AddService(resp model.Service) error
+	AddService(resp model.Services) error
 	UpdateService(name, description string, Id int) error
 	DeleteService(Id int) error
-	ListService() ([]dto.ServiceDto, error)
-	FindById(id int) (model.Service, error)
+	ListService() ([]model.Services, error)
+	FindById(id int) (model.Services, error)
 }
 
 type serviceRepo struct {
@@ -21,8 +21,8 @@ type serviceRepo struct {
 }
 
 // AddService implements ServiceRepo.
-func (s *serviceRepo) AddService(resp model.Service) error {
-	query := "INSERT INTO service (service_name, service_description) value ($1,$2)"
+func (s *serviceRepo) AddService(resp model.Services) error {
+	query := "INSERT INTO service (name,description) value ($1,$2)"
 	_, err := s.db.Exec(query, resp.Name, resp.Description)
 	return err
 }
@@ -35,26 +35,28 @@ func (s *serviceRepo) DeleteService(Id int) error {
 }
 
 // FindById implements ServiceRepo.
-func (s *serviceRepo) FindById(id int) (resp model.Service, err error) {
+func (s *serviceRepo) FindById(id int) (resp model.Services, err error) {
 	query := "SELECT * FROM service WHERE id=$1"
-	err = s.db.QueryRow(query,id).Scan(&resp.Id,&resp.Company_id,&resp.Name,&resp.Description,&resp.CreatedAt,&resp.UpdatedAt, &resp.DeletedAt)
+	err = s.db.QueryRow(query,id).Scan(&resp.Id,&resp.Name,&resp.Description,&resp.CreatedAt,&resp.UpdatedAt, &resp.DeletedAt)
 
 	return 
 }
 
 // ListService implements ServiceRepo.
-func (s *serviceRepo) ListService() (resp []dto.ServiceDto, err error) {
-	query := "SELECT id,service_name,service_description FROM service"
+func (s *serviceRepo) ListService() (resp []model.Services, err error) {
+	
+	query := "SELECT id,name,description,created_at,updated_at,deleted_at FROM services"
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
 	}	
+	fmt.Println("ceekkk",rows)
 
 	defer rows.Close()
 
 	for rows.Next(){
-		var ser dto.ServiceDto
-		if err := rows.Scan(&ser.Id,&ser.Name, &ser.Description); err != nil {
+		var ser model.Services
+		if err := rows.Scan(&ser.Id,&ser.Name, &ser.Description, &ser.CreatedAt,&ser.UpdatedAt, &ser.DeletedAt); err != nil {
 			return nil, err
 		}
 

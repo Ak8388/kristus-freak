@@ -2,20 +2,21 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
 	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
-	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model/dto"
+	// "github.com/kriserohalia/SI-COMPANY-PROFILE/server/model/dto"
 	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/repository"
 )
 
 type ServiceUsecase interface {
-	AddService(resp model.Service) error
+	AddService(resp model.Services) error
 	UpdateService(name, description string, Id int) error
 	DeleteService(Id int) error
-	ListService() ([]dto.ServiceDto, error)
-	FindById(id int) (model.Service, error)
+	ListService() ([]model.Services, error)
+	FindById(id int) (model.Services, error)
 }
 
 type serviceUsecase struct {
@@ -23,7 +24,7 @@ type serviceUsecase struct {
 }
 
 // AddService implements ServiceUsecase.
-func (su *serviceUsecase) AddService(resp model.Service) error {
+func (su *serviceUsecase) AddService(resp model.Services) error {
 	space := strings.TrimSpace(resp.Name)
 	if space == ""{
 		return errors.New("invalid name")
@@ -60,27 +61,28 @@ func (su *serviceUsecase) DeleteService(Id int) error {
 }
 
 // FindById implements ServiceUsecase.
-func (su *serviceUsecase) FindById(id int) (resp model.Service,err error) {
+func (su *serviceUsecase) FindById(id int) (resp model.Services,err error) {
 	resp, err = su.r.FindById(id)
 	if resp.Id == 0 {
-		return model.Service{}, errors.New("Not found")
+		return model.Services{}, errors.New("Not found")
 	}
 
 	if err != nil {
-		return model.Service{}, err
+		return model.Services{}, err
 
 	}
 	return
 }
 
 // ListService implements ServiceUsecase.
-func (su *serviceUsecase) ListService() (resp []dto.ServiceDto, err error) {
+func (su *serviceUsecase) ListService() (resp []model.Services, err error) {
+	fmt.Println(resp)
 	resp, err = su.r.ListService()
 	if len(resp) == 0 {
-		return []dto.ServiceDto{}, errors.New("nothing service")
+		return []model.Services{}, errors.New("nothing service")
 	}
 	if err != nil {
-		return []dto.ServiceDto{},err
+		return []model.Services{},err
 	}
 	return 
 }

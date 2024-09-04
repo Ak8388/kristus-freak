@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded',function(){
                     headers:{
                         'Content-Type':'application/json'
                     },
-                    body:JSON.stringify({service_name:name,service_description:description})
+                    body:JSON.stringify({name:name,description:description})
                 });
 
                 if (!response.ok){
@@ -126,7 +126,6 @@ async function fetchData(){
         tableHead.innerHTML = `
             <tr>
             <th>ID</th>
-            <th>Company Id</th>
             <th>Name</th>
             <th>Description</th>
             <th>Aksi</th>
@@ -143,9 +142,8 @@ async function fetchData(){
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${item.id}</td>
-                <td>${item.company_id}</td>
-                <td>${item.service_name}</td>
-                <td>${item.service_description}</td>
+                <td>${item.name}</td>
+                <td>${item.description}</td>
                 <td>
                     <button class="btn btn-warning btn-sm" onclick="editService (${item.id})">Edit</button>
                     <button class="btn btn-danger btn-sm" onclick="deleteService(${item.id})">Delete</button>
@@ -163,9 +161,7 @@ async function fetchData(){
     }
 }
 // fetchData();
-
-
-    window.editService = async function(id) {
+window.editService = async function(id) {
         console.log(id);
         try {
             const response = await fetch(`http://localhost:8081/api-putra-jaya/service/${id}`);
@@ -188,7 +184,7 @@ async function fetchData(){
             console.log(id);
 
         }
-    };
+};
 
 function deleteService(id) {
     console.log(id);
