@@ -99,16 +99,39 @@ document.addEventListener('DOMContentLoaded', function() {
         editProductForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             const id = editProductForm.dataset.productId;
+            const idcat = document.getElementById('EditInputIdCategory').value;
             const name = document.getElementById('EditInputNameProduct').value;
-            const idCategory = document.getElementById('EditInputIdCategory').value;
+            const price = document.getElementById('Editprice').value;
+            const stock = document.getElementById('Editstock').value;
+            const des = document.getElementById('Editdescription').value;
+            const weight = document.getElementById('Editweight').value;
+            const photos = document.getElementById('Editphotos');
+
+            const formData = new FormData();
+
+            if (photos.files.length > 0) {
+                formData.append('photos', photos.files[0]);
+            }
+
+            const objData = {
+                'id':parseInt(id),
+                'id_category':parseInt(idcat),
+                'name':name,
+                'price':parseInt(price),
+                'weight':parseInt(weight),
+                'stock':parseInt(stock),
+                'description':des,
+            }
+
+            formData.append('json', JSON.stringify(objData));
 
             try {
-                const response = await fetch(`http://localhost:8081/api-putra-jaya/product/update/${id}`, {
+                const response = await fetch(`http://localhost:8081/api-putra-jaya/product/update`, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Authorization':"Bearer "+token
                     },
-                    body: JSON.stringify({ id_category: parseInt(idCategory, 10), name: name })
+                    body: formData
                 });
 
                 if (!response.ok) {

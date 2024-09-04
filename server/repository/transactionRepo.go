@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -17,6 +18,7 @@ import (
 type TransactionRepo interface {
 	CreatePayment(model.Transaction) (model.ResponseCreatePayment, error)
 	TrackingTransaction(model.TrackingPaymentStatus) error
+	ValidateTransaction(userId float64) bool
 }
 
 type transactionRepo struct {
@@ -75,9 +77,9 @@ func (tr *transactionRepo) TrackingTransaction(resp model.TrackingPaymentStatus)
 		var DTOUpd []dto.DtoUpdate
 		query := "UPDATE tb_transaksi SET status_id=$1, updated_at=$2 WHERE order_id=$3"
 		qry2 := "Select id, product_id, qty, id_user, customer_name, phone_number, addres_shipping, post_code From tb_transaksi Where order_id=$1"
-		qryForStock := "Select stock from tb_product where id=$1"
-		qry3 := "Update tb_product Set stock=$1 - $2 Where id=$3"
-		qry4 := "Insert Into (idUser, idTransaction, name, noTelp, address, postCode, status, expedition) Values($1,$2,$3,$4,$5,$6,$7,$8)"
+		qryForStock := "Select stock from tb_produk where id=$1"
+		qry3 := "UPDATE tb_produk SET stock = CAST($1 AS INTEGER) - CAST($2 AS INTEGER) WHERE id = $3"
+		qry4 := "Insert Into shipping (idUser, idTransaction, name, noTelp, address, postCode, status, expedition) Values($1,$2,$3,$4,$5,$6,$7,$8)"
 
 		tx, err := tr.db.Begin()
 
@@ -125,8 +127,9 @@ func (tr *transactionRepo) TrackingTransaction(resp model.TrackingPaymentStatus)
 
 			stock = append(stock, stock2)
 		}
-
 		for index, id := range DTOUpd {
+			fmt.Println("This stock and ID:", stock[index], DTOUpd[0].ProdID)
+			fmt.Println("This stock and qty:", stock[index], DTOUpd[0].Qty)
 			_, err := tx.Exec(qry3, stock[index], id.Qty, id.ProdID)
 
 			if err != nil {
@@ -137,14 +140,40 @@ func (tr *transactionRepo) TrackingTransaction(resp model.TrackingPaymentStatus)
 			_, err = tx.Exec(qry4, id.UserID, id.ID, id.CusName, id.PhoneNumber, id.AddressShipp, id.PostCode, "1", "JNE")
 
 			if err != nil {
+				fmt.Println(err.Error())
 				tx.Rollback()
 				return err
 			}
+			tx.Commit()
+		}
+	}
 
+	if resp.TransactionStatus == "expire" {
+		query := "UPDATE tb_transaksi SET status_id=$1, updated_at=$2 WHERE order_id=$3"
+		_, err := tr.db.Exec(query, 6, time.Now(), resp.OrderId)
+
+		if err != nil {
+			return err
 		}
 	}
 
 	return nil
+}
+
+func (tr *transactionRepo) ValidateTransaction(userId float64) bool {
+	qry := "Select id From tb_transaksi Where id_user=$1 AND status_id=$2"
+	id := 0
+	err := tr.db.QueryRow(qry, userId, 1).Scan(&id)
+
+	if err != nil {
+		return err == sql.ErrNoRows
+	}
+
+	if id > 0 {
+		return false
+	}
+
+	return true
 }
 
 func NewTransactionRepo(db *sql.DB) TransactionRepo {
