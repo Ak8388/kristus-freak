@@ -110,25 +110,35 @@ func (cc *productController) deleteProduct(ctx *gin.Context) {
 }
 
 func (cc *productController) updateProduct(ctx *gin.Context) {
-	var updateProductReq struct {
-		IdCategory int    `json:"id_category"`
-		Name       string `json:"name"`
+	_, header, err := ctx.Request.FormFile("photos")
+	var fileLocation string
+
+	if err != nil {
+		if err != http.ErrMissingFile {
+			fmt.Println(err.Error())
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "failed get data from form"})
+			return
+		}
 	}
 
-	if err := ctx.ShouldBindJSON(&updateProductReq); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+	if err != http.ErrMissingFile {
+		fileLocation = filepath.Join("asset/photos", header.Filename)
+		os.Mkdir("asset/photos", os.ModePerm)
+		ctx.SaveUploadedFile(header, fileLocation)
+	}
+
+	dataString := ctx.Request.FormValue("json")
+	var dataJson model.Product
+
+	if err = json.Unmarshal([]byte(dataString), &dataJson); err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed unmarshal object json" + err.Error()})
 		return
 	}
 
-	id := ctx.Param("id")
-	if id == "" {
-		ctx.JSON(http.StatusForbidden, gin.H{"message": "Product not found"})
-		return
-	}
+	dataJson.Photos = fileLocation
 
-	idInt, _ := strconv.Atoi(id)
-
-	if err := cc.us.UpdateProduct(updateProductReq.IdCategory, updateProductReq.Name, idInt); err != nil {
+	if err := cc.us.UpdateProduct(dataJson); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
@@ -143,7 +153,7 @@ func (cc *productController) ProductRouter() {
 	r.GET("/list", cc.listProduct)
 	r.POST("/add", cc.addProduct)
 	r.POST("/delete/:id", cc.deleteProduct)
-	r.PUT("/update/:id", cc.updateProduct)
+	r.PUT("/update", cc.updateProduct)
 
 }
 

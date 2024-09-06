@@ -2,6 +2,8 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
@@ -11,7 +13,7 @@ type ProdukRepo interface {
 	AddProduk(model.Product) error
 	FindById(Id int) (model.Product, error)
 	ListProduct() ([]model.Product, error)
-	UpdateProduct(IdCategory int, Name string, Id int) error
+	UpdateProduct(model.Product) error
 	DeleteProduct(Id int) error
 }
 
@@ -66,9 +68,24 @@ func (pr *productRepo) ListProduct() (resp []model.Product, err error) {
 }
 
 // UpdateProduct implements ProdukRepo.
-func (pr *productRepo) UpdateProduct(IdCategory int, Name string, Id int) error {
-	query := "UPDATE tb_produk SET id_category=$1,name=$2,updated_at=$3 WHERE id=$4"
-	_, err := pr.db.Exec(query, IdCategory, Name, time.Now(), Id)
+func (pr *productRepo) UpdateProduct(prod model.Product) error {
+	query := "UPDATE tb_produk SET id_category=$1,name=$2,price=$3,stock=$4,description=$5,weight=$6,updated_at=$7"
+	index := 7
+	var data []any
+	fmt.Println(prod)
+	data = append(data, prod.IdCategory, prod.Name, prod.Price, prod.Stock, prod.Description, prod.Weight, time.Now())
+
+	if prod.Photos != "" {
+		index++
+		query += ", photos=$" + strconv.Itoa(index)
+		data = append(data, prod.Photos)
+	}
+	index++
+	query += " Where id=$" + strconv.Itoa(index)
+	data = append(data, prod.Id)
+
+	_, err := pr.db.Exec(query, data...)
+
 	return err
 }
 

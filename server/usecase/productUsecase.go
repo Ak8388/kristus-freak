@@ -14,7 +14,7 @@ type ProductUsecase interface {
 	AddProduk(model.Product) error
 	FindById(Id int) (model.Product, error)
 	ListProduct() ([]model.Product, error)
-	UpdateProduct(IdCategory int, Name string, Id int) error
+	UpdateProduct(model.Product) error
 	DeleteProduct(Id int) error
 }
 
@@ -99,8 +99,8 @@ func (pu *productUsecase) ListProduct() (resp []model.Product, err error) {
 }
 
 // UpdateProduct implements ProductUsecase.
-func (pu *productUsecase) UpdateProduct(IdCategory int, Name string, Id int) error {
-	resp, err := pu.rp.FindById(Id)
+func (pu *productUsecase) UpdateProduct(prod model.Product) error {
+	resp, err := pu.rp.FindById(prod.Id)
 	if resp.Id == 0 {
 		return errors.New("product is not found")
 	}
@@ -111,7 +111,7 @@ func (pu *productUsecase) UpdateProduct(IdCategory int, Name string, Id int) err
 		return errors.New("product is deleted")
 	}
 
-	err = pu.rp.UpdateProduct(IdCategory, Name, Id)
+	err = pu.rp.UpdateProduct(prod)
 	if err != nil {
 		return err
 	}

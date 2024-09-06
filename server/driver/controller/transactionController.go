@@ -43,7 +43,6 @@ func (tc *transactionController) createPayment(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "success create payment", "data": res})
-
 }
 
 func (tc *transactionController) trackingTransaction(ctx *gin.Context) {
@@ -64,14 +63,31 @@ func (tc *transactionController) trackingTransaction(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "success tracking transaction"})
+}
 
+func (cc *transactionController) validateTransaction(c *gin.Context) {
+	id, exist := c.Get("Id")
+
+	if !exist {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed get id user"})
+		return
+	}
+
+	val := cc.uc.ValidateTransaction(id.(float64))
+
+	if !val {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "transaction not valid"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
 func (cc *transactionController) TransactionRouter() {
 	r := cc.rg.Group("transaction")
 	r.POST("/add", cc.am.JwtVerified("OWNER", "CUSTOMER"), cc.createPayment)
 	r.POST("/tracking", cc.trackingTransaction)
-
+	r.POST("/valid", cc.am.JwtVerified("CUSTOMER"), cc.validateTransaction)
 }
 
 func NewTransactionController(am middleware.AuthMiddleware, uc usecase.TransactionUsecase, rg *gin.RouterGroup) *transactionController {
