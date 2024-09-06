@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Dashboard - Putra Jaya</title>
+    <meta
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+      name="viewport"
+    />
+    <link
+      rel="icon"
+      href="../../client/assets/img/logo-removebg-preview.png"
+      type="image/x-icon"
+    />
+
+    <!-- Fonts and icons -->
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["../assets/css/fonts.min.css"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <!-- CSS Files -->
+
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="../assets/css/kaiadmin.min.css" />
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      <div class="sidebar" data-background-color="dark">
+        <div class="sidebar-logo">
+          <!-- Logo Header -->
+          <div class="logo-header" data-background-color="dark">
+            <a href="../index.html" class="logo">
+              <img src="../../client/assets/img/logo-removebg-preview.png" alt="" style="width: 100px; height: auto;">
+            </a>
+            <div class="nav-toggle">
+              <button class="btn btn-toggle toggle-sidebar">
+                <i class="gg-menu-right"></i>
+              </button>
+              <button class="btn btn-toggle sidenav-toggler">
+                <i class="gg-menu-left"></i>
+              </button>
+            </div>
+            <button class="topbar-toggler more">
+              <i class="gg-more-vertical-alt"></i>
+            </button>
+          </div>
+          <!-- End Logo Header -->
+        </div>
+        <div class="sidebar-wrapper scrollbar scrollbar-inner">
+          <div class="sidebar-content">
+            <ul class="nav nav-secondary">
+              <li class="nav-item active">
+                <a
+                  data-bs-toggle="collapse"
+                  href="../index.html"
+                  class="collapsed"
+                  aria-expanded="false"
+                >
+                  <i class="fas fa-home"></i>
+                  <p>Dashboard</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a data-bs-toggle="collapse" href="#tables">
+                  <i class="fas fa-table"></i>
+                  <p>Penjualan</p>
+                  <span class="caret"></span>
+                </a>
+                <div class="collapse" id="tables">
+                  <ul class="nav nav-collapse">
+                    <li>
+                      <a href="tables.html">
+                        <span class="sub-item">Basic Table</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="datatables.html">
+                        <span class="sub-item">Datatables</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="data-category.html">
+                        <span class="sub-item">Data Kategori</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="data-produk.html">
+                        <span class="sub-item">Data Produk</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="data-transaksi.html">
+                        <span class="sub-item">Data Transaksi</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="data-pemesanan.html">
+                        <span class="sub-item">Data Pemesanan</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="data-user.html">
+                        <span class="sub-item">Data User</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="nav-item">
+                <a data-bs-toggle="collapse" href="#tables">
+                  <i class="fas fa-table"></i>
+                  <p>Company Profile</p>
+                  <span class="caret"></span>
+                </a>
+                <div class="collapse" id="tables">
+                  <ul class="nav nav-collapse">
+                    <li>
+                      <a href="company-profile.html">
+                        <span class="sub-item">General Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="data-service.html">
+                        <span class="sub-item">Service</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="data-portfolio.html">
+                        <span class="sub-item">Portfolio</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        <div class="main-header">
+          <div class="main-header-logo">
+            <!-- Logo Header -->
+            <div class="logo-header" data-background-color="dark">
+              <a href="../index.html" class="logo">
+                <img src="../../client/assets/img/logo-removebg-preview.png" alt="">
+              </a>
+              <div class="nav-toggle">
+                <button class="btn btn-toggle toggle-sidebar">
+                  <i class="gg-menu-right"></i>
+                </button>
+                <button class="btn btn-toggle sidenav-toggler">
+                  <i class="gg-menu-left"></i>
+                </button>
+              </div>
+              <button class="topbar-toggler more">
+                <i class="gg-more-vertical-alt"></i>
+              </button>
+            </div>
+            <!-- End Logo Header -->
+          </div>
+          <!-- Navbar Header -->
+          <nav
+            class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom"
+          >
+            <div class="container-fluid">
+              <nav
+                class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex"
+              >
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <button type="submit" class="btn btn-search pe-1">
+                      <i class="fa fa-search search-icon"></i>
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search ..."
+                    class="form-control"
+                  />
+                </div>
+              </nav>
+
+              <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+                <li
+                  class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none"
+                >
+                  <a
+                    class="nav-link dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                    href="#"
+                    role="button"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                  >
+                    <i class="fa fa-search"></i>
+                  </a>
+                  <ul class="dropdown-menu dropdown-search animated fadeIn">
+                    <form class="navbar-left navbar-form nav-search">
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          placeholder="Search ..."
+                          class="form-control"
+                        />
+                      </div>
+                    </form>
+                  </ul>
+                </li>
+                <li class="nav-item topbar-user dropdown hidden-caret">
+                  <a
+                    class="dropdown-toggle profile-pic"
+                    data-bs-toggle="dropdown"
+                    href="#"
+                    aria-expanded="false"
+                  >
+                    <div class="avatar-sm">
+                      <img
+                        src="../assets/img/profile.jpg"
+                        alt="..."
+                        class="avatar-img rounded-circle"
+                      />
+                    </div>
+                    <span class="profile-username">
+                      <span class="op-7">Hi,</span>
+                      <span class="fw-bold">Hizrian</span>
+                    </span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-user animated fadeIn">
+                    <div class="dropdown-user-scroll scrollbar-outer">
+                      <li>
+                        <div class="user-box">
+                          <div class="avatar-lg">
+                            <img
+                              src="../assets/img/profile.jpg"
+                              alt="image profile"
+                              class="avatar-img rounded"
+                            />
+                          </div>
+                          <div class="u-text">
+                            <h4>Hizrian</h4>
+                            <p class="text-muted">hello@example.com</p>
+                            <a
+                              href="profile.html"
+                              class="btn btn-xs btn-secondary btn-sm"
+                              >View Profile</a
+                            >
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">My Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Account Setting</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Logout</a>
+                      </li>
+                    </div>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </nav>
+          <!-- End Navbar -->
+        </div>
+
+        <div class="container">
+            <div class="page-inner">
+              <div class="page-header">
+                <h3 class="fw-bold mb-3">DataTables.Net</h3>
+                <ul class="breadcrumbs mb-3">
+                  <li class="nav-home">
+                    <a href="#">
+                      <i class="icon-home"></i>
+                    </a>
+                  </li>
+                  <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#">Tables</a>
+                  </li>
+                  <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#">Data Service</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <div class="d-flex align-items-center">
+                        <h4 class="card-title">Add Row</h4>
+                        <button
+                          class="btn btn-primary btn-round ms-auto"
+                          data-bs-toggle="modal"
+                          data-bs-target="#addRowModal"
+                        >
+                          <i class="fa fa-plus"></i>
+                          Add Row
+                        </button>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <!-- Modal Add Start -->
+                      <div
+                        class="modal fade"
+                        id="addRowModal"
+                        tabindex="-1"
+                        role="dialog"
+                        aria-hidden="true"
+                      >
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header border-0">
+                              <h5 class="modal-title">
+                                <span class="fw-mediumbold">Tambah</span>
+                                <span class="fw-light"> Service</span>
+                              </h5>
+                              <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close"
+                              >
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <p class="small">
+                                Create a new service using this form, make sure you
+                                fill them all
+                              </p>
+                              <form>
+                                <div class="row">
+                                  <div class="col-md-6 pe-0">
+                                    <div class="form-group form-group-default">
+                                      <label>Nama</label>
+                                      <input
+                                        id="addName"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="fill name"
+                                      />
+                                    </div>
+                                  </div>
+                                  
+                                  <div class="col-sm-10">
+                                    <div class="form-group form-group-default">
+                                      <label>Deskripsi</label>
+                                      <input
+                                        id="addDeskripsi"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="fill deskripsi"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                            <div class="modal-footer border-0">
+                              <button
+                                type="button"
+                                id="addRowButton"
+                                class="btn btn-primary"
+                              >
+                                Add
+                              </button>
+                              <button
+                                type="button"
+                                class="btn btn-danger"
+                                data-dismiss="modal"
+                              >
+                                Close
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Modal Add End -->
+  
+                      <!-- Modal Edit Start -->
+                      <div class="modal fade" id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="editServiceModalLabel">Edit Service</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <form id="editServiceForm">
+                                          <div class="mb-3">
+                                              <label for="EditInputName" class="form-label">Product Name</label>
+                                              <input type="text" class="form-control" id="EditInputName">
+                                          </div>
+                                          <div class="mb-3">
+                                              <label for="EditInputDescription" class="form-label">Description</label>
+                                              <textarea class="form-control" id="EditInputDescription"></textarea>
+                                          </div>
+                                      </form>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                      <button type="button" class="btn btn-primary" id="saveEditButton">Save changes</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      
+                       <!-- Modal Edit End -->
+  
+                      <div class="table-responsive">
+                          <input type="text" id="searchInput" placeholder="Search for product name..." class="form-control mb-3">
+                        <table
+                         id="table-service"
+                          class="display table table-striped table-hover"
+                        >
+                          <tbody>
+                              <thead>
+                                  <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Deskripsi</th>
+                                    <th style="width: 10%">Aksi</th>
+                                  </tr>
+                                </thead>
+                          </tbody>
+                        </table>
+                      </div>
+                      <!-- Pagination controls -->
+                      <div id="paginationControls" class="d-flex justify-content-between align-items-center mt-3">
+                          <span id="showing-info"></span>
+                          <div>
+                          <button id="prevBtn" class="btn btn-secondary btn-sm" disabled>Previous</button>
+                          <button id="nextBtn" class="btn btn-secondary btn-sm">Next</button>
+                          </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+          <footer class="footer">
+          <div class="container-fluid d-flex justify-content-between">
+            <div class="copyright">
+              2024, by
+              <a href="#">Putra Jaya Las Listrik</a>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <!--   Core JS Files   -->
+    <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
+
+    <!-- jQuery Scrollbar -->
+    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+    <!-- Chart JS -->
+    <script src="../assets/js/plugin/chart.js/chart.min.js"></script>
+
+    <!-- jQuery Sparkline -->
+    <script src="../assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+    <!-- Chart Circle -->
+    <script src="../assets/js/plugin/chart-circle/circles.min.js"></script>
+
+    <!-- Datatables -->
+    <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+
+    <!-- Bootstrap Notify -->
+    <script src="../assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+    <!-- jQuery Vector Maps -->
+    <script src="../assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+    <script src="../assets/js/plugin/jsvectormap/world.js"></script>
+
+    <!-- Sweet Alert -->
+    <script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+    <!-- Kaiadmin JS -->
+    <script src="../assets/js/kaiadmin.min.js"></script>
+    <script src="../../client/js/service.js"></script>
+  </body>
+</html>

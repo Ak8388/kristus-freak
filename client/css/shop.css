@@ -110,3 +110,25 @@ img, h3, p {
     background-color: #fd7e14;
     color: #fff;
 }
+
+
+/* Pastikan container mengatur elemen dalam grid */
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.product-item {
+    flex: 1 1 calc(33.333% - 1rem); /* 3 kolom pada ukuran layar besar */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.product-thumbnail {
+    width: 100%; /* Mengatur lebar gambar sesuai container */
+    height: auto;
+}

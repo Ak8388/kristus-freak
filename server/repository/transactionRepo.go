@@ -75,8 +75,8 @@ func (tr *transactionRepo) TrackingTransaction(resp model.TrackingPaymentStatus)
 		var DTOUpd []dto.DtoUpdate
 		query := "UPDATE tb_transaksi SET status_id=$1, updated_at=$2 WHERE order_id=$3"
 		qry2 := "Select id, product_id, qty, id_user, customer_name, phone_number, addres_shipping, post_code From tb_transaksi Where order_id=$1"
-		qryForStock := "Select stock from tb_product where id=$1"
-		qry3 := "Update tb_product Set stock=$1 - $2 Where id=$3"
+		qryForStock := "Select stock from tb_produk where id=$1"
+		qry3 := "Update tb_produk Set stock = stock- $2 Where id=$3"
 		qry4 := "Insert Into (idUser, idTransaction, name, noTelp, address, postCode, status, expedition) Values($1,$2,$3,$4,$5,$6,$7,$8)"
 
 		tx, err := tr.db.Begin()

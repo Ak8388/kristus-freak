@@ -9,73 +9,81 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Error fetching data:', error));
 });
 
+function formatIDR(amount) {
+    return amount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+}
+
 function displayProducts(products) {
     if (!Array.isArray(products)) {
         console.error('Expected an array but got:', products);
         return;
     }
 
-    const productContainer = document.getElementById('product-container');
-    productContainer.innerHTML = '';
+    const container = document.querySelector('.product-list'); // Assume you have a container with class 'product-list'
+    container.innerHTML = ''; // Clear any existing content
 
     products.forEach(product => {
+        // Create the product card container
         const productCard = document.createElement('div');
-        productCard.classList.add('card');
-        console.log(product);
-        
+        productCard.classList.add('col-12', 'col-md-4', 'col-lg-3', 'mb-5');
+
+        const productItem = document.createElement('a');
+        productItem.classList.add('product-item');
+        productItem.href = "#";
+
+        // Create the container for the image
+        const productContainer = document.createElement('div');
+        productContainer.classList.add('product-container');
+
+        // Create the product image
         const productImage = document.createElement('img');
-        productImage.src = "../../server/"+product.photos; 
-        productCard.appendChild(productImage);
+        productImage.src = "../server/" + product.photos;
+        productImage.classList.add('img-fluid', 'product-thumbnail');
+        productContainer.appendChild(productImage);
 
+        // Append productContainer to productItem
+        productItem.appendChild(productContainer);
+
+        // Create and append the product title
         const productName = document.createElement('h3');
-        productName.textContent = product.name; 
-        productCard.appendChild(productName);
-        console.log("This Prod :",products);
+        productName.textContent = product.name;
+        productName.classList.add('product-title');
+        productItem.appendChild(productName);
 
-        // const productDescription = document.createElement('p');
-        // productDescription.textContent = product.description; // Menyesuaikan properti `description` sesuai dengan data
-        // productCard.appendChild(productDescription);
+        // Create and append the product price
+        const productPrice = document.createElement('strong');
+        productPrice.textContent = formatIDR(product.price);
+        productPrice.classList.add('product-price');
+        productItem.appendChild(productPrice);
 
-        const productPrice = document.createElement('p');
-        productPrice.textContent = `${product.price}`; // Menampilkan harga produk
-        productCard.appendChild(productPrice);
+        // Create and append the cross icon
+        const iconCross = document.createElement('span');
+        iconCross.classList.add('icon-cross');
 
-        // const productStock = document.createElement('p');
-        // productStock.textContent = `Stock: ${product.stock}`; // Menampilkan stok produk
-        // productCard.appendChild(productStock);
+        const crossImage = document.createElement('img');
+        crossImage.src = 'images/cross.svg';
+        crossImage.classList.add('img-fluid');
+        iconCross.appendChild(crossImage);
 
-        const addToCartButton = document.createElement('button');
-        addToCartButton.innerHTML = '<i class="bi bi-cart-plus-fill"></i>';
-        addToCartButton.className = 'add-to-cart-btn';
-        addToCartButton.onclick = () => {
+        iconCross.addEventListener('click', () => {
             addToCart(product);
-            updateCartCount();
-        };
+        });
 
-        const detail = document.createElement('button');
-        detail.innerHTML = 'Detail';
-        detail.className = 'detail-btn';
-        detail.onclick = () => {
-            window.location.href = "detailproduk.html"; // Perbaiki link ke "detail.html"
-        };
+        productItem.appendChild(iconCross);
 
-        const buttonContainer = document.createElement('div');
-        buttonContainer.className = 'button-container';
+        // Append the product item to the product card
+        productCard.appendChild(productItem);
 
-        buttonContainer.appendChild(addToCartButton);
-        buttonContainer.appendChild(detail);
-
-        productCard.appendChild(buttonContainer);
-        productContainer.appendChild(productCard);
-
-            });
+        // Append the product card to the container
+        container.appendChild(productCard);
+    });
 }
+
 
 function addToCart(product) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     const existingProductIndex = cart.findIndex(item => item.id === product.id);
-    console.log("This cart 2:",cart);
-    console.log("This Prod 3:",product);
+
     if (existingProductIndex >= 0) {
         cart[existingProductIndex].quantity += 1;
     } else {
@@ -85,7 +93,9 @@ function addToCart(product) {
 
     localStorage.setItem('cart', JSON.stringify(cart));
     alert('Produk telah ditambahkan ke keranjang');
+    updateCartCount(); // Pastikan cart count ter-update setelah penambahan
 }
+
 
 function updateCartCount() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
