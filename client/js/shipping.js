@@ -23,12 +23,11 @@ async function handleFormSubmit(event) {
         const phone = document.getElementById('phone').value;
         const postCode = document.getElementById('post-code').value;
 
-        const cart = JSON.parse(localStorage.getItem('cartFix')) || [];
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const sc = localStorage.getItem('shipping-cost');
         let totalAmount = cart.reduce((total, product) => total + (product.price * product.quantity), 0);
         totalAmount += parseInt(sc);
         const addressFix = document.getElementById('province').value + document.getElementById('city').value + address;
-        localStorage.setItem('cartBuyer', JSON.stringify(cart));
         const cartL = JSON.parse(localStorage.getItem('cart'));
         console.log("this cartL :", cartL);
         console.log("this cartFix :", cart);
@@ -64,8 +63,6 @@ async function handleFormSubmit(event) {
             'order_id': "",
             'gross_amount': totalAmount,
         }
-
-
 
         await fetch('http://localhost:8081/api-putra-jaya/transaction/add', {
             method: 'POST',

@@ -25,7 +25,7 @@ function displayCartItems() {
         const imgTd = document.createElement('td');
         imgTd.classList.add('product-thumbnail');
         const img = document.createElement('img');
-        img.src = `${product.photos}`; // Path ke gambar produk
+        img.src = `../server/${product.photos}`; // Path ke gambar produk
         img.alt = product.name;
         img.classList.add('img-fluid');
         imgTd.appendChild(img);
