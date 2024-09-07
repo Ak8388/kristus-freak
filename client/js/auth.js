@@ -26,7 +26,8 @@ document.getElementById('loginForm').addEventListener('submit', function(event){
         localStorage.setItem('role', role);
 
         if (role === "OWNER") {
-            window.location.href = '../admin.html';
+            // window.location.href = '../';
+            window.location.href = '../../kristus-freak/admin/index.html';
         } else if (role === "CUSTOMER") {
             window.location.href = '../index.html';
         } else {
@@ -42,6 +43,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event){
 function logout(){
     localStorage.removeItem('token');
     localStorage.removeItem('role');
-    location.href = "./index.html";
+    location.href = "index.html";
     console.log("kristus");
 }

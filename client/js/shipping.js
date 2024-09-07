@@ -1,5 +1,6 @@
 async function handleFormSubmit(event) {
     event.preventDefault();
+
     const token = localStorage.getItem('token');
     try {
         await fetch('http://localhost:8081/api-putra-jaya/transaction/valid', {
@@ -100,19 +101,19 @@ document.addEventListener('DOMContentLoaded', async e => {
                 "Authorization": "Bearer " + token
             }
         })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error('error');
-                } else {
-                    return res.json();
-                }
-            })
-            .then(resData => {
-                const prov = document.getElementById('province');
-                const optionProv1 = document.createElement('option');
-                optionProv1.value = "";
-                optionProv1.innerText = "Select Provinces";
-                prov.append(optionProv1);
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('error');
+            } else {
+                return res.json();
+            }
+        })
+        .then(resData => {
+            const prov = document.getElementById('province');
+            const optionProv1 = document.createElement('option');
+            optionProv1.value = "";
+            optionProv1.innerText = "Select Provinces";
+            prov.append(optionProv1);
 
                 resData.data.rajaongkir.results.map(res => {
                     const optionName = document.createElement('option');
@@ -140,10 +141,10 @@ document.addEventListener('DOMContentLoaded', async e => {
                             city.removeAttribute('disabled');
                             city.innerHTML = "";
 
-                            const cityOpt1 = document.createElement('option');
-                            cityOpt1.value = "";
-                            cityOpt1.innerText = "Select City";
-                            city.append(cityOpt1);
+                    const cityOpt1 = document.createElement('option');
+                    cityOpt1.value = "";
+                    cityOpt1.innerText = "Select City";
+                    city.append(cityOpt1);
 
                             res.data.rajaongkir.results.map(resCity => {
                                 const optionName = document.createElement('option');
@@ -162,43 +163,51 @@ document.addEventListener('DOMContentLoaded', async e => {
                                     sum += (total.weight * total.quantity);
                                 })
 
-                                console.log(sum);
+                    city.addEventListener('change', async () => {
+                        const cart = JSON.parse(localStorage.getItem('cartFix')) || [];
+                        let sum = 0;
 
-                                const objReq = {
-                                    origin: "103",
-                                    destination: city.value,
-                                    weight: sum,
-                                    courier: "jne"
-                                }
+                        await cart.map(total => {
+                            sum += (total.weight * total.quantity);
+                        });
 
-                                try {
-                                    await fetch('http://localhost:8081/api-putra-jaya/delivery/cost-delivery', {
-                                        method: "POST",
-                                        body: JSON.stringify(objReq),
-                                        headers: {
-                                            "Authorization": "Bearer " + token
-                                        }
-                                    })
-                                        .then(result => {
-                                            if (!result.ok) {
-                                                throw new Error('err');
-                                            } else {
-                                                return result.json();
-                                            }
-                                        })
-                                        .then(resData => {
-                                            localStorage.setItem('shipping-cost', resData.data.rajaongkir.results[0].costs[0].cost[0].value);
-                                            document.getElementById('cost-text').textContent = resData.data.rajaongkir.results[0].costs[0].cost[0].value;
-                                        })
-                                } catch (err) {
+                        const objReq = {
+                            origin: "103",
+                            destination: city.value,
+                            weight: sum,
+                            courier: "jne"
+                        };
 
+                        try {
+                            await fetch('http://localhost:8081/api-putra-jaya/delivery/cost-delivery', {
+                                method: "POST",
+                                body: JSON.stringify(objReq),
+                                headers: {
+                                    "Authorization": "Bearer " + token
                                 }
                             })
-
-                        })
-                })
-            })
+                            .then(result => {
+                                if (!result.ok) {
+                                    throw new Error('err');
+                                } else {
+                                    return result.json();
+                                }
+                            })
+                            .then(resData => {
+                                localStorage.setItem('shipping-cost', resData.data.rajaongkir.results[0].costs[0].cost[0].value);
+                                document.getElementById('cost-text').textContent = resData.data.rajaongkir.results[0].costs[0].cost[0].value;
+                            });
+                        } catch (err) {
+                            console.error('Error:', err);
+                        }
+                    });
+                });
+            });
+        });
     } catch (error) {
         alert('internal server error');
     }
-})
+
+    // Event listener for the Place Order button
+    document.getElementById('place-order-btn').addEventListener('click', handleFormSubmit);
+});
