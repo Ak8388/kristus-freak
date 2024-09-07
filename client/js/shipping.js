@@ -23,7 +23,7 @@ async function handleFormSubmit(event) {
         const phone = document.getElementById('phone').value;
         const postCode = document.getElementById('post-code').value;
 
-        const cart = JSON.parse(localStorage.getItem('cartFix')) || [];
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const sc = localStorage.getItem('shipping-cost');
         let totalAmount = cart.reduce((total, product) => total + (product.price * product.quantity), 0);
         totalAmount += parseInt(sc);
