@@ -78,13 +78,8 @@ func (tr *transactionRepo) TrackingTransaction(resp model.TrackingPaymentStatus)
 		query := "UPDATE tb_transaksi SET status_id=$1, updated_at=$2 WHERE order_id=$3"
 		qry2 := "Select id, product_id, qty, id_user, customer_name, phone_number, addres_shipping, post_code From tb_transaksi Where order_id=$1"
 		qryForStock := "Select stock from tb_produk where id=$1"
-<<<<<<< HEAD
-		qry3 := "Update tb_produk Set stock = stock- $2 Where id=$3"
-		qry4 := "Insert Into (idUser, idTransaction, name, noTelp, address, postCode, status, expedition) Values($1,$2,$3,$4,$5,$6,$7,$8)"
-=======
 		qry3 := "UPDATE tb_produk SET stock = CAST($1 AS INTEGER) - CAST($2 AS INTEGER) WHERE id = $3"
 		qry4 := "Insert Into shipping (idUser, idTransaction, name, noTelp, address, postCode, status, expedition) Values($1,$2,$3,$4,$5,$6,$7,$8)"
->>>>>>> d9fb3624eec0e343abbc6fb75233daf076c97ce7
 
 		tx, err := tr.db.Begin()
 

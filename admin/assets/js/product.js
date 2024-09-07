@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const productId = urlParams.get('id');
     const addProductForm = document.getElementById('addProductForm');
     const editProductForm = document.getElementById('editProductForm');
-
+    
+    fetchData()
     document.querySelectorAll('.edit-button').forEach(button => {
             button.addEventListener('click', function() {
                 const productId = this.getAttribute('data-product-id');
@@ -154,24 +155,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function fetchData() {
+    
     try {
         const response = await fetch('http://localhost:8081/api-putra-jaya/product/list'); // Ubah URL sesuai dengan endpoint Anda
         const data = await response.json();
         console.log(data); // Tambahkan log ini untuk melihat data yang diterima dari server
-        const table = document.getElementById('table-product');
-        const tableHead = document.createElement('thead');
-        tableHead.innerHTML = `
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Aksi</th>
-            </tr>
-        `;
 
         // Kosongkan tabel sebelum memasukkan data baru
-        table.innerHTML = '';
-        table.appendChild(tableHead);
-        const tableBody = document.createElement('tbody');
+        const tableBody = document.getElementById('tbody');
+        tableBody.innerHTML = '';
         const items = data.data || []; // Mengakses array data dari respons
 
         if (Array.isArray(items)) {
@@ -179,7 +171,13 @@ async function fetchData() {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${item.id}</td>
+                    <td>${item.id_category}</td>
                     <td>${item.name}</td>
+                    <td><img class="img-prod" src="../../server/${item.photos}"></td>
+                    <td>${item.price}</td>
+                    <td>${item.stock}</td>
+                    <td>${item.weight}</td>
+                    <td>${item.weight}</td>
                     <td>
                         <button class="btn btn-warning btn-sm" onclick="editProduct (${item.id})">Edit</button>
                         <button class="btn btn-danger btn-sm" onclick="deleteProduct(${item.id})">Delete</button>
@@ -190,8 +188,6 @@ async function fetchData() {
         } else {
             console.error('Items is not an array:', items);
         }
-
-        table.appendChild(tableBody);
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -330,7 +326,3 @@ function deleteProduct(productId) {
         console.error('Error deleting product:', error);
     });
 }
-
-
-
-});

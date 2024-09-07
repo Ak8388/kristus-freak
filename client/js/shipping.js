@@ -204,6 +204,7 @@ document.addEventListener('DOMContentLoaded', async e => {
                 });
             });
         });
+    })
     } catch (error) {
         alert('internal server error');
     }
