@@ -98,119 +98,108 @@ async function handleFormSubmit(event) {
 
 document.addEventListener('DOMContentLoaded', async e => {
     const token = localStorage.getItem('token');
+    
     try {
-        await fetch('http://localhost:8081/api-putra-jaya/delivery/province', {
+        // Fetch provinces
+        const responseProvince = await fetch('http://localhost:8081/api-putra-jaya/delivery/province', {
             headers: {
                 "Authorization": "Bearer " + token
             }
-        })
-        .then(res => {
-            if (!res.ok) {
-                throw new Error('error');
-            } else {
-                return res.json();
-            }
-        })
-        .then(resData => {
-            const prov = document.getElementById('province');
-            const optionProv1 = document.createElement('option');
-            optionProv1.value = "";
-            optionProv1.innerText = "Select Provinces";
-            prov.append(optionProv1);
+        });
 
-                resData.data.rajaongkir.results.map(res => {
+        if (!responseProvince.ok) throw new Error('Failed to fetch provinces');
+
+        const resData = await responseProvince.json();
+        const prov = document.getElementById('province');
+        const optionProv1 = document.createElement('option');
+        optionProv1.value = "";
+        optionProv1.innerText = "Select Provinces";
+        prov.append(optionProv1);
+
+        resData.data.rajaongkir.results.forEach(res => {
+            const optionName = document.createElement('option');
+            optionName.value = res.province_id;
+            optionName.innerText = res.province;
+            prov.appendChild(optionName);
+        });
+
+        // Event listener for province selection
+        prov.addEventListener('change', async () => {
+            try {
+                const responseCity = await fetch(`http://localhost:8081/api-putra-jaya/delivery/city/${prov.value}`, {
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                });
+
+                if (!responseCity.ok) throw new Error('Failed to fetch cities');
+                
+                const resCityData = await responseCity.json();
+                const city = document.getElementById('city');
+                city.removeAttribute('disabled');
+                city.innerHTML = "";
+
+                const cityOpt1 = document.createElement('option');
+                cityOpt1.value = "";
+                cityOpt1.innerText = "Select City";
+                city.appendChild(cityOpt1);
+
+                resCityData.data.rajaongkir.results.forEach(resCity => {
                     const optionName = document.createElement('option');
-                    optionName.value = res.province_id;
-                    optionName.innerText = res.province;
+                    optionName.value = resCity.city_id;
+                    optionName.innerText = resCity.city_name;
+                    city.appendChild(optionName);
+                });
 
-                    prov.appendChild(optionName);
-                })
+                // Event listener for city selection
+                city.addEventListener('change', async () => {
+                    const cart = JSON.parse(localStorage.getItem('cartFix')) || [];
+                    let sum = 0;
 
-                prov.addEventListener('change', async (e) => {
-                    await fetch(`http://localhost:8081/api-putra-jaya/delivery/city/${prov.value}`, {
-                        headers: {
-                            "Authorization": "Bearer " + token
-                        }
-                    })
-                        .then(res => {
-                            if (!res.ok) {
-                                throw new Error('error');
-                            } else {
-                                return res.json();
+                    cart.forEach(total => {
+                        sum += (total.weight * total.quantity);
+                    });
+
+                    const objReq = {
+                        origin: "103",  // Origin city ID (should be dynamically set if necessary)
+                        destination: city.value,
+                        weight: sum,
+                        courier: "jne"
+                    };
+
+                    try {
+                        const responseCost = await fetch('http://localhost:8081/api-putra-jaya/delivery/cost-delivery', {
+                            method: "POST",
+                            body: JSON.stringify(objReq),
+                            headers: {
+                                "Authorization": "Bearer " + token,
+                                "Content-Type": "application/json"
                             }
-                        })
-                        .then(res => {
-                            const city = document.getElementById('city');
-                            city.removeAttribute('disabled');
-                            city.innerHTML = "";
-
-                    const cityOpt1 = document.createElement('option');
-                    cityOpt1.value = "";
-                    cityOpt1.innerText = "Select City";
-                    city.append(cityOpt1);
-
-                            res.data.rajaongkir.results.map(resCity => {
-                                const optionName = document.createElement('option');
-                                optionName.value = resCity.city_id;
-                                optionName.innerText = resCity.city_name;
-
-                                city.appendChild(optionName);
-                            })
-
-                            city.addEventListener('change', async a => {
-                                const cart = JSON.parse(localStorage.getItem('cartFix')) || [];
-                                let sum = 0;
-                                console.log(cart);
-
-                                await cart.map(total => {
-                                    sum += (total.weight * total.quantity);
-                                })
-
-                    city.addEventListener('change', async () => {
-                        const cart = JSON.parse(localStorage.getItem('cartFix')) || [];
-                        let sum = 0;
-
-                        await cart.map(total => {
-                            sum += (total.weight * total.quantity);
                         });
 
-                        const objReq = {
-                            origin: "103",
-                            destination: city.value,
-                            weight: sum,
-                            courier: "jne"
-                        };
+                        if (!responseCost.ok) throw new Error('Failed to fetch shipping cost');
 
-                        try {
-                            await fetch('http://localhost:8081/api-putra-jaya/delivery/cost-delivery', {
-                                method: "POST",
-                                body: JSON.stringify(objReq),
-                                headers: {
-                                    "Authorization": "Bearer " + token
-                                }
-                            })
-                            .then(result => {
-                                if (!result.ok) {
-                                    throw new Error('err');
-                                } else {
-                                    return result.json();
-                                }
-                            })
-                            .then(resData => {
-                                localStorage.setItem('shipping-cost', resData.data.rajaongkir.results[0].costs[0].cost[0].value);
-                                document.getElementById('cost-text').textContent = resData.data.rajaongkir.results[0].costs[0].cost[0].value;
-                            });
-                        } catch (err) {
-                            console.error('Error:', err);
-                        }
-                    });
+                        const resCostData = await responseCost.json();
+                        const shippingCost = resCostData.data.rajaongkir.results[0].costs[0].cost[0].value;
+                        localStorage.setItem('shipping-cost', shippingCost);
+                        document.getElementById('cost-text').textContent = shippingCost;
+
+                    } catch (err) {
+                        console.error('Error:', err);
+                    }
                 });
-            });
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to load cities');
+            }
         });
+
     } catch (error) {
-        alert('internal server error');
+        alert('Internal server error');
     }
 
     // Event listener for the Place Order button
     document.getElementById('place-order-btn').addEventListener('click', handleFormSubmit);
 });
+
