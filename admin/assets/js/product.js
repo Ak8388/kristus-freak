@@ -1,26 +1,26 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const fetchDataBtn = document.getElementById('fetchProduct');
     const addDataBtn = document.getElementById('addDataBtn');
     const urlParams = new URLSearchParams(window.location.search);
     const token = localStorage.getItem('token');
     const productId = urlParams.get('id');
-    const addProductForm = document.getElementById('addProductForm');
+    const addProductForm = document.getElementById('addRowButton');
     const editProductForm = document.getElementById('editProductForm');
-    
+
     fetchData()
     document.querySelectorAll('.edit-button').forEach(button => {
-            button.addEventListener('click', function() {
-                const productId = this.getAttribute('data-product-id');
-                editProduct(productId);
-            });
+        button.addEventListener('click', function () {
+            const productId = this.getAttribute('data-product-id');
+            editProduct(productId);
         });
+    });
 
     if (productId) {
         fetchProductData(productId);
-    } 
+    }
 
     if (fetchDataBtn) {
-        fetchDataBtn.addEventListener('click', async function(event) {
+        fetchDataBtn.addEventListener('click', async function (event) {
             event.preventDefault();
             fetchData();
             addDataBtn.style.display = 'inline'; // Menampilkan tombol "Add Data"
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (addDataBtn) {
-        addDataBtn.addEventListener('click', function() {
+        addDataBtn.addEventListener('click', function () {
             const addProductModal = new bootstrap.Modal(document.getElementById('addProductModal'), {
                 backdrop: 'static', // Mengatur backdrop
                 keyboard: false // Mengatur keyboard interaction
@@ -38,16 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (addProductForm) {
-        addProductForm.addEventListener('submit', async function(event) {
+        addProductForm.addEventListener('click', async function (event) {
             event.preventDefault();
 
-            const name = document.getElementById('InputNameProduct').value;
-            const idCategory = document.getElementById('InputIdCategory').value;
-            const price = document.getElementById('price').value;
-            const photos = document.getElementById('photos');
-            const stock = document.getElementById('stock').value;
-            const description = document.getElementById('description').value;
-            const weight = document.getElementById('weight').value;
+            const name = document.getElementById('addName').value;
+            const idCategory = document.getElementById('addCategory').value;
+            const price = document.getElementById('addPrice').value;
+            const photos = document.getElementById('addFoto');
+            const stock = document.getElementById('addStock').value;
+            const description = document.getElementById('addDeskripsi').value;
+            const weight = document.getElementById('addWeight').value;
 
             const formData = new FormData();
 
@@ -56,12 +56,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const objData = {
-                'id_category':parseInt(idCategory),
-                'name':name,
-                'price':parseInt(price),
-                'weight':parseInt(weight),
-                'stock':parseInt(stock),
-                'description':description,
+                'id_category': parseInt(idCategory),
+                'name': name,
+                'price': parseInt(price),
+                'weight': parseInt(weight),
+                'stock': parseInt(stock),
+                'description': description,
             }
 
             formData.append('json', JSON.stringify(objData));
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const response = await fetch('http://localhost:8081/api-putra-jaya/product/add', {
                     method: 'POST',
                     headers: {
-                        'Authorization': 'Bearer '+token
+                        'Authorization': 'Bearer ' + token
                     },
                     body: formData
                 });
@@ -95,9 +95,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     if (editProductForm) {
-        editProductForm.addEventListener('submit', async function(event) {
+        editProductForm.addEventListener('submit', async function (event) {
             event.preventDefault();
             const id = editProductForm.dataset.productId;
             const idcat = document.getElementById('EditInputIdCategory').value;
@@ -115,13 +115,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const objData = {
-                'id':parseInt(id),
-                'id_category':parseInt(idcat),
-                'name':name,
-                'price':parseInt(price),
-                'weight':parseInt(weight),
-                'stock':parseInt(stock),
-                'description':des,
+                'id': parseInt(id),
+                'id_category': parseInt(idcat),
+                'name': name,
+                'price': parseInt(price),
+                'weight': parseInt(weight),
+                'stock': parseInt(stock),
+                'description': des,
             }
 
             formData.append('json', JSON.stringify(objData));
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const response = await fetch(`http://localhost:8081/api-putra-jaya/product/update`, {
                     method: 'PUT',
                     headers: {
-                        'Authorization':"Bearer "+token
+                        'Authorization': "Bearer " + token
                     },
                     body: formData
                 });
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function fetchData() {
-    
+
     try {
         const response = await fetch('http://localhost:8081/api-putra-jaya/product/list'); // Ubah URL sesuai dengan endpoint Anda
         const data = await response.json();
@@ -176,7 +176,7 @@ async function fetchData() {
                     <td><img class="img-prod" src="../../server/${item.photos}"></td>
                     <td>${item.price}</td>
                     <td>${item.stock}</td>
-                    <td>${item.weight}</td>
+                    <td>${item.description}</td>
                     <td>${item.weight}</td>
                     <td>
                         <button class="btn btn-warning btn-sm" onclick="editProduct (${item.id})">Edit</button>
@@ -194,81 +194,102 @@ async function fetchData() {
 }
 
 
-    // Fungsi untuk memunculkan modal edit dengan data produk yang sesuai
-    window.editProduct = async function(id) {
-        try {
-            const response = await fetch(`http://localhost:8081/api-putra-jaya/product/${id}`);
-            const product = await response.json();
+// Fungsi untuk memunculkan modal edit dengan data produk yang sesuai
+window.editProduct = async function (id) {
+    try {
+        const response = await fetch(`http://localhost:8081/api-putra-jaya/product/${id}`);
+        const product = await response.json();
 
-            // Isi form modal edit dengan data produk
-            document.getElementById('EditInputIdCategory').value = product.data.id_category;
-            document.getElementById('EditInputNameProduct').value = product.data.name;
-            document.getElementById('EditInputPrice').value = product.data.price;
-            document.getElementById('EditInputStock').value = product.data.stock;
-            document.getElementById('EditInputWeight').value = product.data.weight;
-            document.getElementById('EditInputDescription').value = product.data.description;
+        // Isi form modal edit dengan data produk
+        document.getElementById('EditInputIdCategory').value = product.data.id_category;
+        document.getElementById('EditInputNameProduct').value = product.data.name;
+        document.getElementById('EditInputPrice').value = product.data.price;
+        document.getElementById('EditInputStock').value = product.data.stock;
+        document.getElementById('EditInputWeight').value = product.data.weight;
+        document.getElementById('EditInputDescription').value = product.data.description;
 
-            // Simpan ID produk di form untuk submit
-            const editProductForm = document.getElementById('editProductForm');
-            editProductForm.dataset.productId = id;
+        // Simpan ID produk di form untuk submit
+        const editProductForm = document.getElementById('editProductForm');
+        editProductForm.dataset.productId = id;
 
-            // Tampilkan modal edit
-            const editProductModal = new bootstrap.Modal(document.getElementById('editProductModal'), {
-                backdrop: 'static',
-                keyboard: false
-            });
-            editProductModal.show();
-        } catch (error) {
-            console.error('Error fetching product data:', error);
-        }
+        // Tampilkan modal edit
+        const editProductModal = new bootstrap.Modal(document.getElementById('editProductModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        editProductModal.show();
+    } catch (error) {
+        console.error('Error fetching product data:', error);
+    }
+}
+
+// Event listener untuk tombol Edit
+document.addEventListener('click', function (event) {
+    if (event.target.closest('.edit-button')) {
+        const productId = event.target.closest('.edit-button').getAttribute('data-product-id');
+        editProduct(productId); // Panggil fungsi editProduct dengan ID produk
+    }
+});
+
+// Fungsi untuk menyimpan perubahan produk setelah diedit
+document.getElementById('saveEditButton').addEventListener('click', async function () {
+    const editProductForm = document.getElementById('editProductForm');
+    const token = localStorage.getItem('token');
+    const id = editProductForm.dataset.productId;
+    const idcat = document.getElementById('EditInputIdCategory').value;
+    const name = document.getElementById('EditInputNameProduct').value;
+    const price = document.getElementById('EditInputPrice').value;
+    const stock = document.getElementById('EditInputStock').value;
+    const des = document.getElementById('EditInputDescription').value;
+    const weight = document.getElementById('EditInputWeight').value;
+    const photos = document.getElementById('EditInputIdFoto');
+
+    const formData = new FormData();
+
+    if (photos.files.length > 0) {
+        formData.append('photos', photos.files[0]);
     }
 
-    // Event listener untuk tombol Edit
-    document.addEventListener('click', function(event) {
-        if (event.target.closest('.edit-button')) {
-            const productId = event.target.closest('.edit-button').getAttribute('data-product-id');
-            editProduct(productId); // Panggil fungsi editProduct dengan ID produk
+    const objData = {
+        'id': parseInt(id),
+        'id_category': parseInt(idcat),
+        'name': name,
+        'price': parseInt(price),
+        'weight': parseInt(weight),
+        'stock': parseInt(stock),
+        'description': des,
+    }
+
+    formData.append('json', JSON.stringify(objData));
+
+    try {
+        const response = await fetch(`http://localhost:8081/api-putra-jaya/product/update`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': "Bearer " + token
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
-    });
 
-    // Fungsi untuk menyimpan perubahan produk setelah diedit
-    document.getElementById('saveEditButton').addEventListener('click', async function() {
-        const editProductForm = document.getElementById('editProductForm');
-        const productId = editProductForm.dataset.productId;
+        const result = await response.json();
+        console.log('Product edited successfully:', result)
+        alert('Product edited successfully!');
+        editProductForm.reset();
+        const editProductModal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
+        editProductModal.hide();
+        fetchData();
+    } catch (error) {
+        console.error('Error editing product:', error);
+        alert('Failed to edit product.');
+    }
+});
 
-        const updatedProduct = {
-            id_category: document.getElementById('EditInputIdCategory').value,
-            name: document.getElementById('EditInputNameProduct').value,
-            price: document.getElementById('EditInputPrice').value,
-            stock: document.getElementById('EditInputStock').value,
-            weight: document.getElementById('EditInputWeight').value,
-            description: document.getElementById('EditInputDescription').value
-        };
-
-        try {
-            const response = await fetch(`http://localhost:8081/api-putra-jaya/product/update/${productId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updatedProduct)
-            });
-
-            if (response.ok) {
-                alert('Product updated successfully!');
-                fetchData(); // Refresh data produk setelah update
-                const editProductModal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
-                editProductModal.hide(); // Tutup modal setelah berhasil
-            } else {
-                alert('Failed to update product.');
-            }
-        } catch (error) {
-            console.error('Error updating product:', error);
-        }
-    });
-
-    // Event listener untuk button delete
-document.addEventListener('click', function(event) {
+// Event listener untuk button delete
+document.addEventListener('click', function (event) {
     if (event.target && event.target.classList.contains('delete-button')) {
         const productId = event.target.getAttribute('data-product-id');
         showDeleteConfirmation(productId);
@@ -301,28 +322,28 @@ function deleteProduct(productId) {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(result => {
-        swal(
-            'Deleted!',
-            'Your product has been deleted.',
-            'success'
-        ).then(() => {
-            // Refresh data produk setelah berhasil menghapus
-            fetchData();
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(result => {
+            swal(
+                'Deleted!',
+                'Your product has been deleted.',
+                'success'
+            ).then(() => {
+                // Refresh data produk setelah berhasil menghapus
+                fetchData();
+            });
+        })
+        .catch(error => {
+            swal(
+                'Error!',
+                'Failed to delete product.',
+                'error'
+            );
+            console.error('Error deleting product:', error);
         });
-    })
-    .catch(error => {
-        swal(
-            'Error!',
-            'Failed to delete product.',
-            'error'
-        );
-        console.error('Error deleting product:', error);
-    });
 }
