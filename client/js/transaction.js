@@ -262,6 +262,11 @@ async function fetchData(status) {
                             tdAct.innerHTML=`
                             <a href='${link}' target='blank'><button class="btn btn-warning btn-sm" onclick="editDetail(${item.id})">Bayar</button></a>
                             <button class="btn btn-danger btn-sm" onclick="deleteDetail(${item.id})">Cancel</button>`
+                        }else if(item.status == 2){
+                            const tdAct = document.createElement('td');
+                            row.appendChild(tdAct);
+                            tdAct.innerHTML=`
+                            <a href="https://api.whatsapp.com/send?phone=6283130668561&text=Krse%20bisa%20rupanya%20kau%batalkan%20pesananku" target="_blank" style="position: fixed; right: 80px; bottom: 20px; z-index: 100;"><button class="btn btn-danger btn-sm" onclick="deleteDetail(${item.id})">Cancel</button></a>`
                         }
                         tableBody.appendChild(row);
                     }
@@ -297,13 +302,18 @@ async function fetchData(status) {
                     <td>${statusText}</td>
                     `;
 
-                    if(item.status==1){
+                    if(item.status == 1){
                         const link = localStorage.getItem('redirectUrl');
                         const tdAct = document.createElement('td');
                         row.appendChild(tdAct);
                         tdAct.innerHTML=`
                         <a href='${link}' target='blank'><button class="btn btn-warning btn-sm" onclick="editDetail(${item.id})">Bayar</button></a>
                         <button class="btn btn-danger btn-sm" onclick="deleteDetail(${item.id})">Cancel</button>`
+                    }else if(item.status == 2){
+                        const tdAct = document.createElement('td');
+                        row.appendChild(tdAct);
+                        tdAct.innerHTML=`
+                        <a href="https://api.whatsapp.com/send?phone=6283130668561&text=Krise bisa rupanya kau batalkan pesananku" target="_blank" style="position: fixed; right: 80px; bottom: 20px; z-index: 100;"><button class="btn btn-danger btn-sm" onclick="deleteDetail(${item.id})">Cancel</button></a>`
                     }
                     tableBody.appendChild(row);
                 }
