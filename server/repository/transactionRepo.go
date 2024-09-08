@@ -19,6 +19,8 @@ type TransactionRepo interface {
 	CreatePayment(model.Transaction) (model.ResponseCreatePayment, error)
 	TrackingTransaction(model.TrackingPaymentStatus) error
 	ValidateTransaction(userId float64) bool
+	ViewTransactionUser(userID float64, status string) ([]dto.TransDTO, error)
+	ViewTransactionOwner(status string) ([]dto.TransDTO, error)
 }
 
 type transactionRepo struct {
@@ -174,6 +176,70 @@ func (tr *transactionRepo) ValidateTransaction(userId float64) bool {
 	}
 
 	return true
+}
+
+func (tr *transactionRepo) ViewTransactionUser(userID float64, status string) (data []dto.TransDTO, err error) {
+	qry := "Select * from tb_transaksi Where id_user=$1 AND "
+	var cA, uA, dA any
+	var param []any
+	param = append(param, userID)
+
+	if status != "" {
+		param = append(param, status)
+		qry += "status_id=$2 "
+	}
+
+	qry += "deleted_at IS NULL ORDER BY created_at DESC"
+
+	row, err := tr.db.Query(qry, param...)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for row.Next() {
+		modelTrans := dto.TransDTO{}
+
+		err = row.Scan(&modelTrans.Id, &modelTrans.ItemDetails.Id, &modelTrans.CustomerDetail.Id, &modelTrans.DetailTrans.GrossAmount, &modelTrans.ItemDetails.TypeProduct, &modelTrans.ItemDetails.Qty, &modelTrans.CustomerDetail.PhoneNumber, &modelTrans.CustomerDetail.Name, &modelTrans.CustomerDetail.ShippingAddress, &modelTrans.CustomerDetail.PostCode, &modelTrans.ItemDetails.Note, &modelTrans.DetailTrans.OrderID, &modelTrans.Status, &cA, &uA, &dA)
+
+		if err != nil {
+			return nil, err
+		}
+		data = append(data, modelTrans)
+	}
+
+	return
+}
+
+func (tr *transactionRepo) ViewTransactionOwner(status string) (data []dto.TransDTO, err error) {
+	qry := "Select * from tb_transaksi Where deleted_at IS NULL ORDER BY created_at DESC"
+	row := &sql.Rows{}
+	var cA, uA, dA any
+
+	if status != "" {
+		qry = "Select * from tb_transaksi Where status_id=$2 AND deleted_at IS NULL ORDER BY created_at DESC"
+		row, err = tr.db.Query(qry, status)
+	} else {
+		row, err = tr.db.Query(qry)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	for row.Next() {
+		modelTrans := dto.TransDTO{}
+
+		err = row.Scan(&modelTrans.Id, &modelTrans.ItemDetails.Id, &modelTrans.CustomerDetail.Id, &modelTrans.DetailTrans.GrossAmount, &modelTrans.ItemDetails.TypeProduct, &modelTrans.ItemDetails.Qty, &modelTrans.CustomerDetail.PhoneNumber, &modelTrans.CustomerDetail.Name, &modelTrans.CustomerDetail.ShippingAddress, &modelTrans.CustomerDetail.PostCode, &modelTrans.ItemDetails.Note, &modelTrans.DetailTrans.OrderID, &modelTrans.Status, &cA, &uA, &dA)
+
+		if err != nil {
+			return nil, err
+		}
+
+		data = append(data, modelTrans)
+	}
+
+	return
 }
 
 func NewTransactionRepo(db *sql.DB) TransactionRepo {

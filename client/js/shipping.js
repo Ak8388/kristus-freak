@@ -82,7 +82,7 @@ async function handleFormSubmit(event) {
                 })
 
                 localStorage.setItem('cart', JSON.stringify(cartL));
-                localStorage.removeItem('cartFix');
+                localStorage.removeItem('cart');
                 localStorage.setItem('redirectUrl',data.data.redirect_url);
                 window.location.href = data.data.redirect_url;
             })

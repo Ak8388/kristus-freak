@@ -15,6 +15,7 @@ type ProdukRepo interface {
 	ListProduct() ([]model.Product, error)
 	UpdateProduct(model.Product) error
 	DeleteProduct(Id int) error
+	FindByIdUser(Id int) (model.Product, error)
 }
 
 type productRepo struct {
@@ -37,9 +38,18 @@ func (pr *productRepo) DeleteProduct(Id int) error {
 
 // FindById implements ProdukRepo.
 func (pr *productRepo) FindById(Id int) (resp model.Product, err error) {
-	query := "SELECT * FROM tb_produk WHERE id=$1"
+	query := "SELECT * FROM tb_produk WHERE id=$1 AND deleted_at IS NULL"
 	err = pr.db.QueryRow(query, Id).Scan(&resp.Id, &resp.IdCategory, &resp.Name, &resp.Price, &resp.Photos, &resp.Stock, &resp.Description, &resp.Weight, &resp.CreatedAt, &resp.UpdatedAt, &resp.DeletedAt)
 
+	return
+}
+
+func (pr *productRepo) FindByIdUser(Id int) (resp model.Product, err error) {
+	query := "SELECT * FROM tb_produk WHERE id=$1"
+	err = pr.db.QueryRow(query, Id).Scan(&resp.Id, &resp.IdCategory, &resp.Name, &resp.Price, &resp.Photos, &resp.Stock, &resp.Description, &resp.Weight, &resp.CreatedAt, &resp.UpdatedAt, &resp.DeletedAt)
+	if err == sql.ErrNoRows {
+		return model.Product{}, nil
+	}
 	return
 }
 

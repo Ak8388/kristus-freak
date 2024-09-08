@@ -70,12 +70,15 @@ func (cc *productController) findById(ctx *gin.Context) {
 	}
 
 	idInt, err := strconv.Atoi(id)
+
 	if err != nil {
+		fmt.Println(err.Error())
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid product ID"})
 	}
 
 	rest, err := cc.us.FindById(idInt)
 	if err != nil {
+		fmt.Println(err.Error())
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "OK", "data": rest})
@@ -147,9 +150,32 @@ func (cc *productController) updateProduct(ctx *gin.Context) {
 
 }
 
+func (cc *productController) findByIdUser(ctx *gin.Context) {
+	id := ctx.Param("id")
+	if id == "" {
+		ctx.JSON(http.StatusForbidden, gin.H{"message": "product not found"})
+		return
+	}
+
+	idInt, err := strconv.Atoi(id)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid product ID"})
+	}
+
+	rest, err := cc.us.FindByIdUser(idInt)
+	if err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "OK", "data": rest})
+}
+
 func (cc *productController) ProductRouter() {
 	r := cc.rg.Group("product")
 	r.GET("/:id", cc.findById)
+	r.GET("user-product/:id", cc.findByIdUser)
 	r.GET("/list", cc.listProduct)
 	r.POST("/add", cc.addProduct)
 	r.POST("/delete/:id", cc.deleteProduct)

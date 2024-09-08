@@ -5,6 +5,45 @@ document.addEventListener('DOMContentLoaded', function(){
     const urlParams = new URLSearchParams(window.location.search);
     const transactionlId = urlParams.get('id');
     const editTransactionForm = document.getElementById('editTransactionForm');
+    let status="";
+    const btnAll = document.getElementById('btn-all');
+    const btnPack = document.getElementById('btn-packing');
+    const btnUnpaid = document.getElementById('btn-unpaid');
+    const btnOnDel = document.getElementById('btn-on-del');
+    const btnCancel = document.getElementById('btn-cancel');
+    const btnFinish = document.getElementById('btn-finish');
+
+    btnAll.addEventListener('click',e=>{
+        status="";
+        fetchData(status);
+    })
+
+    btnPack.addEventListener('click',e=>{
+        status="2";
+        fetchData(status);
+    })
+
+    btnUnpaid.addEventListener('click',e=>{
+        status="1";
+        fetchData(status);
+    })    
+
+    btnOnDel.addEventListener('click',e=>{
+        status="4";
+        fetchData(status);
+    })
+
+    btnCancel.addEventListener('click',e=>{
+        status="5";
+        fetchData(status);
+    })
+
+    btnFinish.addEventListener('click',e=>{
+        status="3";
+        fetchData(status);
+    })
+
+    fetchData(status);
 
     document.querySelectorAll('.edit-button').forEach(button => {
         button.addEventListener('click', function(){
@@ -44,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function(){
             const StatusId = document.getElementById('InputStatusId')
 
             const token = localStorage.getItem('token');
-            console.log(token);
 
             if (!token) {
                 alert('akses dibatasi');
@@ -114,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function(){
                         produk_id:parseInt(produk_id,10),
                         id_user:parseInt(idUser,10),
                         amount:parseInt(Amount,10),
-                        type_product:type_product,
+                        type_product:TypeProduct,
                         qty:parseInt(qty,10),
                         address_shipping:AddressShipping,
                         note:Note,
@@ -171,61 +209,108 @@ function deleteTransaction(id){
     }
 }
 
-async function fetchData() {
+async function fetchData(status) {
+    const token = localStorage.getItem('token');
     try {
-        const response = await fetch('http://localhost:8081/api-putra-jaya/transaction/list'); // URL endpoint
+        const response = await fetch('http://localhost:8081/api-putra-jaya/transaction/transaction-user?status=',{headers:{"Authorization":'Bearer '+token}}); // URL endpoint
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
-        console.log(data);
-        const table = document.getElementById('table-transaction');
-         // Kosongkan tabel sebelumnya
-
-        const tableHead = document.createElement('thead');
-        tableHead.innerHTML = `
-            <tr>
-                <th>ID</th>
-                <th>ID Produk</th>
-                <th>ID User</th>
-                <th>Amount</th>
-                <th>Type Product</th>
-                <th>QTY</th>
-                <th>Address Shipping</th>
-                <th>Note</th>
-                <th>Order Id</th>
-                <th>Status Id </th>
-            </tr>
-        `;
-        table.innerHTML = '';
-        table.appendChild(tableHead);
-        const tableBody = document.createElement('tbody');
+        // Kosongkan tabel sebelumnya
+        const tableBody = document.getElementById('order-items');
         const items = data.data || []; // Mengakses array data dari respons
-
+        
         if (Array.isArray(items)) {
-            items.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.id}</td>
-                    <td>${item.produk_id}</td>
-                    <td>${item.id_user}</td>
-                    <td>${item.transactions_details.amount}</td>
-                    <td>${item.item_details.type_product}</td>
-                    <td>${item.item_details.qty}</td>
-                    <td>${item.customer_details.address_shipping}</td>
-                    <td>${item.item_details.note}</td>
-                    <td>${item.transactions_details.order_id}</td>
-                    <td>${item.status_id}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" onclick="editDetail(${item.id})">Edit</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteDetail(${item.id})">Delete</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
+            items.forEach(async item => {
+                tableBody.innerHTML='';
+                if(status != ""){
+                    if(item.status == status){
+                        const row = document.createElement('tr');
+                        const response2 = await fetch(`http://localhost:8081/api-putra-jaya/product/user-product/${item.itemDetails.id}`); // URL endpoint
+                        if (!response2.ok) throw new Error(`HTTP error! Status: ${response2.status}`);
+                        const data2 = await response2.json();
+                        console.log(data2);
+                        let statusText = "";
+    
+                        if(item.status == 1){
+                            statusText="Dibuat";
+                        }else if(item.status == 2){
+                            statusText="Sedang di kemas";
+                        }else if(item.status == 3){
+                            statusText="Selesai";
+                        }else if(item.status == 4){
+                            statusText="Dalam Pengiriman";
+                        }else if(item.status == 5){
+                            statusText="Di Batalkan";
+                        }else if(item.status == 6){
+                            statusText="Pembayaran kadaluarsa";
+                        }
+        
+                        row.innerHTML = `
+                            <td><img src="../server/${data2.data.photos}" class="prod-img"></td>
+                            <td>${data2.data.name}</td>
+                            <td>${data2.data.price}</td>
+                            <td>${item.itemDetails.quantity}</td>
+                            <td>${item.detailTransaction.gross_amount}</td>
+                            <td>${statusText}</td>
+                            <td>
+                            </td>
+                        `;
+                        if(item.status==1){
+                            const link = localStorage.getItem('redirectUrl');
+                            const tdAct = document.createElement('td');
+                            row.appendChild(tdAct);
+                            tdAct.innerHTML=`
+                            <a href='${link}' target='blank'><button class="btn btn-warning btn-sm" onclick="editDetail(${item.id})">Bayar</button></a>
+                            <button class="btn btn-danger btn-sm" onclick="deleteDetail(${item.id})">Cancel</button>`
+                        }
+                        tableBody.appendChild(row);
+                    }
+                }else{
+                    tableBody.innerHTML='';
+                    const row = document.createElement('tr');
+                    const response2 = await fetch(`http://localhost:8081/api-putra-jaya/product/user-product/${item.itemDetails.id}`); // URL endpoint
+                    if (!response2.ok) throw new Error(`HTTP error! Status: ${response2.status}`);
+                    const data2 = await response2.json();
+                    console.log(data2);
+                    let statusText = "";
+    
+                    if(item.status == 1){
+                        statusText="Dibuat";
+                    }else if(item.status == 2){
+                        statusText="Sedang di kemas";
+                    }else if(item.status == 3){
+                        statusText="Selesai";
+                    }else if(item.status == 4){
+                        statusText="Dalam Pengiriman";
+                    }else if(item.status == 5){
+                        statusText="Di Batalkan";
+                    }else if(item.status == 6){
+                        statusText="Pembayaran kadaluarsa";
+                    }
+        
+                    row.innerHTML = `
+                    <td><img src="../server/${data2.data.photos}" class="prod-img"></td>
+                    <td>${data2.data.name}</td>
+                    <td>${data2.data.price}</td>
+                    <td>${item.itemDetails.quantity}</td>
+                    <td>${item.detailTransaction.gross_amount}</td>
+                    <td>${statusText}</td>
+                    `;
+
+                    if(item.status==1){
+                        const link = localStorage.getItem('redirectUrl');
+                        const tdAct = document.createElement('td');
+                        row.appendChild(tdAct);
+                        tdAct.innerHTML=`
+                        <a href='${link}' target='blank'><button class="btn btn-warning btn-sm" onclick="editDetail(${item.id})">Bayar</button></a>
+                        <button class="btn btn-danger btn-sm" onclick="deleteDetail(${item.id})">Cancel</button>`
+                    }
+                    tableBody.appendChild(row);
+                }
             });
         } else {
             console.error('Items is not an array:', items);
         }
-
-        table.appendChild(tableBody);
     } catch (error) {
         console.error('Error fetching data:', error);
     }

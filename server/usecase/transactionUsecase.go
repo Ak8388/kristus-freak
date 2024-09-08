@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model"
+	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/model/dto"
 	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/repository"
 )
 
@@ -13,6 +14,8 @@ type TransactionUsecase interface {
 	CreatePayment(model.Transaction) (model.ResponseCreatePayment, error)
 	TrackingTransaction(model.TrackingPaymentStatus) error
 	ValidateTransaction(userId float64) bool
+	ViewTransactionUser(userID float64, status string) ([]dto.TransDTO, error)
+	ViewTransactionOwner(status string) ([]dto.TransDTO, error)
 }
 
 type transactionUsecase struct {
@@ -56,6 +59,14 @@ func (tu *transactionUsecase) TrackingTransaction(resp model.TrackingPaymentStat
 
 func (tu *transactionUsecase) ValidateTransaction(userId float64) bool {
 	return tu.rp.ValidateTransaction(userId)
+}
+
+func (tu *transactionUsecase) ViewTransactionUser(userID float64, status string) ([]dto.TransDTO, error) {
+	return tu.rp.ViewTransactionUser(userID, status)
+}
+
+func (tu *transactionUsecase) ViewTransactionOwner(status string) ([]dto.TransDTO, error) {
+	return tu.rp.ViewTransactionOwner(status)
 }
 
 func NewTransactionUsecase(rp repository.TransactionRepo) TransactionUsecase {

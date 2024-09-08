@@ -83,11 +83,47 @@ func (cc *transactionController) validateTransaction(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
+func (cc *transactionController) viewTransactionUser(ctx *gin.Context) {
+	status := ctx.Query("status")
+	id, exist := ctx.Get("Id")
+
+	if !exist {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed get id"})
+		return
+	}
+
+	res, err := cc.uc.ViewTransactionUser(id.(float64), status)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "ok", "data": res})
+}
+
+func (cc *transactionController) viewTransactionOwner(ctx *gin.Context) {
+	status := ctx.Query("status")
+
+	res, err := cc.uc.ViewTransactionOwner(status)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "ok", "data": res})
+}
+
 func (cc *transactionController) TransactionRouter() {
 	r := cc.rg.Group("transaction")
 	r.POST("/add", cc.am.JwtVerified("OWNER", "CUSTOMER"), cc.createPayment)
 	r.POST("/tracking", cc.trackingTransaction)
 	r.POST("/valid", cc.am.JwtVerified("CUSTOMER"), cc.validateTransaction)
+	r.GET("transaction-user", cc.am.JwtVerified("CUSTOMER"), cc.viewTransactionUser)
+	r.GET("transaction-owner", cc.am.JwtVerified("OWNER"), cc.viewTransactionOwner)
 }
 
 func NewTransactionController(am middleware.AuthMiddleware, uc usecase.TransactionUsecase, rg *gin.RouterGroup) *transactionController {

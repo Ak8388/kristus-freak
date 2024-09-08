@@ -16,6 +16,7 @@ type ProductUsecase interface {
 	ListProduct() ([]model.Product, error)
 	UpdateProduct(model.Product) error
 	DeleteProduct(Id int) error
+	FindByIdUser(Id int) (model.Product, error)
 }
 
 type productUsecase struct {
@@ -117,6 +118,10 @@ func (pu *productUsecase) UpdateProduct(prod model.Product) error {
 	}
 
 	return err
+}
+
+func (pu *productUsecase) FindByIdUser(Id int) (model.Product, error) {
+	return pu.rp.FindByIdUser(Id)
 }
 
 func NewProductUsecase(rp repository.ProdukRepo) ProductUsecase {
