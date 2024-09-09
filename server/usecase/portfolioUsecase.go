@@ -23,7 +23,7 @@ type portfolioUsecase struct {
 // AddPortfolio implements PortfolioUsecase.
 func (pu *portfolioUsecase) Add(resp model.Portfolio) error {
 
-	now:= time.Now()
+	now := time.Now()
 	if resp.CreatedAt == nil {
 		resp.CreatedAt = &now
 	}
@@ -50,8 +50,8 @@ func (pu *portfolioUsecase) Delete(Id int) error {
 }
 
 // FindById implements PortfolioUsecase.
-func (pu *portfolioUsecase) FindById(Id int) ( resp model.Portfolio, err error) {
-	resp, err = pu.FindById(Id)
+func (pu *portfolioUsecase) FindById(Id int) (resp model.Portfolio, err error) {
+	resp, err = pu.p.FindById(Id)
 	if resp.Id == 0 {
 		return model.Portfolio{}, errors.New("product is not found")
 	}
@@ -66,7 +66,7 @@ func (pu *portfolioUsecase) FindById(Id int) ( resp model.Portfolio, err error) 
 // List implements PortfolioUsecase.
 func (pu *portfolioUsecase) List() (resp []model.Portfolio, err error) {
 	resp, err = pu.p.List()
-	if len(resp) == 0{
+	if len(resp) == 0 {
 		return []model.Portfolio{}, errors.New("nothing data created")
 	}
 
@@ -93,7 +93,7 @@ func (pu *portfolioUsecase) Update(Id int, ProjectName string, ProjectDescriptio
 	}
 
 	err = pu.p.Update(Id, ProjectName, ProjectDescription, ProjectImage, ProjectDate)
-	if err != nil{
+	if err != nil {
 		return err
 	}
 
