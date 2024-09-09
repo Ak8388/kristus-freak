@@ -21,6 +21,7 @@ type TransactionRepo interface {
 	ValidateTransaction(userId float64) bool
 	ViewTransactionUser(userID float64, status string) ([]dto.TransDTO, error)
 	ViewTransactionOwner(status string) ([]dto.TransDTO, error)
+	CancelPaymentUser(orderId string) error
 }
 
 type transactionRepo struct {
@@ -209,6 +210,68 @@ func (tr *transactionRepo) ViewTransactionUser(userID float64, status string) (d
 	}
 
 	return
+}
+
+func (tr *transactionRepo) CancelPaymentUser(orderId string) error {
+	client := http.Client{}
+	var status int
+	tx, err := tr.db.Begin()
+
+	qry1 := "Select status_id from tb_transaksi Where order_id=$1"
+	qry2 := "Update tb_transaksi Set status_id=$1 where order_id=$2"
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.QueryRow(qry1, orderId).Scan(&status)
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if status != 1 {
+		tx.Rollback()
+		return errors.New("payment not valid")
+	}
+
+	url := fmt.Sprintf("https://api.sandbox.midtrans.com/v2/%s/cancel", orderId)
+
+	request, errReq := http.NewRequest("POST", url, nil)
+
+	if errReq != nil {
+		tx.Rollback()
+		return errReq
+	}
+
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Accept", "application/json")
+	request.SetBasicAuth(os.Getenv("SERVER_KEY"), "")
+
+	res, errRes := client.Do(request)
+
+	if errRes != nil {
+		tx.Rollback()
+		return errRes
+	}
+
+	if res.StatusCode != 200 {
+		tx.Rollback()
+		return errors.New("failed cancel payment")
+	}
+
+	_, err = tx.Exec(qry2, 5, orderId)
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+
+	return nil
 }
 
 func (tr *transactionRepo) ViewTransactionOwner(status string) (data []dto.TransDTO, err error) {

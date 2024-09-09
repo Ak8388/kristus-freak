@@ -117,11 +117,34 @@ func (cc *transactionController) viewTransactionOwner(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "ok", "data": res})
 }
 
+func (cc *transactionController) cancelPaymentUser(ctx *gin.Context) {
+	var Request struct {
+		OrderID string `json:"orderId"`
+	}
+
+	if err := ctx.ShouldBindJSON(&Request); err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := cc.uc.CancelPaymentUser(Request.OrderID)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
+}
+
 func (cc *transactionController) TransactionRouter() {
 	r := cc.rg.Group("transaction")
 	r.POST("/add", cc.am.JwtVerified("OWNER", "CUSTOMER"), cc.createPayment)
 	r.POST("/tracking", cc.trackingTransaction)
 	r.POST("/valid", cc.am.JwtVerified("CUSTOMER"), cc.validateTransaction)
+	r.PUT("/cancel", cc.am.JwtVerified("CUSTOMER", "OWNER"), cc.cancelPaymentUser)
 	r.GET("transaction-user", cc.am.JwtVerified("CUSTOMER"), cc.viewTransactionUser)
 	r.GET("transaction-owner", cc.am.JwtVerified("OWNER"), cc.viewTransactionOwner)
 }
