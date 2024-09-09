@@ -13,6 +13,7 @@ type RepoManager interface {
 	ServiceRepo() repository.ServiceRepo
 	DelivRepo() repository.DeliveryRepo
 	PortfolioRepo() repository.PortfolioRepo
+	BlogRepo() repository.BlogRepo
 }
 
 type repoManager struct {
@@ -67,6 +68,11 @@ func (repo *repoManager) UserRepo() repository.UserRepo {
 // Delivery Repo
 func (repo *repoManager) DelivRepo() repository.DeliveryRepo {
 	return repository.NewDeliveryCostRepo(repo.infra.Connection())
+}
+
+// Blog Repo
+func (repo *repoManager) BlogRepo() repository.BlogRepo {
+	return repository.NewBlogRepo(repo.infra.Connection())
 }
 
 func NewRepoManager(infra Inframanager) RepoManager {
