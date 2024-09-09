@@ -1,9 +1,3 @@
-/*
-* Template Name: UntreeStore
-* Template Author: Untree.co
-* Author URI: https://untree.co/
-* License: https://creativecommons.org/licenses/by/3.0/
-*/
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 body {
   overflow-x: hidden;
@@ -761,4 +755,98 @@ textarea {
         flex: 1 1 100%; /* Pada layar kecil, elemen akan mengambil 100% dari lebar */
         max-width: 100%;
     }
+}
+
+
+/* Container modal */
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);  /* Latar belakang semi-transparan */
+  display: none;  /* Sembunyikan modal secara default */
+  justify-content: center;  /* Pusatkan modal secara horizontal */
+  align-items: flex-start; /* Tempatkan modal di sisi atas */
+  padding-top: 10%; /* Jarak dari atas halaman, bisa disesuaikan */
+  padding-left: 5%; /* Jarak dari kiri halaman, bisa disesuaikan */
+  z-index: 1000;  /* Modal di atas elemen lain */
+}
+
+/* Konten modal */
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;  /* Lebar modal bisa disesuaikan */
+  max-width: 600px;  /* Lebar maksimal modal */
+  display: flex;  /* Gunakan flexbox untuk layout */
+  flex-direction: row; /* Susun elemen secara horizontal */
+  align-items: center;  /* Pusatkan elemen secara vertikal */
+}
+
+/* Detail produk di samping gambar */
+.modal-details {
+  padding-left: 20px; /* Sesuaikan padding pada ukuran perangkat yang lebih kecil */
+  display: flex;
+  flex-direction: column;  /* Tata elemen secara vertikal */
+  justify-content: center; /* Pusatkan elemen secara vertikal */
+  flex: 1;  /* Memungkinkan div ini untuk mengambil ruang yang tersisa */
+}
+
+/* Gambar dalam modal */
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  flex-shrink: 0; /* Jangan biarkan gambar menyusut lebih kecil dari ukurannya */
+}
+
+/* Tombol Add Cart */
+#add-cart-button {
+  background-color: black;
+  color: aliceblue;
+  border-radius: 20px;
+  margin: 20px 0;
+  padding: 10px 20px;
+  width: 100%;  /* Tombol memenuhi lebar container */
+  border: none;
+  cursor: pointer;
+}
+
+#add-cart-button:hover {
+  background-color: #333; /* Efek hover untuk tombol */
+}
+
+/* Media Queries untuk perangkat dengan layar lebih kecil */
+@media (max-width: 768px) {
+  .modal-content {
+      flex-direction: column; /* Ubah orientasi untuk layar kecil */
+      width: 95%; /* Lebar modal lebih lebar di layar kecil */
+  }
+
+  .modal-details {
+      padding-left: 0; /* Hapus padding di layar kecil */
+      padding-top: 20px; /* Tambah jarak atas di layar kecil */
+  }
+
+  #add-cart-button {
+      margin: 10px 0; /* Sesuaikan margin pada tombol di layar kecil */
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+      width: 100%; /* Modal memenuhi lebar layar pada perangkat sangat kecil */
+      padding: 10px; /* Kurangi padding di layar sangat kecil */
+  }
+
+  .modal-details {
+      padding-top: 10px; /* Kurangi jarak atas di layar sangat kecil */
+  }
+
+  #add-cart-button {
+      padding: 8px 15px; /* Sesuaikan padding tombol di layar sangat kecil */
+  }
 }
