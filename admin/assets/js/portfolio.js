@@ -223,6 +223,7 @@ window.removeData = async function(id){
         }
     
         const data = await response.json();
+        fetchData()
         alert('success delete data');
     }catch(error){
         alert(error);

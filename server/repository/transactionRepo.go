@@ -22,6 +22,8 @@ type TransactionRepo interface {
 	ViewTransactionUser(userID float64, status string) ([]dto.TransDTO, error)
 	ViewTransactionOwner(status string) ([]dto.TransDTO, error)
 	CancelPaymentUser(orderId string) error
+	UpdateStatus(orderId string, newStatusID int) error
+	DeleteTransaction(orderId string) error
 }
 
 type transactionRepo struct {
@@ -232,7 +234,7 @@ func (tr *transactionRepo) CancelPaymentUser(orderId string) error {
 		return err
 	}
 
-	if status != 1 {
+	if status != 1 && status != 2 {
 		tx.Rollback()
 		return errors.New("payment not valid")
 	}
@@ -301,6 +303,20 @@ func (tr *transactionRepo) ViewTransactionOwner(status string) (data []dto.Trans
 
 		data = append(data, modelTrans)
 	}
+
+	return
+}
+
+func (tr *transactionRepo) UpdateStatus(orderId string, newStatusID int) (err error) {
+	qry := "Update tb_transaksi Set status_id=$1,updated_at=$2 Where order_id=$3"
+	_, err = tr.db.Exec(qry, newStatusID, time.Now(), orderId)
+
+	return
+}
+
+func (tr *transactionRepo) DeleteTransaction(orderId string) (err error) {
+	qry := "Update tb_transaksi Set updated_at=$1 Where order_id=$2"
+	_, err = tr.db.Exec(qry, time.Now(), orderId)
 
 	return
 }

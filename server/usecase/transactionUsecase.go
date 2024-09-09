@@ -17,6 +17,8 @@ type TransactionUsecase interface {
 	ViewTransactionUser(userID float64, status string) ([]dto.TransDTO, error)
 	ViewTransactionOwner(status string) ([]dto.TransDTO, error)
 	CancelPaymentUser(orderId string) error
+	UpdateStatus(orderId string, newStatusID int) error
+	DeleteTransaction(orderId string) error
 }
 
 type transactionUsecase struct {
@@ -72,6 +74,14 @@ func (tu *transactionUsecase) ViewTransactionOwner(status string) ([]dto.TransDT
 
 func (tu *transactionUsecase) CancelPaymentUser(orderId string) error {
 	return tu.rp.CancelPaymentUser(orderId)
+}
+
+func (tu *transactionUsecase) UpdateStatus(orderId string, newStatusID int) error {
+	return tu.rp.UpdateStatus(orderId, newStatusID)
+}
+
+func (tu *transactionUsecase) DeleteTransaction(orderId string) error {
+	return tu.rp.DeleteTransaction(orderId)
 }
 
 func NewTransactionUsecase(rp repository.TransactionRepo) TransactionUsecase {

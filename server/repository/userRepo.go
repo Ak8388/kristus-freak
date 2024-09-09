@@ -65,7 +65,7 @@ func (ur *userRepo) UpdateProfile(name, email string, id int) error {
 }
 
 func (ur *userRepo) FindUserByEmail(email string) (user model.User, err error) {
-	qry := "Select id, email, name from tb_user where email=$1"
+	qry := "Select id, email, name from tb_user where email=$1 And deleted_at IS NULL"
 
 	err = ur.db.QueryRow(qry, email).Scan(&user.Id, &user.Email, &user.Name)
 
