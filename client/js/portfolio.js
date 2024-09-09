@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <td>${item.project_name}</td>
                         <td>${item.project_description}</td>
                         <td>${item.project_date}</td>
-                        <td><img src="${item.project_image}" alt="${item.project_name}" width="50" /></td>
+                        <td><img class="img-prod" src="../../server/${item.project_image}" alt="${item.project_name}" width="100" /></td>
                         <td>
                         <div class="form-button-action">
                             <button type="button" class="btn btn-link btn-primary btn-lg edit-button" data-product-id="${item.id}" title="Edit Task">
