@@ -200,3 +200,7 @@ document.addEventListener('DOMContentLoaded', async e => {
     document.getElementById('place-order-btn').addEventListener('click', handleFormSubmit);
 });
 
+
+
+
+// !!!! //

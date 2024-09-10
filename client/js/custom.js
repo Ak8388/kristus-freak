@@ -106,3 +106,49 @@ document.addEventListener('DOMContentLoaded', () => {
 		
 	}
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+	setTimeout(function () {
+		document.getElementById('coupon-popup').style.display = 'flex';
+	}, 2000); // Show after 2 seconds
+});
+
+document.getElementById('close-popup').addEventListener('click', function () {
+	document.getElementById('coupon-popup').style.display = 'none';
+});
+
+document.getElementById('apply-coupon').addEventListener('click', function () {
+	alert('Coupon WELCOME10 applied!');
+	document.getElementById('coupon-popup').style.display = 'none';
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+    const availableCoupons = [
+        {code : 'PUTRAJAYA10', discount:50, limit:10},
+        {code : 'PJLAS0', discount:35, limit:10},
+    ];
+
+    function applyCoupon(code) {
+        const coupon = availableCoupons.find(coupon => coupon.code === code);
+
+        if (coupon) {
+            if (coupon.limit > 0){
+                coupon.limit -= 1;
+                alert(`Kupon berhasil diterapkan ! Diskon ${coupon.discount}% diterapkan`);
+            }else {
+                alert('Maaf, kupon ini telah mencapai batas penggunaan.');
+            }
+        }else {
+            alert('Kode kupon tidak valid!');
+        }
+    }
+
+    document.getElementById('button-addon2').addEventListener('click', function() {
+        const couponCode = document.getElementById('c_code').value.trim();
+        if (couponCode) {
+            applyCoupon(couponCode); 
+        } else {
+            alert('Silakan masukkan kode kupon.');
+        }
+    });
+});
