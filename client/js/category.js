@@ -161,10 +161,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (categoryButtons) {
                 categoryButtons.innerHTML = ''; // Kosongkan tombol sebelum memasukkan data baru
                 items.forEach(item => {
-                    const button = document.createElement('button');
-                    button.innerHTML = `<a href="#">${item.name}</a>`;
+                    console.log(item);
                     // button.classList.add('btn', 'btn-category');
-                    categoryButtons.appendChild(button);
+                    categoryButtons.insertAdjacentHTML('beforeend', `
+                        <button onclick="category(${item.id})">
+                            <a href="#">${item.name}</a>
+                        </button>
+                    `);
                 });
             }
         } catch (error) {
