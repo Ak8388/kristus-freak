@@ -1,6 +1,79 @@
 document.addEventListener('DOMContentLoaded',async e=>{
+    fetchData()
+})
+
+window.deleteProduct = async function (id) {
+    const token = localStorage.getItem('token');
+    try{
+        const response = await fetch(`http://localhost:8081/api-putra-jaya/transaction`,{method:"DELETE",headers:{"Authorization":"Bearer "+token},body:JSON.stringify({'orderId':id})});
+    
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    
+        const data = await response.json();
+        fetchData()
+        alert('success delete data');
+    }catch(error){
+        alert(error);
+    }
+}
+
+window.statusKirim = async function(id){
+    const token = localStorage.getItem('token');
+    try{
+        const response = await fetch(`http://localhost:8081/api-putra-jaya/transaction/status`,{method:"PUT",headers:{"Authorization":"Bearer "+token},body:JSON.stringify({'orderId':id,'stId':parseInt(4)})});
+    
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    
+        const data = await response.json();
+        fetchData()
+        alert('success update status');
+    }catch(error){
+        alert(error);
+    }
+}
+
+window.cancelTransaction = async function(id){
+    const token = localStorage.getItem('token');
+    try{
+        const response = await fetch(`http://localhost:8081/api-putra-jaya/transaction/cancel`,{method:"PUT",headers:{"Authorization":"Bearer "+token},body:JSON.stringify({'orderId':id})});
+    
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    
+        const data = await response.json();
+        fetchData()
+        alert('success delete data');
+    }catch(error){
+        alert(error);
+    }
+}
+
+window.statusFinish = async function(id){
+    const token = localStorage.getItem('token');
+    try{
+        const response = await fetch(`http://localhost:8081/api-putra-jaya/transaction/status`,{method:"PUT",headers:{"Authorization":"Bearer "+token},body:JSON.stringify({'orderId':id,'stId':parseInt(3)})});
+    
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    
+        const data = await response.json();
+        fetchData()
+        alert('success delete data');
+    }catch(error){
+        alert(error);
+    }
+}
+
+async function fetchData(){
     const token = localStorage.getItem('token');
     const tbody = document.getElementById('tbody');
+    tbody.innerHTML=''
     await fetch('http://localhost:8081/api-putra-jaya/transaction/transaction-owner?status=',{headers:{"Authorization":"Bearer "+token}})
     .then(res=>{
         if(!res.ok){
@@ -11,7 +84,8 @@ document.addEventListener('DOMContentLoaded',async e=>{
     .then(resData=>{
         resData.data.map(data=>{
             let statusText = "";
-
+            console.log(data);
+            
             if(data.status == 1){
                 statusText="Dibuat";
             }else if(data.status == 2){
@@ -41,11 +115,23 @@ document.addEventListener('DOMContentLoaded',async e=>{
                 <td>${data.customerDetail.postCode}</td>
                 <td>${data.itemDetails.note}</td>
                 <td>${statusText}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm" onclick="editProduct(${data.id})">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteProduct(${data.id})">Delete</button>
-                </td>
             `
+            const tdAct = document.createElement('td');
+            if(data.status == 1 || data.status == 2){
+                tdAct.innerHTML=`
+                    <button class="btn btn-success btn-sm" onclick="statusKirim('${data.detailTransaction.order_id}')">Kirim</button>
+                    <button class="btn btn-danger btn-sm" onclick="cancelTransaction('${data.detailTransaction.order_id}')">Cancel</button>
+                `
+            }else if(data.status == 3 || data.status == 5 || data.status == 6){
+                tdAct.innerHTML=`
+                    <button class="btn btn-danger btn-sm" onclick="deleteProduct('${data.detailTransaction.order_id}')">Hapus</button>
+                `
+            }else if(data.status == 4){
+                tdAct.innerHTML=`
+                    <button class="btn btn-info btn-sm" onclick="statusFinish('${data.detailTransaction.order_id}')">Selesai</button>
+                `
+            }
+            trow.appendChild(tdAct);
             tbody.appendChild(trow);
         })
         
@@ -60,8 +146,4 @@ document.addEventListener('DOMContentLoaded',async e=>{
             editProduct(productId);
         });
     });
-})
-
-window.editProduct = async function (id) {
-
 }

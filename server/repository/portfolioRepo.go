@@ -24,7 +24,7 @@ type portfolioRepo struct {
 // AddPortfolio implements PortfolioRepo.
 func (p *portfolioRepo) AddPortfolio(resp model.Portfolio) error {
 	query := "INSERT INTO portfolio (service_id, project_name,project_description,project_image,project_date,created_at) VALUES ($1,$2,$3,$4,$5,$6)"
-	_, err := p.db.Exec(query, resp.IdService, resp.ProjectName, resp.ProjectDescription, resp.ProjectImage, resp.ProjectDate,resp.CreatedAt)
+	_, err := p.db.Exec(query, resp.IdService, resp.ProjectName, resp.ProjectDescription, resp.ProjectImage, resp.ProjectDate, resp.CreatedAt)
 	return err
 }
 
@@ -38,23 +38,23 @@ func (p *portfolioRepo) Delete(Id int) error {
 // FindById implements PortfolioRepo.
 func (p *portfolioRepo) FindById(Id int) (resp model.Portfolio, err error) {
 	query := "SELECT * FROM portfolio WHERE id=$1"
-	err = p.db.QueryRow(query, Id).Scan(&resp.Id, &resp.IdService,&resp.ProjectName, &resp.ProjectDescription, &resp.ProjectImage, &resp.ProjectDate, &resp.CreatedAt, &resp.UpdatedAt, &resp.DeletedAt)
+	err = p.db.QueryRow(query, Id).Scan(&resp.Id, &resp.IdService, &resp.ProjectName, &resp.ProjectDescription, &resp.ProjectImage, &resp.ProjectDate, &resp.CreatedAt, &resp.UpdatedAt, &resp.DeletedAt)
 
 	return
 }
 
 // List implements PortfolioRepo.
 func (p *portfolioRepo) List() (resp []model.Portfolio, err error) {
-	query := "SELECT id,service_id,project_name,project_description,project_image,project_date,created_at,updated_at,deleted_at FROM portfolio"
+	query := "SELECT id,service_id,project_name,project_description,project_image,project_date,created_at,updated_at,deleted_at FROM portfolio WHERE deleted_at IS NULL"
 
 	rows, err := p.db.Query(query)
-	if err !=nil {
+	if err != nil {
 		return nil, fmt.Errorf("error querying the database : %v", err)
-		
+
 	}
 	defer rows.Close()
 
-	for rows.Next(){
+	for rows.Next() {
 		var detail model.Portfolio
 		err := rows.Scan(
 			&detail.Id,
@@ -66,21 +66,20 @@ func (p *portfolioRepo) List() (resp []model.Portfolio, err error) {
 			&detail.CreatedAt,
 			&detail.UpdatedAt,
 			&detail.DeletedAt,
-
 		)
 		if err != nil {
-			return nil,fmt.Errorf("error scanning row : %v", err)
+			return nil, fmt.Errorf("error scanning row : %v", err)
 		}
 		resp = append(resp, detail)
 	}
-	if err = rows.Err(); err!= nil {
-		return nil, fmt.Errorf("Error after iterating rows:%v", err)		
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("Error after iterating rows:%v", err)
 	}
 
 	if len(resp) == 0 {
 		emptyResponse := map[string]interface{}{
-			"message":"nothing data created",
-			"data":[]model.Portfolio{},
+			"message": "nothing data created",
+			"data":    []model.Portfolio{},
 		}
 		emptyResponseJSON, _ := json.Marshal(emptyResponse)
 		fmt.Println(string(emptyResponseJSON))

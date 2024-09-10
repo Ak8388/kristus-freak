@@ -139,6 +139,50 @@ func (cc *transactionController) cancelPaymentUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
+func (cc *transactionController) updateStatus(ctx *gin.Context) {
+	var Request struct {
+		OrderId     string `json:"orderId"`
+		NewStatusID int    `json:"stId"`
+	}
+
+	if err := ctx.ShouldBindJSON(&Request); err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := cc.uc.UpdateStatus(Request.OrderId, Request.NewStatusID)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
+}
+
+func (cc *transactionController) deleteTransaction(ctx *gin.Context) {
+	var Request struct {
+		OrderId string `json:"orderId"`
+	}
+
+	if err := ctx.ShouldBindJSON(&Request); err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := cc.uc.DeleteTransaction(Request.OrderId)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
+}
+
 func (cc *transactionController) TransactionRouter() {
 	r := cc.rg.Group("transaction")
 	r.POST("/add", cc.am.JwtVerified("OWNER", "CUSTOMER"), cc.createPayment)
@@ -147,6 +191,8 @@ func (cc *transactionController) TransactionRouter() {
 	r.PUT("/cancel", cc.am.JwtVerified("CUSTOMER", "OWNER"), cc.cancelPaymentUser)
 	r.GET("transaction-user", cc.am.JwtVerified("CUSTOMER"), cc.viewTransactionUser)
 	r.GET("transaction-owner", cc.am.JwtVerified("OWNER"), cc.viewTransactionOwner)
+	r.PUT("status", cc.am.JwtVerified("OWNER", "CUSTOMER"), cc.updateStatus)
+	r.DELETE("", cc.am.JwtVerified("OWNER"), cc.deleteTransaction)
 }
 
 func NewTransactionController(am middleware.AuthMiddleware, uc usecase.TransactionUsecase, rg *gin.RouterGroup) *transactionController {

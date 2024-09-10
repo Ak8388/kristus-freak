@@ -78,7 +78,7 @@ function logout() {
     localStorage.removeItem('token');
     
     // Redirect ke halaman login atau home
-    window.location.href = '/login';
+    window.location.href = './login.html';
 }
 
 // Jika Anda ingin memastikan bahwa Bootstrap JS di-load dan dropdown berfungsi
@@ -87,4 +87,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
         return new bootstrap.Dropdown(dropdownToggleEl);
     });
+
+	const token = localStorage.getItem('token');
+	if(token != undefined && token != ""){
+		document.getElementById('log-btn').style.display='none';
+		document.getElementById('historyOrder').addEventListener('click',e=>{
+			location.href='./history.html';
+		});
+	}else if(token == undefined || token==""){
+		document.getElementById('logout-btn').style.display='none';
+		document.getElementById('myAccount').addEventListener('click',e=>{
+			location.href='./login.html';
+		});
+
+		document.getElementById('historyOrder').addEventListener('click',e=>{
+			location.href='./login.html';
+		});
+		
+	}
 });
