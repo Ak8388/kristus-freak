@@ -65,7 +65,7 @@ async function setNewPassword() {
                 .then(resData => {
                         message.style.color = '#28a745';
                         message.textContent = 'Password successfully set!';
-                        location.href = '../html/login.html';
+                        location.href = '../login.html';
                     })
             } catch (error) {
                 console.error('Error:', error);
