@@ -96,14 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 	}else if(token == undefined || token==""){
 		document.getElementById('logout-btn').style.display='none';
-		document.getElementById('myAccount').addEventListener('click',e=>{
-			location.href='./login.html';
-		});
 
 		document.getElementById('historyOrder').addEventListener('click',e=>{
 			location.href='./login.html';
 		});
-		
 	}
 });
 
