@@ -23,7 +23,7 @@ async function fetchData(){
                     <td>${item.content}</td>
                     <td><img class="img-prod" src="../../server/${item.image_url}"></td>
                     <td>${item.author}</td>
-                    <td>${item.status}</td>
+                    <td>${item.id_status}</td>
                     <td>
                     <div class="form-button-action">
                             <button type="button" class="btn btn-link btn-primary btn-lg edit-button" onclick="editProduct(${item.id})" title="Edit Task">

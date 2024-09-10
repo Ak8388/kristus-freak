@@ -15,12 +15,6 @@
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 		<link href="css/tiny-slider.css" rel="stylesheet">
 		<link href="css/style.css" rel="stylesheet">
-		<style>
-			.prod-img{
-				width: 100px;
-				height: 100px;
-			}
-		</style>
 		<title>Putra Jaya Official Website - History </title>
 	</head>
 
@@ -46,10 +40,15 @@
 						<li><a class="nav-link" href="services.html">Services</a></li>
 						<li><a class="nav-link" href="blog.html">Blog</a></li>
 						<li><a class="nav-link" href="contact.html">Contact us</a></li>
-					</ul>
-
-					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-						<li><a class="nav-link" href="#"><img src="images/user.svg"></a></li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><img src="images/user.svg"></a>
+							<ul id="userAccount" class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" href="login.html">Login</a></li>
+								<li><a class="dropdown-item" href="history.html">Riwayat Pesanan</a></li>
+								<li><hr class="dropdown-divider" /></li>
+								<li><a class="dropdown-item" onclick="logout()">Logout</a></li>
+							</ul>
+						</li>
 						<li><a class="nav-link" href="cart.html"><img src="images/cart.svg"></a></li>
 					</ul>
 				</div>
@@ -76,6 +75,9 @@
 		<!-- End Hero Section -->
         <div class="col-md-12">
             <div class="p-3 p-lg-5 border bg-white">
+				<div class="col-md-12 text-right border-bottom mb-5">
+					<h3 class="text-black h4 text-uppercase">Detail Riwayat Pemesanan</h3>
+				</div>
                 <div class="row">
 					<div class="d-flex">
 						<button id="btn-all">Semua</button>
@@ -85,11 +87,8 @@
 						<button id="btn-cancel">Dibatalkan</button>
 						<button id="btn-finish">Selesai</button>
 					</div>
-                    <div class="col-md-12 text-right border-bottom mb-5">
-                        <h3 class="text-black h4 text-uppercase">Detail Riwayat Pemesanan</h3>
-                    </div>
                 </div>
-                <div class="row mb-3">
+                <!-- <div class="row mb-3">
                     <div class="col-md-6">
                         <span class="text-black">No. Pesanan : </span>
                     </div>
@@ -136,7 +135,7 @@
                     <div class="col-md-6 text-right">
                         <strong id="customer-address" class="text-black">-</strong>
                     </div>
-                </div>
+                </div> -->
         
                 <div class="row mb-5">
                     <div class="col-md-12">
@@ -162,7 +161,7 @@
                 </div>
 			
                 <!-- Subtotal, Total, and Payment Method Section -->
-                <div class="row mb-3 justify-content-end">
+                <!-- <div class="row mb-3 justify-content-end">
                     <div class="col-md-6">
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -189,7 +188,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
 

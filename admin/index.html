@@ -91,16 +91,6 @@
                 <div class="collapse" id="tables">
                   <ul class="nav nav-collapse">
                     <li>
-                      <a href="tables/tables.html">
-                        <span class="sub-item">Basic Table</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="tables/datatables.html">
-                        <span class="sub-item">Datatables</span>
-                      </a>
-                    </li>
-                    <li>
                       <a href="tables/data-category.html">
                         <span class="sub-item">Data Kategori</span>
                       </a>
@@ -317,8 +307,8 @@
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Customer</p>
-                          <h4 class="card-title">0</h4>
+                          <p>Customer</p>
+                          <h4 id="customer-sum"></h4>
                         </div>
                       </div>
                     </div>
@@ -338,8 +328,8 @@
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Product</p>
-                          <h4 class="card-title">0</h4>
+                          <p>Product</p>
+                          <h4 id="product-sum"></h4>
                         </div>
                       </div>
                     </div>
@@ -359,8 +349,8 @@
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Transaction</p>
-                          <h4 class="card-title">0</h4>
+                          <p>Transaction</p>
+                          <h4 id="transaction-sum"></h4>
                         </div>
                       </div>
                     </div>
@@ -380,8 +370,8 @@
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Order</p>
-                          <h4 class="card-title">0</h4>
+                          <p>Service</p>
+                          <h4 id="service-sum"></h4>
                         </div>
                       </div>
                     </div>
@@ -401,14 +391,15 @@
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Service</p>
-                          <h4 class="card-title">0</h4>
+                          <p>Project</p>
+                          <h4 id="project-sum"></h4>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+
               <div class="col-sm-6 col-md-3">
                 <div class="card card-stats card-round">
                   <div class="card-body">
@@ -422,14 +413,15 @@
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Project</p>
-                          <h4 class="card-title">0</h4>
+                          <p>Category</p>
+                          <h4 id="category-sum">0</h4>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+
 
             </div>
             <div class="row">
@@ -439,50 +431,23 @@
                     <div class="card-head-row card-tools-still-right">
                       <div class="card-title">Customer</div>
                       <div class="card-tools">
-                        <div class="dropdown">
-                          <button
-                            class="btn btn-icon btn-clean me-0"
-                            type="button"
-                            id="dropdownMenuButton"
-                            data-bs-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                          >
-                            <i class="fas fa-ellipsis-h"></i>
-                          </button>
-                          <div
-                            class="dropdown-menu"
-                            aria-labelledby="dropdownMenuButton"
-                          >
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#"
-                              >Something else here</a
-                            >
-                          </div>
-                        </div>
                       </div>
                     </div>
                     <div class="card-list py-4">
                       <div class="item-list">
-                        <div class="avatar">
-                          <img
-                            src="assets/img/jm_denis.jpg"
-                            alt="..."
-                            class="avatar-img rounded-circle"
-                          />
-                        </div>
-                        <div class="info-user ms-3">
-                          <div class="username">Jimmy Denis</div>
-                          <div class="status">Graphic Designer</div>
-                        </div>
-                        <button class="btn btn-icon btn-link op-8 me-1">
-                          <i class="far fa-envelope"></i>
-                        </button>
-                        <button class="btn btn-icon btn-link btn-danger op-8">
-                          <i class="fas fa-ban"></i>
-                        </button>
-                      </div>
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody id="info-user">
+                                <!-- Data pengguna akan diisi di sini -->
+                            </tbody>
+                        </table>
+                    </div>
                     </div>
                   </div>
                 </div>
@@ -784,5 +749,6 @@
     <!-- Kaiadmin DEMO methods, don't include it in your project! -->
     <script src="assets/js/setting-demo.js"></script>
     <script src="assets/js/demo.js"></script>
+    <script src="../client/js/customer.js"></script>
   </body>
 </html>

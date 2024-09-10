@@ -31,7 +31,7 @@ func (sr *serverRequirement) SetUpServer() {
 	controller.NewServiceController(am, sr.usecasemanager.ServiceManager(), rg).ServiceRouter()
 	controller.NewDeliveryController(am, rg, sr.usecasemanager.DeliveryUsecaseManager()).DeliveryRouter()
 	controller.NewPortfolioController(am, sr.usecasemanager.PortfolioManager(), rg).PortfolioRouter()
-	controller.NewBlogController(am, sr.usecasemanager.UsecaseBlog(), rg)
+	controller.NewBlogController(am, sr.usecasemanager.UsecaseBlog(), rg).BlogRouter()
 }
 
 func (sr *serverRequirement) Run() {

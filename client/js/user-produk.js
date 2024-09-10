@@ -139,6 +139,7 @@ function viewProductDetail(productId) {
         // Isi data modal dengan detail produk
         document.getElementById('modal-image').src = "../server/" + product.data.photos; // Asumsi produk punya properti 'image'
         document.getElementById('modal-name').textContent = product.data.name; // Asumsi produk punya properti 'name'
+        document.getElementById('modal-price').textContent = formatIDR (product.data.price); // Asumsi produk punya properti 'name'
         document.getElementById('modal-description').textContent = product.data.description; // Asumsi produk punya properti 'description'
 
         // Tampilkan modal

@@ -75,27 +75,72 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Fungsi untuk mengambil data kategori dan menampilkannya di tabel
+    // async function fetchData() {
+    //     try {
+    //         const response = await fetch('http://localhost:8081/api-putra-jaya/category/list');
+    //         const data = await response.json();
+    //         const table = document.getElementById('table-category');
+    //         table.innerHTML = ''; 
+    //         // Kosongkan tabel sebelum memasukkan data baru
+
+    //         const tableHead = document.createElement('thead');
+    //         tableHead.innerHTML = `
+    //             <tr>
+    //                 <th>ID</th>
+    //                 <th>Name</th>
+    //                 <th>Aksi</th>
+    //             </tr>
+    //         `;
+    //         table.appendChild(tableHead);
+
+    //         const tableBody = document.createElement('tbody');
+    //         const items = data.data || [];
+
+    //         if (Array.isArray(items)) {
+    //             items.forEach(item => {
+    //                 const row = document.createElement('tr');
+    //                 row.innerHTML = `
+    //                     <td>${item.id}</td>
+    //                     <td>${item.name}</td>
+    //                     <td>
+    //                         <button class="btn btn-warning btn-sm" onclick="editCategory(${item.id})">Edit</button>
+    //                         <button class="btn btn-danger btn-sm" onclick="deleteCategory(${item.id})">Delete</button>
+    //                     </td>
+    //                 `;
+    //                 tableBody.appendChild(row);
+    //             });
+    //         }
+
+    //         table.appendChild(tableBody);
+
+    //     } catch (error) {
+    //         console.error('Error fetching data:', error);
+    //     }
+    // }
+
+
     async function fetchData() {
         try {
             const response = await fetch('http://localhost:8081/api-putra-jaya/category/list');
             const data = await response.json();
-            const table = document.getElementById('table-category');
-            table.innerHTML = ''; // Kosongkan tabel sebelum memasukkan data baru
-
-            const tableHead = document.createElement('thead');
-            tableHead.innerHTML = `
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Aksi</th>
-                </tr>
-            `;
-            table.appendChild(tableHead);
-
-            const tableBody = document.createElement('tbody');
             const items = data.data || [];
-
-            if (Array.isArray(items)) {
+    
+            // Jika elemen tabel ada, tampilkan tabel kategori
+            const table = document.getElementById('table-category');
+            if (table) {
+                table.innerHTML = ''; // Kosongkan tabel sebelum memasukkan data baru
+    
+                const tableHead = document.createElement('thead');
+                tableHead.innerHTML = `
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Aksi</th>
+                    </tr>
+                `;
+                table.appendChild(tableHead);
+    
+                const tableBody = document.createElement('tbody');
                 items.forEach(item => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -108,14 +153,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     `;
                     tableBody.appendChild(row);
                 });
+                table.appendChild(tableBody);
             }
-
-            table.appendChild(tableBody);
+    
+            // Jika elemen tombol kategori ada, tampilkan tombol di sidebar
+            const categoryButtons = document.getElementById('category-buttons');
+            if (categoryButtons) {
+                categoryButtons.innerHTML = ''; // Kosongkan tombol sebelum memasukkan data baru
+                items.forEach(item => {
+                    const button = document.createElement('button');
+                    button.innerHTML = `<a href="#">${item.name}</a>`;
+                    // button.classList.add('btn', 'btn-category');
+                    categoryButtons.appendChild(button);
+                });
+            }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     }
-
+    
+    // Panggil fetchData saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', fetchData);
+    
     // Fungsi untuk mengedit kategori
     window.editCategory = async function(id) {
         try {

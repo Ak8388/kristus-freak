@@ -760,63 +760,57 @@ textarea {
 
 /* Container modal */
 .modal-container {
+  display: none; /* Modal disembunyikan secara default */
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);  /* Latar belakang semi-transparan */
-  display: none;  /* Sembunyikan modal secara default */
-  justify-content: center;  /* Pusatkan modal secara horizontal */
-  align-items: flex-start; /* Tempatkan modal di sisi atas */
-  padding-top: 10%; /* Jarak dari atas halaman, bisa disesuaikan */
-  padding-left: 5%; /* Jarak dari kiri halaman, bisa disesuaikan */
-  z-index: 1000;  /* Modal di atas elemen lain */
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
-/* Konten modal */
 .modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;  /* Lebar modal bisa disesuaikan */
-  max-width: 600px;  /* Lebar maksimal modal */
-  display: flex;  /* Gunakan flexbox untuk layout */
-  flex-direction: row; /* Susun elemen secara horizontal */
-  align-items: center;  /* Pusatkan elemen secara vertikal */
-}
-
-/* Detail produk di samping gambar */
-.modal-details {
-  padding-left: 20px; /* Sesuaikan padding pada ukuran perangkat yang lebih kecil */
   display: flex;
-  flex-direction: column;  /* Tata elemen secara vertikal */
-  justify-content: center; /* Pusatkan elemen secara vertikal */
-  flex: 1;  /* Memungkinkan div ini untuk mengambil ruang yang tersisa */
+  flex-wrap: wrap;
+  background-color: #fff;
+  padding: 20px;
+  width: 50%;
+  max-height: 90%;
+  overflow-y: auto; 
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
 }
 
-/* Gambar dalam modal */
-.img-fluid {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-  flex-shrink: 0; /* Jangan biarkan gambar menyusut lebih kecil dari ukurannya */
+.modal-content img {
+  width:300px;
+  max-width: 100%; 
+  height: auto; 
+  object-fit: cover; 
+  border-radius: 5px;
 }
 
-/* Tombol Add Cart */
+.modal-details {
+  flex: 1; 
+  margin-left: 20px;
+}
+
+
 #add-cart-button {
-  background-color: black;
-  color: aliceblue;
-  border-radius: 20px;
-  margin: 20px 0;
+  width: 100%;
+  margin-top: 20px;
   padding: 10px 20px;
-  width: 100%;  /* Tombol memenuhi lebar container */
+  background-color: black;
+  color: white;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
 
 #add-cart-button:hover {
-  background-color: #333; /* Efek hover untuk tombol */
+  background-color: #0056b3;
 }
 
 /* Media Queries untuk perangkat dengan layar lebih kecil */
@@ -849,4 +843,112 @@ textarea {
   #add-cart-button {
       padding: 8px 15px; /* Sesuaikan padding tombol di layar sangat kecil */
   }
+}
+
+
+.container-flex {
+  display: flex;
+  width: 100%;
+}
+
+.side {
+  flex: 1;
+  max-height: 400px; /* Batasi tinggi maksimal */
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+  padding-right: 15px;
+}
+
+.container {
+  flex: 3;
+  padding-left: 15px;
+}
+
+.blog-item {
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.blog-item img {
+  width: 100px; /* Ukuran cover */
+  margin-right: 10px;
+}
+
+.blog-item-title {
+  font-weight: bold;
+}
+
+.blog-item:hover {
+  background-color: #f0f0f0; /* Highlight saat di-hover */
+}
+
+
+.untree_co-section {
+  display: flex;
+  justify-content: space-between; /* Atur jarak antara product-list dan side */
+  align-items: flex-start; /* Membuat mereka sejajar di bagian atas */
+  gap: 20px; /* Beri jarak antar kolom */
+}
+
+.product-list {
+  flex: 3; /* Bagian product-list mengambil 3/4 dari lebar keseluruhan */
+  background-color: #f9f9f9;
+  padding: 20px;
+  min-height: 300px; /* Beri tinggi minimum */
+}
+
+.side-category {
+  flex: 1; /* Bagian kategori mengambil 1/4 dari lebar keseluruhan */
+  background-color: #f2f2f2;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Jarak antara tombol kategori */
+}
+
+.side-category button {
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+}
+
+.side-category hr {
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid #ccc;
+}
+
+.prod-img{
+  width: 100px;
+  height: 100px;
+}
+
+/* Agar tombol memenuhi ruang div dengan ukuran yang sama */
+.d-flex {
+display: flex;
+justify-content: space-between; /* Atur tombol agar jaraknya seimbang */
+}
+
+.d-flex button {
+flex: 1; /* Membuat setiap tombol memiliki lebar yang sama */
+margin: 5px;
+padding: 10px;
+font-size: 16px;
+border: none;
+background-color: #f0f0f0; /* Warna default tombol */
+cursor: pointer;
+transition: background-color 0.3s ease; /* Efek transisi saat berubah warna */
+}
+
+/* Warna tombol saat diklik */
+.d-flex button.active {
+background-color: black;
+color: white;
+}
+
+/* Warna tombol saat di-hover */
+.d-flex button:hover {
+background-color: #cce0ff;
 }

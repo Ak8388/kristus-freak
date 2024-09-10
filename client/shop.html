@@ -44,12 +44,19 @@
 						<li><a class="nav-link" href="services.html">Services</a></li>
 						<li><a class="nav-link" href="blog.html">Blog</a></li>
 						<li><a class="nav-link" href="contact.html">Contact us</a></li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><img src="images/user.svg"></a>
+							<ul id="userAccount" class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" href="login.html">Login</a></li>
+								<li><a class="dropdown-item" href="history.html">Riwayat Pesanan</a></li>
+								<li><hr class="dropdown-divider" /></li>
+								<li><a class="dropdown-item" onclick="logout()">Logout</a></li>
+							</ul>
+						</li>
 					</ul>
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-						<li><a class="nav-link" href="#"><img src="images/user.svg"></a></li>
-						<!-- <li><a class="nav-link" href="cart.html"><img src="images/cart.svg"></a></li> -->
-						<div class="cart">
+ 						<div class="cart">
 							<a href="cart.html">
 								<i class="bi bi-cart4">
 									<span id="cart-count">0</span>
@@ -80,13 +87,19 @@
 		<!-- End Hero Section -->
 
 		<div class="untree_co-section product-section before-footer-section">
-		    <div class="container">
-		      	<div class="row">
+			<div class="container">
+				<div class="row">
 					<h1>Product List</h1>
-					<div class="product-list"></div>
-		      	</div>
-		    </div>
+					<div class="product-list"></div> <!-- Daftar produk akan muncul di sini -->
+				</div>
+			</div>
+			<div class="side-category">
+				<h5>Kategori</h5><hr>
+				<div id="category-buttons"><a href=""></a></div>
+				
+			</div>
 		</div>
+		
 
 
 		<!-- Modal Structure -->
@@ -94,7 +107,9 @@
 			<div class="modal-content">
 				<img id="modal-image" src="" alt="Product Image" class="img-fluid">
 				<div class="modal-details">
-					<h3><a href="#"><span id="modal-name">Product Name</span></a></h3>
+					<h3><span id="modal-name">Product Name</span></h3>
+					<h4><span id="modal-price">Product Price</span></h4>
+					<p>Deskripsi</p><hr>
 					<p id="modal-description">Product description here...</p>
 					<button id="add-cart-button">Add Cart</button>
 				</div>
@@ -212,6 +227,7 @@
 		<script src="js/tiny-slider.js"></script>
 		<script src="js/custom.js"></script>
 		<script src="js/user-produk.js"></script>
+		<script src="js/category.js"></script>
 	</body>
 
 </html>

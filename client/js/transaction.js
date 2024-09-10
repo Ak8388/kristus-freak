@@ -405,3 +405,11 @@ async function fetchTransaction(id) {
 
     }
 }
+const buttons = document.querySelectorAll('.d-flex button');
+// Fungsi untuk mereset warna tombol dan menambahkan class active pada tombol yang diklik
+buttons.forEach(button => {
+    button.addEventListener('click', function() {
+        buttons.forEach(btn => btn.classList.remove('active')); 
+        this.classList.add('active');
+    });
+});
