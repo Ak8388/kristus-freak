@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
+    
+    const token = localStorage.getItem('token');
+	if(token != undefined && token != ""){
+		document.getElementById('log-btn').style.display='none';
+		document.getElementById('historyOrder').addEventListener('click',e=>{
+			location.href='./history.html';
+		});
+	}else if(token == undefined || token==""){
+		document.getElementById('logout-btn').style.display='none';
+
+		document.getElementById('historyOrder').addEventListener('click',e=>{
+			location.href='./login.html';
+		});
+	}
+
     const addTransaction = document.getElementById('addTransaction');
     const showDataBtn = document.getElementById('showDataBtn');
     const addTransactionForm = document.getElementById('addTransactionForm');
