@@ -154,20 +154,19 @@ document.getElementById('apply').addEventListener('click', async e => {
         } else {
             let indek = 0;
             cartNew.map(e => {
-            
                 // Pastikan price dan quantity adalah angka yang valid
                 const price = parseFloat(e.price) || 0; // Jika undefined, set ke 0
                 const quantity = parseInt(e.quantity) || 1; // Jika undefined, set ke 1
                 
-                console.log('Before discount:', price);
+                console.log('Before discount:', price*quantity);
             
-                const discount = (price * quantity) * (kupon.discount / 100);
-                
+                const discount = price * (kupon.discount / 100);
                 // Pastikan harga tidak negatif setelah diskon
-                e.price = Math.max(0, (price * quantity) - discount); // Harga minimal adalah 0
+                e.price = Math.max(0, price - discount); // Harga minimal adalah 0
             
                 console.log('After discount:', e.price);
             });
+            console.log('cartNew2',cartNew);
             
             localStorage.setItem('cartNew', JSON.stringify(cartNew));
             updateCartTotals(); // Update total keranjang
