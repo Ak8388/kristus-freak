@@ -125,6 +125,7 @@ function removeProductFromCart(productId) {
 
 document.getElementById('apply').addEventListener('click', async e => {
     const token = localStorage.getItem('token');
+    const kupon = JSON.parse(localStorage.getItem('kupon'));
     try {
         const response = await fetch('http://localhost:8081/api-putra-jaya/coupon', {
             method: "GET",
@@ -141,7 +142,11 @@ document.getElementById('apply').addEventListener('click', async e => {
         const data = await response.json();
 
         if (data.data != null) {
-            // Tindakan jika ada data kupon yang valid
+            data.data.map(res=>{
+                if(kupon.code == data.data.res){
+                    throw new Error('this coupon already used');
+                }
+            })
         } else {
             discountCheck();
         }
