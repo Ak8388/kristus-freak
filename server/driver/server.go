@@ -32,6 +32,7 @@ func (sr *serverRequirement) SetUpServer() {
 	controller.NewDeliveryController(am, rg, sr.usecasemanager.DeliveryUsecaseManager()).DeliveryRouter()
 	controller.NewPortfolioController(am, sr.usecasemanager.PortfolioManager(), rg).PortfolioRouter()
 	controller.NewBlogController(am, sr.usecasemanager.UsecaseBlog(), rg).BlogRouter()
+	controller.NewCoupenRouter(rg, am, sr.usecasemanager.UsecaseCoupon()).CoupenRouter()
 }
 
 func (sr *serverRequirement) Run() {

@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const kupon = JSON.parse(localStorage.getItem('kupon'));
+    document.getElementById('coupon').value = kupon.code;
     displayCartItems(); // Panggil fungsi untuk menampilkan item di cart
     updateCartTotals(); // Update subtotal dan total di halaman
 });
@@ -119,10 +121,70 @@ function removeProductFromCart(productId) {
     updateCartTotals(); // Update subtotal dan total
 }
 
+document.getElementById('apply').addEventListener('click', async e => {
+    const token = localStorage.getItem('token');
+    try {
+        localStorage.removeItem('cartNew');
+        const response = await fetch('http://localhost:8081/api-putra-jaya/coupon', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        const kupon = JSON.parse(localStorage.getItem('kupon'));
+        const cart = JSON.parse(localStorage.getItem('cart'));
+
+        // Deep copy cart untuk cartNew agar tidak mengubah cart asli
+        const cartNew = JSON.parse(JSON.stringify(cart)); // Deep copy
+        console.log('cart', cart); // cart tidak berubah
+        console.log('cartNew', cartNew); // Hanya cartNew yang berubah
+        console.log('Before discount:', e.price); // Cek nilai sebelum pengurangan diskon
+
+
+        
+        if (data.data != null) {
+            // Tindakan jika ada data kupon yang valid
+        } else {
+            let indek = 0;
+            cartNew.map(e => {
+            
+                // Pastikan price dan quantity adalah angka yang valid
+                const price = parseFloat(e.price) || 0; // Jika undefined, set ke 0
+                const quantity = parseInt(e.quantity) || 1; // Jika undefined, set ke 1
+                
+                console.log('Before discount:', price);
+            
+                const discount = (price * quantity) * (kupon.discount / 100);
+                
+                // Pastikan harga tidak negatif setelah diskon
+                e.price = Math.max(0, (price * quantity) - discount); // Harga minimal adalah 0
+            
+                console.log('After discount:', e.price);
+            });
+            
+            localStorage.setItem('cartNew', JSON.stringify(cartNew));
+            updateCartTotals(); // Update total keranjang
+        }
+
+    } catch (error) {
+        alert(error);
+    }
+});
+
+
 // Fungsi untuk update subtotal dan total
 function updateCartTotals() {
-
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let cart = JSON.parse(localStorage.getItem('cartNew')) || [];
+    if(cart.length<1){
+        cart = JSON.parse(localStorage.getItem('cart')) || [];
+    }
     const subtotalElem = document.getElementById('subtotal');
     const totalElem = document.getElementById('total');
 
