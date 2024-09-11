@@ -61,63 +61,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
             console.log('Category edited successfully:', result);
             alert('Category edited successfully!');
-            // Reset form setelah submit berhasil
+            
             editCategoryForm.reset();
-            // Tutup modal setelah submit berhasil
+            
             const editCategoryModal = bootstrap.Modal.getInstance(document.getElementById('editCategoryModal'));
             editCategoryModal.hide();
-            // Refresh data kategori
+            
             fetchData();
         } catch (error) {
             console.error('Error editing category:', error);
             alert('Failed to edit category.');
         }
     });
-
-    // Fungsi untuk mengambil data kategori dan menampilkannya di tabel
-    // async function fetchData() {
-    //     try {
-    //         const response = await fetch('http://localhost:8081/api-putra-jaya/category/list');
-    //         const data = await response.json();
-    //         const table = document.getElementById('table-category');
-    //         table.innerHTML = ''; 
-    //         // Kosongkan tabel sebelum memasukkan data baru
-
-    //         const tableHead = document.createElement('thead');
-    //         tableHead.innerHTML = `
-    //             <tr>
-    //                 <th>ID</th>
-    //                 <th>Name</th>
-    //                 <th>Aksi</th>
-    //             </tr>
-    //         `;
-    //         table.appendChild(tableHead);
-
-    //         const tableBody = document.createElement('tbody');
-    //         const items = data.data || [];
-
-    //         if (Array.isArray(items)) {
-    //             items.forEach(item => {
-    //                 const row = document.createElement('tr');
-    //                 row.innerHTML = `
-    //                     <td>${item.id}</td>
-    //                     <td>${item.name}</td>
-    //                     <td>
-    //                         <button class="btn btn-warning btn-sm" onclick="editCategory(${item.id})">Edit</button>
-    //                         <button class="btn btn-danger btn-sm" onclick="deleteCategory(${item.id})">Delete</button>
-    //                     </td>
-    //                 `;
-    //                 tableBody.appendChild(row);
-    //             });
-    //         }
-
-    //         table.appendChild(tableBody);
-
-    //     } catch (error) {
-    //         console.error('Error fetching data:', error);
-    //     }
-    // }
-
 
     async function fetchData() {
         try {
