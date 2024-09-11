@@ -525,6 +525,7 @@ function updateQuantity(productId, delta) {
         }
         localStorage.setItem('cart', JSON.stringify(cart));
         displayCartItems(); // Update tampilan
+        discountCheck();   
         updateCartTotals(); // Update subtotal dan total
     }
 }
@@ -534,14 +535,15 @@ function removeProductFromCart(productId) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     cart = cart.filter(item => item.id !== productId); // Hapus produk dari cart
     localStorage.setItem('cart', JSON.stringify(cart));
+    discountCheck();
     displayCartItems(); // Update tampilan
     updateCartTotals(); // Update subtotal dan total
 }
 
 document.getElementById('apply').addEventListener('click', async e => {
     const token = localStorage.getItem('token');
+    const kupon = JSON.parse(localStorage.getItem('kupon'));
     try {
-        localStorage.removeItem('cartNew'); // Hapus cartNew lama sebelum menghitung ulang
         const response = await fetch('http://localhost:8081/api-putra-jaya/coupon', {
             method: "GET",
             headers: {
@@ -555,29 +557,15 @@ document.getElementById('apply').addEventListener('click', async e => {
         }
 
         const data = await response.json();
-        const kupon = JSON.parse(localStorage.getItem('kupon')) || {}; // Ambil data kupon
-        const cart = JSON.parse(localStorage.getItem('cart')) || []; // Ambil cart asli
-        const cartNew = JSON.parse(JSON.stringify(cart)); // Deep copy
 
         if (data.data != null) {
-            // Tindakan jika ada data kupon yang valid
+            data.data.map(res=>{
+                if(kupon.code == data.data.res){
+                    throw new Error('this coupon already used');
+                }
+            })
         } else {
-            cartNew.forEach(item => {
-                // Pastikan price dan quantity adalah angka yang valid
-                const price = parseFloat(item.price) || 0;
-                const quantity = parseInt(item.quantity) || 1;
-
-                // Perhitungan diskon
-                const discount = (price * quantity) * (kupon.discount / 100);
-                const totalPriceAfterDiscount = Math.max(0, (price * quantity) - discount);
-
-                // Update harga per item di cartNew dengan harga total yang sudah didiskon
-                item.price = totalPriceAfterDiscount / quantity;
-            });
-
-            // Simpan cartNew yang sudah diperbarui dengan harga setelah diskon
-            localStorage.setItem('cartNew', JSON.stringify(cartNew));
-            updateCartTotals(); // Update total keranjang setelah diskon
+            discountCheck();
         }
 
     } catch (error) {
@@ -585,29 +573,40 @@ document.getElementById('apply').addEventListener('click', async e => {
     }
 });
 
-document.getElementById('remove-coupon').addEventListener('click', function() {
-    localStorage.removeItem('kupon'); // Hapus kupon dari localStorage
-    localStorage.removeItem('cartNew'); // Hapus cartNew untuk menghitung ulang
-    updateCartTotals(); // Update subtotal dan total tanpa diskon
-});
+function discountCheck(){
+    const kupon = JSON.parse(localStorage.getItem('kupon'));
+    const cart = JSON.parse(localStorage.getItem('cart'));
 
+    // Deep copy cart untuk cartNew agar tidak mengubah cart asli
+    const cartNew = JSON.parse(JSON.stringify(cart)); // Deep copy
+            
+    let discount = 0;
+    let index = 1;
+    cartNew.map(e => {
+        // Pastikan price dan quantity adalah angka yang valid
+        const price = parseFloat(e.price) || 0; // Jika undefined, set ke 0
+        const quantity = parseInt(e.quantity) || 1; // Jika undefined, set ke 1
+        
+        discount += (price * quantity) * (kupon.discount / 100);
+        localStorage.setItem(`discount${index}`,(price * quantity) * (kupon.discount / 100));
+        index++
+    });
+
+    localStorage.setItem('discountTotal',discount);
+    console.log(discount);
+    updateCartTotals(); // Update total keranjang
+}
+
+
+// Fungsi untuk update subtotal dan total
 function updateCartTotals() {
-    let cart = JSON.parse(localStorage.getItem('cartNew')) || [];
-    if (cart.length < 1) {
-        cart = JSON.parse(localStorage.getItem('cart')) || [];
-    }
-
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const diskon = localStorage.getItem('discountTotal');
     const subtotalElem = document.getElementById('subtotal');
     const totalElem = document.getElementById('total');
 
-    if (cart.length === 0) {
-        // Jika cart kosong, set subtotal dan total ke 0
-        subtotalElem.textContent = formatIDR(0); 
-        totalElem.textContent = formatIDR(0); 
-    } else {
-        // Menghitung subtotal dengan harga satuan yang sudah didiskon dan quantity
-        const subtotal = cart.reduce((acc, product) => acc + (product.price * product.quantity), 0);
-        const total = subtotal;
+    const subtotal = cart.reduce((acc,product) => acc + (product.price * product.quantity), 0);
+    const total = subtotal-parseFloat(diskon);
 
         // Update tampilan subtotal dan total
         subtotalElem.textContent = formatIDR(subtotal); // Menampilkan subtotal dalam format Rupiah

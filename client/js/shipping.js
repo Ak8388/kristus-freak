@@ -22,15 +22,17 @@ async function handleFormSubmit(event) {
         const address = document.getElementById('address').value;
         const phone = document.getElementById('phone').value;
         const postCode = document.getElementById('post-code').value;
+        const kupon = JSON.parse(localStorage.getItem('kupon'));
 
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let index = 1;
+        
         const sc = localStorage.getItem('shipping-cost');
         let totalAmount = cart.reduce((total, product) => total + (product.price * product.quantity), 0);
         totalAmount += parseInt(sc);
         const addressFix = document.getElementById('province').value + document.getElementById('city').value + address;
         const cartL = JSON.parse(localStorage.getItem('cart'));
         console.log("this cartL :", cartL);
-        console.log("this cartFix :", cart);
 
         const items = cart.map(product => ({
             'id': parseInt(product.id),
@@ -58,7 +60,7 @@ async function handleFormSubmit(event) {
             'shipping_address': addressFix,
             'postCode': postCode
         }
-
+        
         const transDetail = {
             'order_id': "",
             'gross_amount': totalAmount,
@@ -73,17 +75,30 @@ async function handleFormSubmit(event) {
         })
             .then(response => response.json())
             .then(async data => {
-                await cartL.map((data, index) => {
-                    cart.map(data2 => {
-                        if (data.id == data2.id) {
-                            cartL.splice(index, 1); // Hapus elemen di indeks tersebut
-                        }
-                    })
-                })
+                const response = await fetch('http://localhost:8081/api-putra-jaya/coupon', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body:JSON.stringify(kupon),
+                });
+        
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+        
+                const dat = await response.json();        
 
-                localStorage.setItem('cart', JSON.stringify(cartL));
+                index = 1;
+                cart.map(e => {
+                    localStorage.removeItem(`discount${index}`)
+                    index++
+                })
+                localStorage.removeItem('kupon');
+                localStorage.removeItem('discount');
                 localStorage.removeItem('cart');
-                localStorage.setItem('redirectUrl',data.data.redirect_url);
+                localStorage.setItem('redirectUrl', data.data.redirect_url);
                 window.location.href = data.data.redirect_url;
             })
             .catch(error => console.error('Error:', error));
@@ -95,7 +110,7 @@ async function handleFormSubmit(event) {
 
 document.addEventListener('DOMContentLoaded', async e => {
     const token = localStorage.getItem('token');
-    
+
     try {
         // Fetch provinces
         const responseProvince = await fetch('http://localhost:8081/api-putra-jaya/delivery/province', {
@@ -130,7 +145,7 @@ document.addEventListener('DOMContentLoaded', async e => {
                 });
 
                 if (!responseCity.ok) throw new Error('Failed to fetch cities');
-                
+
                 const resCityData = await responseCity.json();
                 const city = document.getElementById('city');
                 city.removeAttribute('disabled');

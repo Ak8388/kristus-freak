@@ -103,11 +103,40 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 });
 
-document.getElementById('apply-coupon').addEventListener('click', function () {
-	alert('Coupon WELCOME10 applied!');
+document.getElementById('apply-coupon').addEventListener('click', async function () {
 	const objCoup = JSON.parse(localStorage.getItem('objCoupon'));
-	localStorage.setItem('kupon', JSON.stringify(objCoup));
-	document.getElementById('coupon-popup').style.display = 'none';
+	try {
+		const response = await fetch('http://localhost:8081/api-putra-jaya/coupon', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+
+        if (data.data != null) {
+            data.data.map(res=>{
+                if(kupon.code == data.data.res){
+                    throw new Error('this coupon already used');
+                }
+            })
+        } else {
+			alert(`Coupon ${objCoup.code} applied!`);
+			localStorage.setItem('kupon', JSON.stringify(objCoup));
+			document.getElementById('coupon-popup').style.display = 'none';
+        }
+		alert(`Coupon ${objCoup.code} applied!`);
+		localStorage.setItem('kupon', JSON.stringify(objCoup));
+		document.getElementById('coupon-popup').style.display = 'none';
+    } catch (error) {
+        alert(error);
+    }
 });
 
 document.addEventListener('DOMContentLoaded', async function () {
