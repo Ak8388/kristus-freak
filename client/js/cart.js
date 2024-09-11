@@ -108,6 +108,7 @@ function updateQuantity(productId, delta) {
         }
         localStorage.setItem('cart', JSON.stringify(cart));
         displayCartItems(); // Update tampilan
+        discountCheck();   
         updateCartTotals(); // Update subtotal dan total
     }
 }
@@ -117,6 +118,7 @@ function removeProductFromCart(productId) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     cart = cart.filter(item => item.id !== productId); // Hapus produk dari cart
     localStorage.setItem('cart', JSON.stringify(cart));
+    discountCheck();
     displayCartItems(); // Update tampilan
     updateCartTotals(); // Update subtotal dan total
 }
@@ -124,7 +126,6 @@ function removeProductFromCart(productId) {
 document.getElementById('apply').addEventListener('click', async e => {
     const token = localStorage.getItem('token');
     try {
-        localStorage.removeItem('cartNew');
         const response = await fetch('http://localhost:8081/api-putra-jaya/coupon', {
             method: "GET",
             headers: {
@@ -138,38 +139,11 @@ document.getElementById('apply').addEventListener('click', async e => {
         }
 
         const data = await response.json();
-        const kupon = JSON.parse(localStorage.getItem('kupon'));
-        const cart = JSON.parse(localStorage.getItem('cart'));
 
-        // Deep copy cart untuk cartNew agar tidak mengubah cart asli
-        const cartNew = JSON.parse(JSON.stringify(cart)); // Deep copy
-        console.log('cart', cart); // cart tidak berubah
-        console.log('cartNew', cartNew); // Hanya cartNew yang berubah
-        console.log('Before discount:', e.price); // Cek nilai sebelum pengurangan diskon
-
-
-        
         if (data.data != null) {
             // Tindakan jika ada data kupon yang valid
         } else {
-            let indek = 0;
-            cartNew.map(e => {
-                // Pastikan price dan quantity adalah angka yang valid
-                const price = parseFloat(e.price) || 0; // Jika undefined, set ke 0
-                const quantity = parseInt(e.quantity) || 1; // Jika undefined, set ke 1
-                
-                console.log('Before discount:', price*quantity);
-            
-                const discount = price * (kupon.discount / 100);
-                // Pastikan harga tidak negatif setelah diskon
-                e.price = Math.max(0, price - discount); // Harga minimal adalah 0
-            
-                console.log('After discount:', e.price);
-            });
-            console.log('cartNew2',cartNew);
-            
-            localStorage.setItem('cartNew', JSON.stringify(cartNew));
-            updateCartTotals(); // Update total keranjang
+            discountCheck();
         }
 
     } catch (error) {
@@ -177,18 +151,40 @@ document.getElementById('apply').addEventListener('click', async e => {
     }
 });
 
+function discountCheck(){
+    const kupon = JSON.parse(localStorage.getItem('kupon'));
+    const cart = JSON.parse(localStorage.getItem('cart'));
+
+    // Deep copy cart untuk cartNew agar tidak mengubah cart asli
+    const cartNew = JSON.parse(JSON.stringify(cart)); // Deep copy
+            
+    let discount = 0;
+    let index = 1;
+    cartNew.map(e => {
+        // Pastikan price dan quantity adalah angka yang valid
+        const price = parseFloat(e.price) || 0; // Jika undefined, set ke 0
+        const quantity = parseInt(e.quantity) || 1; // Jika undefined, set ke 1
+        
+        discount += (price * quantity) * (kupon.discount / 100);
+        localStorage.setItem(`discount${index}`,(price * quantity) * (kupon.discount / 100));
+        index++
+    });
+
+    localStorage.setItem('discountTotal',discount);
+    console.log(discount);
+    updateCartTotals(); // Update total keranjang
+}
+
 
 // Fungsi untuk update subtotal dan total
 function updateCartTotals() {
-    let cart = JSON.parse(localStorage.getItem('cartNew')) || [];
-    if(cart.length<1){
-        cart = JSON.parse(localStorage.getItem('cart')) || [];
-    }
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const diskon = localStorage.getItem('discountTotal');
     const subtotalElem = document.getElementById('subtotal');
     const totalElem = document.getElementById('total');
 
     const subtotal = cart.reduce((acc,product) => acc + (product.price * product.quantity), 0);
-    const total = subtotal;
+    const total = subtotal-parseFloat(diskon);
 
     subtotalElem.textContent = formatIDR(subtotal);
     totalElem.textContent = formatIDR(total);

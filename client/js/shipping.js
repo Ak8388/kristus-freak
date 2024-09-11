@@ -24,6 +24,13 @@ async function handleFormSubmit(event) {
         const postCode = document.getElementById('post-code').value;
 
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let index=1;
+        cart.map(e=>{
+            const diskon = localStorage.getItem(`discount${index}`);
+            e.price -= diskon / e.quantity;
+            index++
+        })
+        
         const sc = localStorage.getItem('shipping-cost');
         let totalAmount = cart.reduce((total, product) => total + (product.price * product.quantity), 0);
         totalAmount += parseInt(sc);
@@ -82,6 +89,8 @@ async function handleFormSubmit(event) {
                 })
 
                 localStorage.setItem('cart', JSON.stringify(cartL));
+                localStorage.removeItem('kupon');
+                localStorage.removeItem('discount');
                 localStorage.removeItem('cart');
                 localStorage.setItem('redirectUrl',data.data.redirect_url);
                 window.location.href = data.data.redirect_url;
