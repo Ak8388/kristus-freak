@@ -22,8 +22,6 @@ type blogController struct {
 
 func (bg *blogController) add(ctx *gin.Context) {
 
-	var resp model.Blog
-
 	// Ambil file gambar dari form
 	_, header, err := ctx.Request.FormFile("image_url")
 	var fileLocation string
@@ -66,6 +64,7 @@ func (bg *blogController) add(ctx *gin.Context) {
 	if fileLocation != "" {
 		blogData.Cover = fileLocation
 	}
+	fmt.Println(blogData)
 
 	// Validasi data (misalnya title dan content tidak boleh kosong)
 	if blogData.Title == "" || blogData.Content == "" {
@@ -74,7 +73,7 @@ func (bg *blogController) add(ctx *gin.Context) {
 	}
 
 	// Gunakan BlogUseCase untuk menyimpan blog ke database
-	if err := bg.us.Add(resp); err != nil {
+	if err := bg.us.Add(blogData); err != nil {
 		fmt.Println("Error saving blog to database:", err.Error())
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to save blog to database"})
 		return
@@ -87,16 +86,16 @@ func (bg *blogController) add(ctx *gin.Context) {
 	})
 }
 
-func (bg *blogController) findById(ctx *gin.Context){
+func (bg *blogController) findById(ctx *gin.Context) {
 	id := ctx.Param("id")
-	if id == ""{
-		ctx.JSON(http.StatusForbidden, gin.H{"message" :"article not found"})
+	if id == "" {
+		ctx.JSON(http.StatusForbidden, gin.H{"message": "article not found"})
 		return
 	}
 
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message" :"invaid Id"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "invaid Id"})
 
 	}
 
@@ -105,45 +104,45 @@ func (bg *blogController) findById(ctx *gin.Context){
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 
 	}
-	ctx.JSON(http.StatusOK, gin.H{"message" : "OK", "data": rest})
+	ctx.JSON(http.StatusOK, gin.H{"message": "OK", "data": rest})
 }
-
 
 func (bg *blogController) list(ctx *gin.Context) {
 	rest, err := bg.us.List()
 	if err != nil {
+		fmt.Println(err.Error())
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message":"OK", "data":rest})
+	ctx.JSON(http.StatusOK, gin.H{"message": "OK", "data": rest})
 
 }
 
 func (bg *blogController) delete(ctx *gin.Context) {
-	id := ctx.Param ("id")
-	if id == ""{
-		ctx.JSON(http.StatusForbidden, gin.H{"message":"article not found"})
-		return 
+	id := ctx.Param("id")
+	if id == "" {
+		ctx.JSON(http.StatusForbidden, gin.H{"message": "article not found"})
+		return
 	}
 
 	idInt, _ := strconv.Atoi(id)
 	err := bg.us.Delete(idInt)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-		return 
+		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message" :"article deleted"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "article deleted"})
 }
 
-func (bg *blogController) update(ctx *gin.Context){
+func (bg *blogController) update(ctx *gin.Context) {
 	_, header, err := ctx.Request.FormFile("image_url")
 	var fileLocation string
 
 	if err != nil {
 		if err != http.ErrMissingFile {
 			fmt.Println(err.Error())
-			ctx.JSON(http.StatusBadRequest, gin.H{"error":"failed get data from form"})
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "failed get data from form"})
 			return
 		}
 	}
@@ -159,9 +158,12 @@ func (bg *blogController) update(ctx *gin.Context){
 
 	if err = json.Unmarshal([]byte(dataString), &dataJson); err != nil {
 		fmt.Println(err.Error())
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error":"failed unmarshal object json" + err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed unmarshal object json" + err.Error()})
 		return
 	}
+
+	fmt.Println(dataJson)
+	fmt.Println(fileLocation)
 
 	dataJson.Cover = fileLocation
 
@@ -170,22 +172,22 @@ func (bg *blogController) update(ctx *gin.Context){
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message":"success update article"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "success update article"})
 }
 
-func (bg *blogController) BlogRouter(){
+func (bg *blogController) BlogRouter() {
 	r := bg.rg.Group("blog")
 	r.GET("/:id", bg.findById)
 	r.GET("/list", bg.list)
-	r.POST("/add",bg.add)
-	r.POST("/delete/:id",bg.delete)
-	r.PUT("/update",bg.update)
+	r.POST("/add", bg.add)
+	r.POST("/delete/:id", bg.delete)
+	r.PUT("/update", bg.update)
 }
 
-func NewBlogController (am middleware.AuthMiddleware, us usecase.BlogUseCase, rg *gin.RouterGroup) *blogController {
-	return &blogController {
-		am :am,
-		us:us,
-		rg:rg,
+func NewBlogController(am middleware.AuthMiddleware, us usecase.BlogUseCase, rg *gin.RouterGroup) *blogController {
+	return &blogController{
+		am: am,
+		us: us,
+		rg: rg,
 	}
 }

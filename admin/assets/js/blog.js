@@ -57,10 +57,10 @@ async function fetchData(){
         console.log('Title:', title);
         console.log('Author:', author);
         console.log('Content:', content);
-        console.log('Image File:', imageInput.files[0]);
-
+        
         const formData = new FormData();
         if (imageInput.files.length > 0) {
+            console.log('Image File:', imageInput.files[0]);
             formData.append('image_url', imageInput.files[0]);
         }
         
@@ -69,6 +69,7 @@ async function fetchData(){
             content: content,
             author: author
         };
+
         formData.append('json', JSON.stringify(blogData));
 
         // Log FormData entries

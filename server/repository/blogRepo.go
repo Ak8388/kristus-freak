@@ -24,27 +24,27 @@ type blogRepo struct {
 // Add implements BlogRepo.
 func (b *blogRepo) Add(resp model.Blog) error {
 	query := "INSERT INTO article (title, content, author, image_url) VALUES ($1, $2, $3, $4)"
+	fmt.Println("Respository :", resp)
 	_, err := b.db.Exec(query, resp.Title, resp.Content, resp.Author, resp.Cover)
 	return err
 }
 
-
 // Delete implements BlogRepo.
 func (b *blogRepo) Delete(Id int) error {
 	query := "UPDATE article SET updated_at=$1,deleted_at=$2 WHERE id=$3"
-	_, err := b.db.Exec(query, time.Now(), time.Now(),Id)
+	_, err := b.db.Exec(query, time.Now(), time.Now(), Id)
 	return err
 }
 
 // FindById implements BlogRepo.
-func (b *blogRepo) FindById(Id int) (resp model.Blog, err error) {
+func (b *blogRepo) FindById(Id int) (blog model.Blog, err error) {
 	query := "SELECT * FROM article WHERE id = $1"
-	err = b.db.QueryRow(query, Id).Scan(&resp.Id, &resp.Title, &resp.Content, &resp.Author, &resp.Cover,&resp.CreatedAt, &resp.UpdatedAt, &resp.DeletedAt)
+	err = b.db.QueryRow(query, Id).Scan(&blog.Id, &blog.Title, &blog.Content, &blog.Author, &blog.UpdatedAt, &blog.Cover, &blog.CreatedAt, &blog.UpdatedAt, &blog.DeletedAt)
 	return
 }
 
 // List implements BlogRepo.
-func (b *blogRepo) List() (resp []model.Blog,err error) {
+func (b *blogRepo) List() (resp []model.Blog, err error) {
 	query := "SELECT * FROM article WHERE deleted_at IS NULL"
 	rows, err := b.db.Query(query)
 
@@ -54,10 +54,10 @@ func (b *blogRepo) List() (resp []model.Blog,err error) {
 
 	defer rows.Close()
 
-	for rows.Next(){
+	for rows.Next() {
 		var blog model.Blog
 
-		if err := rows.Scan(&blog.Id, &blog.Title, &blog.Content,&blog.Author, &blog.Cover, &blog.CreatedAt, &blog.UpdatedAt, &blog.DeletedAt); err != nil {
+		if err := rows.Scan(&blog.Id, &blog.Title, &blog.Content, &blog.Author, &blog.UpdatedAt, &blog.Cover, &blog.CreatedAt, &blog.UpdatedAt, &blog.DeletedAt); err != nil {
 			return nil, err
 		}
 
@@ -74,7 +74,7 @@ func (b *blogRepo) Update(blog model.Blog) error {
 	index := 6
 	var data []any
 	fmt.Println(blog)
-	data = append(data, blog.Id, blog.Title,blog.Content,blog.Author, time.Now())
+	data = append(data, blog.Id, blog.Title, blog.Content, blog.Author, time.Now())
 
 	if blog.Cover != "" {
 		index++
