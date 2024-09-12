@@ -63,6 +63,7 @@ func (su *serviceUsecase) DeleteService(Id int) error {
 // FindById implements ServiceUsecase.
 func (su *serviceUsecase) FindById(id int) (resp model.Services,err error) {
 	resp, err = su.r.FindById(id)
+	fmt.Println("cekkkk di uc")
 	if resp.Id == 0 {
 		return model.Services{}, errors.New("Not found")
 	}
@@ -90,6 +91,7 @@ func (su *serviceUsecase) ListService() (resp []model.Services, err error) {
 // UpdateService implements ServiceUsecase.
 func (su *serviceUsecase) UpdateService(name, description string, Id int) error {
 	resp, err := su.r.FindById(Id)
+	fmt.Println("cekkkk")
 	if resp.Id == 0 {
 		return errors.New("not found")
 

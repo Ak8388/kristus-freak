@@ -21,13 +21,19 @@ type userUsecase struct {
 
 // List implements UserUsecase.
 func (uc *userUsecase) List() (resp []model.User, err error) {
-	resp, err = uc.userepo.List()
-	if len(resp) == 0 {
-		return []model.User{}, errors.New("not user created")
-	}
-
+	all, err := uc.userepo.List()
 	if err != nil {
 		return []model.User{}, err
+	}
+
+	for _, user := range all {
+		if user.DeletedAt == nil {
+			resp = append(resp, user)
+		}
+	}
+
+	if len(resp) == 0 {
+		return []model.User{}, errors.New("not user created")
 	}
 
 	return

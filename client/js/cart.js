@@ -1,25 +1,36 @@
 document.addEventListener('DOMContentLoaded', function () {
     const kupon = JSON.parse(localStorage.getItem('kupon'));
     if (kupon) {
-        document.getElementById('coupon').value = kupon.code;
+        const couponField = document.getElementById('coupon');
+        if (couponField) {
+            couponField.value = kupon.code;
+        } else {
+            console.error('Coupon input field not found.');
+        }
     }
     displayCartItems(); // Tampilkan item di cart
     updateCartTotals(); // Update subtotal dan total di halaman
+
+    const applyButton = document.getElementById('apply');
+    if (applyButton) {
+        applyButton.addEventListener('click', applyCoupon);
+    } else {
+        console.error('Apply button not found.');
+    }
 });
 
-function formatIDR(amount) {
-    return amount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
-}
-
+// Fungsi untuk menampilkan item di cart
 function displayCartItems() {
+
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const tbody = document.getElementById('cart-items');
-    tbody.innerHTML = ''; // Kosongkan isi sebelumnya
 
     if (!tbody) {
         console.error('Element with ID "cart-items" not found.');
-        return; // pastikan elemen ada sebelum memanipulasinya
+        return;
     }
+
+    tbody.innerHTML = ''; // Kosongkan isi sebelumnya
 
     cart.forEach(product => {
         const row = document.createElement('tr');
@@ -50,22 +61,22 @@ function displayCartItems() {
         const quantityContainer = document.createElement('div');
         quantityContainer.classList.add('input-group', 'mb-3', 'd-flex', 'align-items-center', 'quantity-container');
         quantityContainer.style.maxWidth = '120px';
+
         const decreaseBtn = document.createElement('button');
         decreaseBtn.classList.add('btn', 'btn-outline-black', 'decrease');
         decreaseBtn.textContent = '−';
-        decreaseBtn.onclick = () => {
-            updateQuantity(product.id, -1);
-        };
+        decreaseBtn.onclick = () => updateQuantity(product.id, -1);
+
         const qtyInput = document.createElement('input');
         qtyInput.type = 'text';
         qtyInput.classList.add('form-control', 'text-center', 'quantity-amount');
         qtyInput.value = product.quantity;
+
         const increaseBtn = document.createElement('button');
         increaseBtn.classList.add('btn', 'btn-outline-black', 'increase');
         increaseBtn.textContent = '+';
-        increaseBtn.onclick = () => {
-            updateQuantity(product.id, 1);
-        };
+        increaseBtn.onclick = () => updateQuantity(product.id, 1);
+
         quantityContainer.appendChild(decreaseBtn);
         quantityContainer.appendChild(qtyInput);
         quantityContainer.appendChild(increaseBtn);
@@ -81,9 +92,8 @@ function displayCartItems() {
         removeBtn.href = '#';
         removeBtn.classList.add('btn', 'btn-black', 'btn-sm');
         removeBtn.textContent = 'X';
-        removeBtn.onclick = () => {
-            removeProductFromCart(product.id);
-        };
+        removeBtn.onclick = () => removeProductFromCart(product.id);
+
         removeTd.appendChild(removeBtn);
 
         // Tambahkan elemen ke baris
@@ -98,18 +108,21 @@ function displayCartItems() {
     });
 }
 
-// Fungsi untuk update quantity
+// Fungsi untuk update quantity produk
 function updateQuantity(productId, delta) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     const productIndex = cart.findIndex(item => item.id === productId);
+
     if (productIndex >= 0) {
         cart[productIndex].quantity += delta;
+
         if (cart[productIndex].quantity <= 0) {
-            cart.splice(productIndex, 1); // Hapus jika quantity 0
+            cart.splice(productIndex, 1); // Hapus produk jika quantity 0
         }
+
         localStorage.setItem('cart', JSON.stringify(cart));
-        displayCartItems(); // Update tampilan
-        discountCheck();   
+        displayCartItems(); // Update tampilan cart
+        discountCheck(); // Cek diskon ulang
         updateCartTotals(); // Update subtotal dan total
     }
 }
@@ -119,14 +132,17 @@ function removeProductFromCart(productId) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     cart = cart.filter(item => item.id !== productId); // Hapus produk dari cart
     localStorage.setItem('cart', JSON.stringify(cart));
-    discountCheck();
-    displayCartItems(); // Update tampilan
+
+    discountCheck(); // Cek diskon ulang
+    displayCartItems(); // Update tampilan cart
     updateCartTotals(); // Update subtotal dan total
 }
 
-document.getElementById('apply').addEventListener('click', async e => {
+// Fungsi untuk mengaplikasikan kupon
+async function applyCoupon() {
     const token = localStorage.getItem('token');
     const kupon = JSON.parse(localStorage.getItem('kupon'));
+
     try {
         localStorage.removeItem('cartNew');
         const response = await fetch('http://localhost:8081/api-putra-jaya/coupon', {
@@ -142,98 +158,77 @@ document.getElementById('apply').addEventListener('click', async e => {
         }
 
         const data = await response.json();
-        const kupon = JSON.parse(localStorage.getItem('kupon'));
         const cart = JSON.parse(localStorage.getItem('cart'));
+        const cartNew = JSON.parse(JSON.stringify(cart)); // Deep copy cart
 
-        // Deep copy cart untuk cartNew agar tidak mengubah cart asli
-        const cartNew = JSON.parse(JSON.stringify(cart)); // Deep copy
-        console.log('cart', cart); // cart tidak berubah
-        console.log('cartNew', cartNew); // Hanya cartNew yang berubah
-        console.log('Before discount:', e.price); // Cek nilai sebelum pengurangan diskon
-
-
-        
         if (data.data != null) {
-            data.data.map(res=>{
-                if(kupon.code == data.data.res){
-                    throw new Error('this coupon already used');
+            data.data.forEach(res => {
+                if (kupon.code == res) {
+                    throw new Error('This coupon has already been used.');
                 }
-            })
-        } else {
-            let indek = 0;
-            cartNew.map(e => {
-            
-                // Pastikan price dan quantity adalah angka yang valid
-                const price = parseFloat(e.price) || 0; // Jika undefined, set ke 0
-                const quantity = parseInt(e.quantity) || 1; // Jika undefined, set ke 1
-                
-                console.log('Before discount:', price);
-            
-                const discount = (price * quantity) * (kupon.discount / 100);
-                
-                // Pastikan harga tidak negatif setelah diskon
-                e.price = Math.max(0, (price * quantity) - discount); // Harga minimal adalah 0
-            
-                console.log('After discount:', e.price);
             });
-            
+        } else {
+            cartNew.forEach(product => {
+                const price = parseFloat(product.price) || 0;
+                const quantity = parseInt(product.quantity) || 1;
+                const discount = (price * quantity) * (kupon.discount / 100);
+                product.price = Math.max(0, (price * quantity) - discount); // Pastikan harga tidak negatif
+            });
+
             localStorage.setItem('cartNew', JSON.stringify(cartNew));
             updateCartTotals(); // Update total keranjang
         }
-
     } catch (error) {
-        alert(error);
+        alert(error.message);
     }
-});
+}
 
-function discountCheck(){
+// Fungsi untuk cek dan hitung diskon
+function discountCheck() {
     const kupon = JSON.parse(localStorage.getItem('kupon'));
-    const cart = JSON.parse(localStorage.getItem('cart'));
+    if (!kupon) return;
 
-    // Deep copy cart untuk cartNew agar tidak mengubah cart asli
-    const cartNew = JSON.parse(JSON.stringify(cart)); // Deep copy
-            
+    const cart = JSON.parse(localStorage.getItem('cart'));
+    const cartNew = JSON.parse(JSON.stringify(cart)); // Deep copy cart
+
     let discount = 0;
-    let index = 1;
-    cartNew.map(e => {
-        // Pastikan price dan quantity adalah angka yang valid
-        const price = parseFloat(e.price) || 0; // Jika undefined, set ke 0
-        const quantity = parseInt(e.quantity) || 1; // Jika undefined, set ke 1
-        
+    cartNew.forEach((product, index) => {
+        const price = parseFloat(product.price) || 0;
+        const quantity = parseInt(product.quantity) || 1;
         discount += (price * quantity) * (kupon.discount / 100);
-        localStorage.setItem(`discount${index}`,(price * quantity) * (kupon.discount / 100));
-        index++
+        localStorage.setItem(`discount${index + 1}`, discount);
     });
 
-    localStorage.setItem('discountTotal',discount);
-    console.log(discount);
+    localStorage.setItem('discountTotal', discount);
     updateCartTotals(); // Update total keranjang
 }
 
-document.getElementById('remove-coupon').addEventListener('click', function() {
-    localStorage.removeItem('kupon'); // Hapus kupon dari localStorage
-    localStorage.removeItem('cartNew'); // Hapus cartNew untuk menghitung ulang
-    updateCartTotals(); // Update subtotal dan total tanpa diskon
-});
-
+// Fungsi untuk update subtotal dan total
 function updateCartTotals() {
     let cart = JSON.parse(localStorage.getItem('cartNew')) || [];
-    if(cart.length<1){
+    if (cart.length < 1) {
         cart = JSON.parse(localStorage.getItem('cart')) || [];
     }
+
     const subtotalElem = document.getElementById('subtotal');
     const totalElem = document.getElementById('total');
 
-    const subtotal = cart.reduce((acc,product) => acc + (product.price * product.quantity), 0);
+    if (!subtotalElem || !totalElem) {
+        console.error('Subtotal or Total element not found.');
+        return;
+    }
+
+    const subtotal = cart.reduce((acc, product) => acc + (product.price * product.quantity), 0);
     const total = subtotal;
 
-        // Update tampilan subtotal dan total
-    subtotalElem.textContent = formatIDR(subtotal); // Menampilkan subtotal dalam format Rupiah
-    totalElem.textContent = formatIDR(total); // Menampilkan total dalam format Rupiah
-    }
-// }
+    subtotalElem.textContent = formatIDR(subtotal); // Tampilkan subtotal dalam format Rupiah
+    totalElem.textContent = formatIDR(total); // Tampilkan total dalam format Rupiah
+}
 
-
+// Fungsi format IDR
+function formatIDR(amount) {
+    return amount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+}
 
 
 

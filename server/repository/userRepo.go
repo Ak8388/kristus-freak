@@ -21,7 +21,8 @@ type userRepo struct {
 
 // List implements UserRepo.
 func (ur *userRepo) List() (resp []model.User, err error) {
-	query := "SELECT id, name, email, role, created_at, updated_at, deleted_at FROM tb_user"
+	// query := "SELECT id, name  FROM tb_user "
+	query := "SELECT * FROM tb_user WHERE deleted_at IS NULL "
 	rows, err := ur.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -30,7 +31,8 @@ func (ur *userRepo) List() (resp []model.User, err error) {
 
 	for rows.Next() {
 		var user model.User
-		if err := rows.Scan(&user.Id, &user.Name, &user.Email, &user.Role, &user.CreatedAt, &user.UpdatedAt, &user.DeletedAt); err != nil {
+		// if err := rows.Scan(&user.Id, &user.Name); err != nil {
+		if err := rows.Scan(&user.Id,&user.Email, &user.Name,&user.Password,&user.Role, &user.CreatedAt, &user.UpdatedAt, &user.DeletedAt); err != nil {
 			return nil, err
 		}
 		resp = append(resp, user)

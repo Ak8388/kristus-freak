@@ -16,6 +16,58 @@
 		<link href="css/tiny-slider.css" rel="stylesheet">
 		<link href="css/style.css" rel="stylesheet">
 		<title>Putra Jaya Official Website </title>
+		<!-- <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+		</script>
+		<script type="text/javascript">
+		(function(){
+			emailjs.init({
+				publicKey: "ixo7IpZZYsyHSNIbK",
+			});
+		})();
+		</script>
+
+		<script>
+			function sendMail(){
+				let params = {
+					name : document.getElementById("name").value,
+					email : document.getElementById("email").value,
+					subject : document.getElementById("subject").value,
+					message : document.getElementById("message").value,
+				}
+
+				emailjs.send("service_99hx2il","template_h265t6e",params).then(alert("Email terkirim ! "));
+			}			
+		</script> -->
+
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script type="text/javascript">
+    (function(){
+        emailjs.init("ixo7IpZZYsyHSNIbK"); // Pastikan ini adalah `user_id` yang benar
+    })();
+</script>
+    <script>
+    function sendMail() {
+        // Ambil nilai dari form input
+        let params = {
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            subject: document.getElementById("subject").value,
+            message: document.getElementById("message").value
+        };
+
+        // Kirim email menggunakan EmailJS
+        emailjs.send("service_99hx2il", "template_h265t6e", params)
+            .then(function(response) {
+                // Tampilkan alert jika email terkirim
+                alert("Email terkirim dengan sukses!");
+            }, function(error) {
+                // Tampilkan alert jika terjadi kesalahan
+                alert("Gagal mengirim email. Silakan coba lagi.");
+            });
+    }
+</script>
+
 	</head>
 
 	<body>
@@ -51,12 +103,6 @@
 						</li>
 
 					</ul>
-
-					<!-- <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-						<li><a class="nav-link" href="#"><img src="images/user.svg"></a></li>
-						<li><a class="nav-link" href="cart.html"><img src="images/cart.svg"></a></li>
-					</ul> -->
-				</div>
 			</div>
 				
 		</nav>
@@ -69,8 +115,8 @@
 						<div class="col-lg-5">
 							<div class="intro-excerpt">
 								<h1>Contact</h1>
-								<p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
-								<p><a href="" class="btn btn-secondary me-2">Konsultasi Sekarang !</a><a href="shop.html" class="btn btn-white-outline">Explore</a></p>
+								<p class="mb-4">Hubungi kami untuk solusi las listrik terbaik dan layanan profesional yang cepat dan terpercaya.</p>
+																<p><a href="" class="btn btn-secondary me-2">Konsultasi Sekarang !</a><a href="shop.html" class="btn btn-white-outline">Explore</a></p>
 							</div>
 						</div>
 						<div class="col-lg-7">
@@ -136,36 +182,32 @@
                 </div>
               </div>
 
-              <form>
-                <div class="row">
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label class="text-black" for="fname">First name</label>
-                      <input type="text" class="form-control" id="fname">
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label class="text-black" for="lname">Last name</label>
-                      <input type="text" class="form-control" id="lname">
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="text-black" for="email">Email address</label>
-                  <input type="email" class="form-control" id="email">
-                </div>
-
-                <div class="form-group mb-5">
-                  <label class="text-black" for="message">Message</label>
-                  <textarea name="" class="form-control" id="message" cols="30" rows="5"></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary-hover-outline">Send Message</button>
-              </form>
-
             </div>
-
+			<!-- emailJS -->
+			<form id="contactForm">
+				<div class="form-group">
+					<label for="name">Name</label>
+					<input type="text" class="form-control" id="name" name="name" required>
+				</div>
+				
+				<div class="form-group">
+					<label for="email">Email Address</label>
+					<input type="email" class="form-control" id="email" name="email" required>
+				</div>
+			
+				<div class="form-group">
+					<label for="subject">Subject</label>
+					<input type="text" class="form-control" id="subject" name="subject" required>
+				</div>
+			
+				<div class="form-group">
+					<label for="message">Message</label>
+					<textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+				</div>
+			
+				<button type="submit" class="btn btn-primary" onclick="sendMail()">Send</button>
+			</form>
+			
           </div>
 
         </div>
@@ -187,87 +229,41 @@
 				<div class="sofa-img">
 					<img src="../server/asset/photos/kursi-hitam-single.png" alt="Image" class="img-fluid">
 				</div>
-
-				<div class="row">
-					<div class="col-lg-8">
-						<div class="subscription-form">
-							<h3 class="d-flex align-items-center"><span class="me-1"><img src="images/envelope-outline.svg" alt="Image" class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
-
-							<form action="#" class="row g-3">
-								<div class="col-auto">
-									<input type="text" class="form-control" placeholder="Enter your name">
-								</div>
-								<div class="col-auto">
-									<input type="email" class="form-control" placeholder="Enter your email">
-								</div>
-								<div class="col-auto">
-									<button class="btn btn-primary">
-										<span class="fa fa-paper-plane"></span>
-									</button>
-								</div>
-							</form>
-
-						</div>
-					</div>
-				</div>
-
 				<div class="row g-5 mb-5">
 					<div class="col-lg-4">
-						<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">PutraJaya<span>.</span></a></div>
-						<p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant</p>
-
+						<div class="mb-4 footer-logo-wrap">
+							<a href="#" class="footer-logo">PutraJaya<span>.</span></a>
+						</div>
+						<p class="mb-4">Kami menyediakan layanan las listrik berkualitas tinggi untuk berbagai kebutuhan konstruksi dan perbaikan. Dengan pengalaman dan keahlian kami, kami memastikan setiap proyek selesai dengan standar terbaik. Hubungi kami untuk solusi yang dapat diandalkan dan hasil yang memuaskan.</p>
+				
 						<ul class="list-unstyled custom-social">
-							<li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
+							<li><a href="https://facebook.com/PutraJaya" target="_blank"><span class="fa fa-brands fa-facebook-f"></span></a></li>
+							<li><a href="https://twitter.com/PutraJaya" target="_blank"><span class="fa fa-brands fa-twitter"></span></a></li>
+							<li><a href="https://instagram.com/PutraJaya" target="_blank"><span class="fa fa-brands fa-instagram"></span></a></li>
+							<li><a href="https://linkedin.com/company/putra-jaya" target="_blank"><span class="fa fa-brands fa-linkedin"></span></a></li>
 						</ul>
 					</div>
-
+				
 					<div class="col-lg-8">
 						<div class="row links-wrap">
 							<div class="col-6 col-sm-6 col-md-3">
 								<ul class="list-unstyled">
-									<li><a href="#">About us</a></li>
-									<li><a href="#">Services</a></li>
-									<li><a href="#">Blog</a></li>
-									<li><a href="#">Contact us</a></li>
+									<li><a href="about.html">Tentang Kami</a></li>
+									<li><a href="services.html">Layanan Kami</a></li>
+									<li><a href="blog.html">Blog</a></li>
+									<li><a href="contact.html">Kontak Kami</a></li>
 								</ul>
 							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Support</a></li>
-									<li><a href="#">Knowledge base</a></li>
-									<li><a href="#">Live chat</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Jobs</a></li>
-									<li><a href="#">Our team</a></li>
-									<li><a href="#">Leadership</a></li>
-									<li><a href="#">Privacy Policy</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Nordic Chair</a></li>
-									<li><a href="#">Kruzo Aero</a></li>
-									<li><a href="#">Ergonomic Chair</a></li>
-								</ul>
-							</div>
+				
 						</div>
 					</div>
-
+				
 				</div>
-
+				
 				<div class="border-top copyright">
 					<div class="row pt-4">
 						<div class="col-lg-6">
-							<p class="mb-2 text-center text-lg-start">Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Designed by Putra Jaya</p>
+							<p class="mb-2 text-center text-lg-start">Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Designed by Putra Jaya </p>
 						</div>
 
 						<div class="col-lg-6 text-center text-lg-end">

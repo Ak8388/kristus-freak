@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const fetchDataBtn = document.getElementById('fetchProduct');
-    const addDataBtn = document.getElementById('addDataBtn');
+    // const addDataBtn = document.getElementById('addDataBtn');
     const urlParams = new URLSearchParams(window.location.search);
     const token = localStorage.getItem('token');
     const productId = urlParams.get('id');
@@ -17,24 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (productId) {
         fetchProductData(productId);
-    }
-
-    if (fetchDataBtn) {
-        fetchDataBtn.addEventListener('click', async function (event) {
-            event.preventDefault();
-            fetchData();
-            addDataBtn.style.display = 'inline'; // Menampilkan tombol "Add Data"
-        });
-    }
-
-    if (addDataBtn) {
-        addDataBtn.addEventListener('click', function () {
-            const addProductModal = new bootstrap.Modal(document.getElementById('addProductModal'), {
-                backdrop: 'static', // Mengatur backdrop
-                keyboard: false // Mengatur keyboard interaction
-            });
-            addProductModal.show();
-        });
     }
 
     if (addProductForm) {
@@ -82,12 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const result = await response.json();
                 console.log('Product added successfully:', result);
                 alert('Product added successfully!');
-                // Reset form setelah submit berhasil
-                addProductForm.reset();
-                // Tutup modal setelah submit berhasil
-                const addProductModal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
-                addProductModal.hide();
-                // Refresh data produk jika diperlukan
+                window.location.reload();
                 fetchData();
             } catch (error) {
                 console.error('Error adding product:', error);
@@ -180,7 +156,9 @@ async function fetchData() {
                     <td>${item.weight}</td>
                     <td>
                         <button class="btn btn-warning btn-sm" onclick="editProduct (${item.id})">Edit</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${item.id})">Delete</button>
+                        <button type="button" class="btn btn-link btn-danger delete-button" data-id="${item.id}" title="Remove" onclick="showDeleteConfirmation(${item.id})">
+                                    <i class="fa fa-times"></i>
+                                </button>
                     </td>
                 `;
                 tableBody.appendChild(row);
@@ -296,23 +274,36 @@ document.addEventListener('click', function (event) {
     }
 });
 
-// Fungsi untuk menampilkan konfirmasi penghapusan
 function showDeleteConfirmation(productId) {
     swal({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "No, cancel!"
-    }).then((result) => {
-        if (result.value) {
+        icon: "warning",  // Menggunakan "icon" bukan "type"
+        buttons: {
+            cancel: {
+                text: "No, cancel!",
+                value: false,
+                visible: true,
+                className: "btn btn-danger",
+                closeModal: true,
+            },
+            confirm: {
+                text: "Yes, delete it!",
+                value: true,
+                visible: true,
+                className: "btn btn-primary",
+                closeModal: false // Biarkan terbuka sampai kita selesai
+            }
+        },
+        dangerMode: true,
+    }).then((isConfirm) => {
+        if (isConfirm) {
+            // Memanggil fungsi delete setelah konfirmasi
             deleteProduct(productId);
         }
     });
 }
+
 
 // Fungsi untuk menghapus produk
 function deleteProduct(productId) {
@@ -322,28 +313,28 @@ function deleteProduct(productId) {
             'Content-Type': 'application/json'
         }
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(result => {
-            swal(
-                'Deleted!',
-                'Your product has been deleted.',
-                'success'
-            ).then(() => {
-                // Refresh data produk setelah berhasil menghapus
-                fetchData();
-            });
-        })
-        .catch(error => {
-            swal(
-                'Error!',
-                'Failed to delete product.',
-                'error'
-            );
-            console.error('Error deleting product:', error);
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then( () => {
+        swal({
+            title: 'Deleted!',
+            text: 'Service has been deleted.',
+            icon: 'success'
+        }).then(() => {
+            window.location.reload(); // Refresh data setelah penghapusan berhasil
         });
+    })
+    .catch(error => {
+        swal({
+            title: 'Error!',
+            text: 'Failed to delete service.',
+            icon: 'error'
+        });
+        console.error('Error deleting service:', error);
+    });
 }
+

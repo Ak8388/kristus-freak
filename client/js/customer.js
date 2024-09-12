@@ -44,7 +44,7 @@ async function fetchData() {
                         <td>${item.email}</td>
                         <td>
                             <div class="form-button-action">
-                                <button type="button" class="btn btn-link btn-danger delete-button" onclick="showDeleteConfirmation(${item.id})" title="Remove">
+                                <button type="button" class="btn btn-link btn-danger delete-button" data-id="${item.id}" title="Remove" onclick="showDeleteConfirmation(${item.id})">
                                     <i class="fa fa-times"></i>
                                 </button>
                             </div>
@@ -79,91 +79,6 @@ async function fetchData() {
         console.error('Error fetching data:', error);
     }
 }
-// async function fetchDataSum() {
-//     try {
-//         const token = localStorage.getItem('token');
-//         if (!token) {
-//             alert('Akses dibatasi');
-//             return;
-//         }
-
-//         const projectEndpoint = 'http://localhost:8081/api-putra-jaya/portfolio/list';
-//         const serviceEndpoint = 'http://localhost:8081/api-putra-jaya/service/list';
-//         const transactionEndpoint = 'http://localhost:8081/api-putra-jaya/transaction/list';
-//         const customerEndpoint = 'http://localhost:8081/api-putra-jaya/user/list-user';
-//         const productEndpoint = 'http://localhost:8081/api-putra-jaya/product/list';
-//         const categoryEndpoint = 'http://localhost:8081/api-putra-jaya/category/list';
-
-//         const [projects, services, transactions, customers, products, categories] = await Promise.all([
-//             fetch(projectEndpoint).then(response => response.json()),
-//             fetch(serviceEndpoint).then(response => response.json()),
-//             fetch(transactionEndpoint, {
-//                 method: "GET",
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     "Authorization": `Bearer ${token}`
-//                 }
-//             }).then(response => response.json()),
-//             fetch(customerEndpoint, {
-//                 method: "GET",
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     "Authorization": `Bearer ${token}`
-//                 }
-//             }).then(response => response.json()),
-//             fetch(productEndpoint).then(response => response.json()),
-//             fetch(categoryEndpoint).then(response => response.json())
-//         ]);
-
-//         // Tampilkan jumlah data di masing-masing elemen HTML
-//         document.getElementById('project-sum').textContent = projects.data.length;
-//         document.getElementById('service-sum').textContent = services.data.length;
-//         document.getElementById('transaction-sum').textContent = transactions.data.length;
-//         document.getElementById('customer-sum').textContent = customers.data.length;
-//         document.getElementById('product-sum').textContent = products.data.length;
-//         document.getElementById('category-sum').textContent = categories.data.length; // Mengambil jumlah kategori
-
-//     } catch (error) {
-//         console.error('Error fetching data:', error);
-//     }
-// }
-
-
-// async function fetchDataSum() {
-//     try {
-//         const token = localStorage.getItem('token');
-//         if (!token) {
-//             alert('Akses dibatasi');
-//             return;
-//         }
-
-//         const categoryEndpoint = 'http://localhost:8081/api-putra-jaya/category/list';
-        
-//         const categories = await fetch(categoryEndpoint).then(response => response.json());
-        
-//         // Log respons API untuk kategori
-//         console.log('Categories Response:', categories);
-        
-//         // Cek apakah elemen dengan ID "category-sum" sudah ada
-//         const categorySumElement = document.getElementById('category-sum');
-//         console.log('Category Sum Element:', categorySumElement);
-
-//         if (categorySumElement) {
-//             categorySumElement.textContent = categories.data.length;
-//             console.log('Jumlah kategori:', categories.data.length);
-//         } else {
-//             console.error('Element #category-sum not found.');
-//         }
-
-//     } catch (error) {
-//         console.error('Error fetching data:', error);
-//     }
-// }
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    fetchDataSum();
-});
 
 async function fetchDataSum() {
     try {
@@ -180,8 +95,6 @@ async function fetchDataSum() {
         const productEndpoint = 'http://localhost:8081/api-putra-jaya/product/list';
         const categoryEndpoint = 'http://localhost:8081/api-putra-jaya/category/list';
 
-        // Ambil semua data sekaligus menggunakan Promise.all
-        // const [projects,services,customers,products,categories] = await Promise.all([
         const [projects, services, transactions, customers, products, categories] = await Promise.all([
             fetch(projectEndpoint).then(response => response.json()),
             fetch(serviceEndpoint).then(response => response.json()),
@@ -192,7 +105,6 @@ async function fetchDataSum() {
                     "Authorization": `Bearer ${token}`
                 }
             }).then(response => response.json()),
-            // fetch(transactionEndpoint).then(response => response.json()),
             fetch(customerEndpoint, {
                 method: "GET",
                 headers: {
@@ -204,7 +116,6 @@ async function fetchDataSum() {
             fetch(categoryEndpoint).then(response => response.json())
         ]);
 
-        // Log semua data untuk memastikan diterima dengan benar
         console.log('Projects:', projects);
         console.log('Services:', services);
         console.log('Transactions:', transactions);
@@ -212,7 +123,6 @@ async function fetchDataSum() {
         console.log('Products:', products);
         console.log('Categories:', categories);
 
-        // Tampilkan jumlah data di masing-masing elemen h4
         document.getElementById('project-sum').textContent = projects.data.length;
         document.getElementById('service-sum').textContent = services.data.length;
         document.getElementById('transaction-sum').textContent = transactions.data.length;
@@ -224,3 +134,69 @@ async function fetchDataSum() {
         console.error('Error fetching data:', error);
     }
 }
+
+
+
+function showDeleteConfirmation(id) {
+    swal({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",  // Menggunakan "icon" bukan "type"
+        buttons: {
+            cancel: {
+                text: "No, cancel!",
+                value: false,
+                visible: true,
+                className: "btn btn-danger",
+                closeModal: true,
+            },
+            confirm: {
+                text: "Yes, delete it!",
+                value: true,
+                visible: true,
+                className: "btn btn-primary",
+                closeModal: false // Biarkan terbuka sampai kita selesai
+            }
+        },
+        dangerMode: true,
+    }).then((isConfirm) => {
+        if (isConfirm) {
+            // Memanggil fungsi delete setelah konfirmasi
+            removeData(id);
+        }
+    });
+}
+
+function removeData(id) {
+    const token = localStorage.getItem('token');
+    fetch(`http://localhost:8081/api-putra-jaya/user/delete-user/${id}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then( () => {
+        swal({
+            title:'Deleted!',
+            text: 'User has been deleted.',
+            icon: 'success'
+        }).then(() => {
+            window.location.reload(); // Refresh data setelah penghapusan berhasil
+        });
+    })
+    .catch(error => {
+        swal({
+            title: 'Error!',
+            text: 'Failed to delete user.',
+            icon: 'error'
+        });
+        console.error('Error deleting user:', error);
+    });
+}
+

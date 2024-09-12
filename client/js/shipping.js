@@ -215,7 +215,37 @@ document.addEventListener('DOMContentLoaded', async e => {
     document.getElementById('place-order-btn').addEventListener('click', handleFormSubmit);
 });
 
+document.addEventListener('DOMContentLoaded', function(){
+    const availableCoupons = [
+        {code : 'PUTRAJAYA10', discount:50, limit:10},
+        {code : 'PJLAS10', discount:35, limit:10},
+    ];
 
+
+    function applyCoupon(code) {
+        const coupon = availableCoupons.find(coupon => coupon.code === code);
+
+        if (coupon) {
+            if (coupon.limit > 0){
+                coupon.limit -= 1;
+                alert(`Kupon berhasil diterapkan ! Diskon ${coupon.discount}% diterapkan`);
+            }else {
+                alert('Maaf, kupon ini telah mencapai batas penggunaan.');
+            }
+        }else {
+            alert('Kode kupon tidak valid!');
+        }
+    }
+
+    document.getElementById('button-addon2').addEventListener('click', function() {
+        const couponCode = document.getElementById('c_code').value.trim();
+        if (couponCode) {
+            applyCoupon(couponCode); // Validasi dan apply kupon
+        } else {
+            alert('Silakan masukkan kode kupon.');
+        }
+    });
+});
 
 
 // !!!! //

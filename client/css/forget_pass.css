@@ -1,112 +1,98 @@
+/* Global Styling */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background: #3b5d50;
+    /* background: #f6f5f7; */
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
     height: 100vh;
     margin: 0;
 }
 
-.forgot-password-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    text-align: center;
-}
-
-.forgot-password-box h2 {
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.forgot-password-box p {
-    margin-bottom: 10px;
-    color: #777;
-}
-
-#email {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-#resetButton {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-#resetButton:hover {
-    background-color: #0056b3;
-}
-
-#message {
-    margin-top: 10px;
-    color: #d9534f;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+/* Form Container Styling */
+.forgot-password-container,
+.new-password-container,
+.verification-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
+    height: 100%;
+    width: 100%;
+    padding: 20px;
 }
 
-.new-password-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
+/* Box Styling */
+.forgot-password-box,
+.new-password-box,
+.verification-box {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 350px;
     text-align: center;
 }
 
-.new-password-box h2 {
-    margin-bottom: 15px;
+/* Heading Styling */
+.forgot-password-box h2,
+.new-password-box h2,
+.verification-box h2 {
+    font-size: 22px;
     color: #333;
+    margin-bottom: 20px;
+    font-weight: 800;
 }
 
-.new-password-box p {
-    margin-bottom: 10px;
+/* Paragraph Styling */
+.forgot-password-box p,
+.new-password-box p,
+.verification-box p {
+    font-size: 14px;
+    font-weight: 100;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+    margin: 15px 0;
     color: #777;
 }
 
-#newPassword, #confirmPassword {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+/* Input Styling */
+input {
+    background-color: #eee;
+    border: none;
+    padding: 12px 20px; /* Increased right padding */
+    margin: 8px 0;
+    width: calc(100% - 20px); /* Adjust width to account for padding */
+    border-radius: 20px;
+    font-size: 14px;
 }
 
-#setPasswordButton {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 16px;
+/* Button Styling */
+button {
+    border-radius: 20px;
+    border: 1px solid #3b5d50;
+    background-color: #3b5d50;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 12px 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.3s ease;
     cursor: pointer;
 }
 
-#setPasswordButton:hover {
-    background-color: #0056b3;
+button:hover {
+    background-color: #2a4736;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+button:focus {
+    outline: none;
 }
 
 #message {

@@ -900,27 +900,6 @@ textarea {
   min-height: 300px; /* Beri tinggi minimum */
 }
 
-.side-category {
-  flex: 1; /* Bagian kategori mengambil 1/4 dari lebar keseluruhan */
-  background-color: #f2f2f2;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px; /* Jarak antara tombol kategori */
-}
-
-.side-category button {
-  width: 100%;
-  padding: 10px;
-  text-align: left;
-}
-
-.side-category hr {
-  margin: 10px 0;
-  border: none;
-  border-top: 1px solid #ccc;
-}
-
 .prod-img{
   width: 100px;
   height: 100px;
@@ -1040,4 +1019,56 @@ background-color: #cce0ff;
 
 .btn:hover {
   background-color: #c0392b;
+}
+
+
+/* Container untuk kategori */
+.side-category {
+  
+  background-color:white; /* Warna latar belakang ringan */
+  padding: 20px; /* Spasi di sekitar konten */
+  border-radius: 8px; /* Sudut membulat */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Bayangan halus */
+}
+
+/* Gaya untuk heading */
+.side-category h5 {
+  font-size: 18px; /* Ukuran font yang lebih besar */
+  color: #333; /* Warna teks gelap */
+  margin-bottom: 10px; /* Jarak bawah */
+}
+
+/* Gaya untuk garis pemisah */
+.side-category hr {
+  border: none;
+  /* border-top: 2px solid #ddd; Garis pemisah */
+  margin: 10px 0; /* Jarak vertikal */
+}
+
+/* Styling untuk kontainer link kategori */
+#category-buttons {
+  background-color: #2f2f2f;
+  display: flex;
+  flex-direction: column; /* Menyusun tombol ke bawah */
+}
+
+/* Gaya untuk setiap link kategori */
+#category-buttons a {
+  display: block; /* Membuat setiap link menjadi blok penuh */
+  padding: 10px 15px; /* Spasi di sekitar teks */
+  margin-bottom: 8px; /* Jarak antara tombol */
+  font-size: 16px; /* Ukuran font */
+  color: black; /* Warna teks link */
+  text-decoration: none; /* Menghapus garis bawah default */
+  border: none; /* Menghilangkan border */
+  border-radius: 4px; /* Sudut membulat */
+  transition: background-color 0.3s, color 0.3s; /* Efek transisi */
+ 
+}
+
+/* Gaya saat hover pada link kategori */
+#category-buttons a:hover,
+#category-buttons a:active  {
+  background-color: black;/* Warna latar belakang saat hover */
+  color: white /* Warna teks saat hover */
 }

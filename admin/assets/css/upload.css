@@ -1,0 +1,101 @@
+/* Reset box-sizing for all elements */
+* {
+    box-sizing: border-box;
+}
+
+/* General body styling */
+body {
+    background-color: #f6f5f7;
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container for the admin form */
+.admin-container {
+    width: 100%;
+    max-width: 800px;
+    padding: 30px 20px; /* Add padding top and bottom */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Allow vertical scroll */
+    max-height: 90vh; /* Limit height to ensure scroll works */
+}
+
+/* Box styling */
+.admin-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Title styling */
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Form styling */
+form {
+    width: 100%;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Label styling */
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Input and textarea styling */
+.form-group input[type="text"],
+.form-group input[type="file"],
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+}
+
+.form-group textarea {
+    height: 200px;
+    resize: vertical;
+}
+
+/* Button styling */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #3b5d50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2a4a36;
+}
+
+/* Message styling */
+#message {
+    margin-top: 20px;
+    color: #d9534f;
+}

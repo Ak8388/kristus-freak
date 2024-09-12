@@ -28,6 +28,11 @@ func (b *blogUsecase) Add(blog model.Blog) error {
 		blog.CreatedAt =  &now
 	}
 
+	publish:= time.Now()
+	if blog.UpdatedAt == nil {
+		blog.UpdatedAt = &publish
+	}
+
 	return b.rp.Add(blog)
 }
 
@@ -39,7 +44,7 @@ func (b *blogUsecase) Delete(Id int) error {
 	}
 
 	if resp.DeletedAt != nil {
-		return errors.New("article is deleted")
+		return errors.New("blog is deleted")
 	}
 
 	err = b.rp.Delete(Id)

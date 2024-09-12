@@ -22,30 +22,30 @@ type serviceRepo struct {
 
 // AddService implements ServiceRepo.
 func (s *serviceRepo) AddService(resp model.Services) error {
-	query := "INSERT INTO service (name,description) value ($1,$2)"
+	query := "INSERT INTO services (name,description) VALUES ($1,$2)"
 	_, err := s.db.Exec(query, resp.Name, resp.Description)
 	return err
 }
 
 // DeleteService implements ServiceRepo.
 func (s *serviceRepo) DeleteService(Id int) error {
-	query := "UPDATE service SET updated_at=$1,deleted_at=$2 WHERE id=$3"
+	query := "UPDATE services SET updated_at=$1,deleted_at=$2 WHERE id=$3"
 	_, err := s.db.Exec(query, time.Now(),time.Now(),Id)
 	return err
 }
 
 // FindById implements ServiceRepo.
 func (s *serviceRepo) FindById(id int) (resp model.Services, err error) {
-	query := "SELECT * FROM service WHERE id=$1"
+	query := "SELECT * FROM services WHERE id=$1"
 	err = s.db.QueryRow(query,id).Scan(&resp.Id,&resp.Name,&resp.Description,&resp.CreatedAt,&resp.UpdatedAt, &resp.DeletedAt)
-
+	fmt.Println("cekkkk di repo")
 	return 
 }
 
 // ListService implements ServiceRepo.
 func (s *serviceRepo) ListService() (resp []model.Services, err error) {
 	
-	query := "SELECT id,name,description,created_at,updated_at,deleted_at FROM services"
+	query := "SELECT id,name,description,created_at,updated_at,deleted_at FROM services WHERE deleted_at IS NULL"
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -70,7 +70,7 @@ func (s *serviceRepo) ListService() (resp []model.Services, err error) {
 // UpdateService implements ServiceRepo.
 func (s *serviceRepo) UpdateService(name string, description string, Id int) error {
 
-	query := "UPDATE service SET name=$1,description=$2,updated_at=$3 WHERE id=$4"
+	query := "UPDATE services SET name=$1,description=$2,updated_at=$3 WHERE id=$4"
 	_,err := s.db.Exec(query,name,description,time.Now(),Id)
 	return err
 }

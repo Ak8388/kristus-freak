@@ -1,16 +1,42 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const addRowButton = document.getElementById('addRowButton');
+    const addServiceForm = document.getElementById('addServiceForm');
     const editServiceForm = document.getElementById('editServiceForm');
-    const searchInput = document.getElementById('searchInput');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    let currentPage = 1;
-    const rowsPerPage = 5;
 
-    // Fetch data and display on the table
-    async function fetchData(page = 1, searchQuery = '') {
+    fetchData();
+    
+    document.getElementById('addRowButton').addEventListener('click', async function (event) {
+        const token = localStorage.getItem('token');
+    
+        event.preventDefault();
+        const name = document.getElementById('addName').value;
+        const description = document.getElementById('addDeskripsi').value;
+    
         try {
-            const response = await fetch(`http://localhost:8081/api-putra-jaya/service/list?page=${page}&search=${searchQuery}`);
+            const response = await fetch(`http://localhost:8081/api-putra-jaya/service/add`, {
+                method: "POST",
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json' // Tambahkan header ini
+                },
+                body: JSON.stringify({ name: name, description: description }) // Sesuaikan dengan nama properti yang diharapkan oleh server
+    
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            alert('Service added successfully!');
+            window.location.reload(); // Segarkan halaman setelah menambahkan layanan
+        } catch (error) {
+            console.error('Error adding service:', error);
+            alert('Failed to add service');
+        }
+    });
+    
+    async function fetchData() {
+        try {
+            const response = await fetch(`http://localhost:8081/api-putra-jaya/service/list`);
             const data = await response.json();
             const table = document.getElementById('table-service');
             table.innerHTML = ''; // Clear the table
@@ -39,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <td>${item.description}</td>
                         <td>
                             <button class="btn btn-warning btn-sm" onclick="editService(${item.id})">Edit</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteService(${item.id})">Delete</button>
+                            <button class="btn btn-danger btn-sm" onclick="showDeleteConfirmation(${item.id})">Delete</button>
                         </td>
                     `;
                     tableBody.appendChild(row);
@@ -49,133 +75,156 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             table.appendChild(tableBody);
-
-            // Update pagination controls
-            document.getElementById('showing-info').innerText = `Showing page ${page} of ${data.totalPages}`;
-            prevBtn.disabled = page === 1;
-            nextBtn.disabled = page === data.totalPages;
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     }
-
-    // Initial fetch
-    fetchData(currentPage);
-
-    // Search functionality
-    searchInput.addEventListener('input', function () {
-        const searchQuery = searchInput.value;
-        fetchData(1, searchQuery);
-    });
-
-    // Pagination
-    prevBtn.addEventListener('click', function () {
-        if (currentPage > 1) {
-            currentPage--;
-            fetchData(currentPage);
-        }
-    });
-
-    nextBtn.addEventListener('click', function () {
-        currentPage++;
-        fetchData(currentPage);
-    });
-
-    // Add new service
-    addRowButton.addEventListener('click', async function () {
-        const name = document.getElementById('addName').value;
-        const description = document.getElementById('addDeskripsi').value;
-
+    
+    window.editService = async function (id) {
+        const token = localStorage.getItem('token');
+    
         try {
-            const response = await fetch('http://localhost:8081/api-putra-jaya/service/add', {
-                method: 'POST',
+            console.log('Fetching service data...');
+    
+            const response = await fetch(`http://localhost:8081/api-putra-jaya/service/${id}`, {
+                method: "GET",
                 headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name: name, description: description })
+                    'Authorization': 'Bearer ' + token
+                }
             });
-
+    
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-
-            alert('Service added successfully!');
-            fetchData(currentPage); // Refresh data
-        } catch (error) {
-            console.error('Error adding service:', error);
-            alert('Failed to add service');
-        }
-    });
-
-    // Edit service function
-    window.editService = async function (id) {
-        try {
-            const response = await fetch(`http://localhost:8081/api-putra-jaya/service/${id}`);
+    
+            console.log('Service data fetched successfully');
             const service = await response.json();
+            console.log('Service data:', service);
 
-            document.getElementById('EditInputName').value = service.service_name;
-            document.getElementById('EditInputDescription').value = service.service_description;
-            editServiceForm.dataset.serviceId = id;
+    
+            document.getElementById('EditInputName').value = service.data.name || '';
+            document.getElementById('EditInputDescription').value = service.data.description || '';
 
-            const editServiceModal = new bootstrap.Modal(document.getElementById('editServiceModal'), {
-                backdrop: 'static',
-                keyboard: false
-            });
+
+           const edit =  document.getElementById('editServiceForm');
+           edit.dataset.serviceId = id;
+
+            console.log('Name input value after setting:', document.getElementById('EditInputName').value);
+            console.log('Description input value after setting:', document.getElementById('EditInputDescription').value);
+    
+            console.log('Showing modal...');
+            const editServiceModal = new bootstrap.Modal(document.getElementById('editServiceModal'));
             editServiceModal.show();
+    
         } catch (error) {
             console.error('Error fetching service data:', error);
+            alert('Failed to fetch service data. Please try again later.');
         }
     };
 
-    // Save edited service
-    document.getElementById('saveEditButton').addEventListener('click', async function () {
-        const id = editServiceForm.dataset.serviceId;
+
+    
+    document.getElementById('saveEditButton').addEventListener('click', async function (event) {
+        event.preventDefault();
+        const token = localStorage.getItem('token');
+        const id = document.getElementById('editServiceForm').dataset.serviceId;
         const name = document.getElementById('EditInputName').value;
         const description = document.getElementById('EditInputDescription').value;
-
+    
         try {
             const response = await fetch(`http://localhost:8081/api-putra-jaya/service/update/${id}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'  // Add Content-Type header
                 },
-                body: JSON.stringify({ service_name: name, service_description: description })
+                body: JSON.stringify({ name: name, description: description })
             });
-
+    
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-
+    
+            const result = await response.json();
+            console.log('Service edited successfully:', result);
             alert('Service updated successfully!');
-            fetchData(currentPage); // Refresh data
+            console.log('Service edited successfully:', result);
+
+            document.getElementById('editServiceForm').reset();
+            const editServiceModal = bootstrap.Modal.getInstance(document.getElementById('editServiceModal'));
+            editServiceModal.hide();
+            fetchData(); // Refresh data
         } catch (error) {
             console.error('Error updating service:', error);
             alert('Failed to update service');
         }
     });
-
-    // Delete service function
-    window.deleteService = async function (id) {
-        if (confirm('Are you sure you want to delete this service?')) {
-            try {
-                const response = await fetch(`http://localhost:8081/api-putra-jaya/service/delete/${id}`, {
-                    method: 'DELETE'
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                alert('Service deleted successfully!');
-                fetchData(currentPage); // Refresh data
-            } catch (error) {
-                console.error('Error deleting service:', error);
-                alert('Failed to delete service');
-            }
-        }
-    };
-
+    
 });
 
 
+
+function showDeleteConfirmation(id) {
+    swal({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",  // Menggunakan "icon" bukan "type"
+        buttons: {
+            cancel: {
+                text: "No, cancel!",
+                value: false,
+                visible: true,
+                className: "btn btn-danger",
+                closeModal: true,
+            },
+            confirm: {
+                text: "Yes, delete it!",
+                value: true,
+                visible: true,
+                className: "btn btn-primary",
+                closeModal: false // Biarkan terbuka sampai kita selesai
+            }
+        },
+        dangerMode: true,
+    }).then((isConfirm) => {
+        if (isConfirm) {
+            deleteService(id);
+        }
+    });
+}
+
+
+
+function deleteService(id) {
+    const token = localStorage.getItem('token');
+    fetch(`http://localhost:8081/api-putra-jaya/service/delete/${id}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then( () => {
+        swal({
+            title: 'Deleted!',
+            text: 'Service has been deleted.',
+            icon: 'success'
+        }).then(() => {
+            window.location.reload(); // Refresh data setelah penghapusan berhasil
+        });
+    })
+    .catch(error => {
+        swal({
+            title: 'Error!',
+            text: 'Failed to delete service.',
+            icon: 'error'
+        });
+        console.error('Error deleting service:', error);
+    });
+}
 

@@ -4,13 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const addPortfolioBtn = document.querySelector('[data-bs-target="#addPortfolioModal"]');
 
     fetchData()
-    // document.querySelectorAll('.edit-button').forEach(button => {
-    //     button.addEventListener('click', function () {
-    //         const id = this.getAttribute('data-product-id');
-    //         editProduct(id);
-    //     });
-    // });
-
     if (addPortfolioBtn) {
         addPortfolioBtn.addEventListener('click', function () {
             const addPortfolioModal = new bootstrap.Modal(document.getElementById('addPortfolioModal'), {
@@ -73,58 +66,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-
-    // // Save edited portfolio
-    // if (editPortfolioForm) {
-
-    //     editPortfolioForm.addEventListener('submit', async function (event) {
-    //         event.preventDefault();
-    //         const id = document.getElementById('saveEditButton').dataset.portfolioId;
-
-    //         const serviceId = document.getElementById('EditInputIdService').value;
-    //         const name = document.getElementById('EditInputName').value;
-    //         const description = document.getElementById('EditInputDescription').value;
-    //         const image = document.getElementById('EditInputFoto');
-    //         const date = document.getElementById('EditInputTanggal').value;
-
-    //         const formData = new FormData();
-
-    //         const Data = {
-    //             'service_id': parseInt(serviceId),
-    //             'project_name': name,
-    //             'project_description': description,
-    //             'project_date': date,
-
-    //         };
-
-    //         formData.append('json', JSON.stringify(Data));
-
-    //         try {
-    //             const response = await fetch(`http://localhost:8081/api-putra-jaya/portfolio/update/${id}`, {
-    //                 method: 'PUT',
-    //                 headers: {
-    //                     'Authorization': "Bearer" + token
-    //                 },
-    //                 body: formData
-    //             });
-
-    //             if (!response.ok) {
-    //                 throw new Error(`HTTP error! Status: ${response.status}`);
-    //             }
-
-    //             const result = await response.json();
-    //             console.log('Portfolio edited successfully:', result);
-    //             alert('Portfolio updated successfully');
-    //             editPortfolioForm.reset();
-    //             const editPortfolioModal = bootstrap.Modal.getInstance(document.getElementById('editPortfolioModal'));
-    //             editPortfolioModal.hide();
-    //             fetchData();
-    //         } catch (error) {
-    //             console.error('Error updating portfolio:', error);
-    //             alert('Failed to update portfolio');
-    //         }
-    //     });
-    // }
 });
 
 async function fetchData() {
@@ -223,6 +164,8 @@ window.removeData = async function(id){
         }
     
         const data = await response.json();
+        console.log("Result", data);
+
         fetchData()
         alert('success delete data');
     }catch(error){

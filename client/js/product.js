@@ -176,16 +176,16 @@ async function fetchData() {
 
         if (Array.isArray(items)) {
             items.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.id}</td>
-                    <td>${item.name}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" onclick="editProduct (${item.id})">Edit</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${item.id})">Delete</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
+                // const row = document.createElement('tr');
+                // row.innerHTML = `
+                //     <td>${item.id}</td>
+                //     <td>${item.name}</td>
+                //     <td>
+                //         <button class="btn btn-warning btn-sm" onclick="editProduct (${item.id})">Edit</button>
+                //         <button class="btn btn-danger btn-sm" onclick="deleteProduct(${item.id})">Delete</button>
+                //     </td>
+                // `;
+                // tableBody.appendChild(row);
             });
         } else {
             console.error('Items is not an array:', items);
@@ -331,6 +331,3 @@ function deleteProduct(productId) {
     });
 }
 
-
-
-// });

@@ -21,34 +21,69 @@ type blogController struct {
 }
 
 func (bg *blogController) add(ctx *gin.Context) {
+
+	var resp model.Blog
+
+	// Ambil file gambar dari form
 	_, header, err := ctx.Request.FormFile("image_url")
 	var fileLocation string
 
-	if err != nil {
-		if err != http.ErrMissingFile {
-			fmt.Println(err.Error())
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": "failed get data from form"})
+	if err != nil && err != http.ErrMissingFile {
+		fmt.Println("Error getting file:", err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "failed to get image file"})
+		return
+	}
+
+	// Jika file diunggah, simpan file tersebut
+	if err == nil {
+		fileLocation = filepath.Join("asset/photos", header.Filename)
+		// Buat direktori jika belum ada
+		if err := os.MkdirAll("asset/photos", os.ModePerm); err != nil {
+			fmt.Println("Error creating directory:", err.Error())
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create directory"})
+			return
+		}
+		// Simpan file gambar
+		if err := ctx.SaveUploadedFile(header, fileLocation); err != nil {
+			fmt.Println("Error saving file:", err.Error())
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to save image file"})
 			return
 		}
 	}
 
-	if err != http.ErrMissingFile {
-		fileLocation = filepath.Join("asset/photos", header.Filename)
-		os.Mkdir("asset/photos", os.ModePerm)
-		ctx.SaveUploadedFile(header, fileLocation)
-	}
-
+	// Ambil data JSON dari form
 	dataString := ctx.Request.FormValue("json")
-	var dataJson model.Blog
+	var blogData model.Blog
 
-	if err = json.Unmarshal([]byte(dataString), &dataJson); err != nil {
-		fmt.Println(err.Error())
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed unmarshal object json" + err.Error()})
+	// Parsing JSON ke dalam struct Blog
+	if err := json.Unmarshal([]byte(dataString), &blogData); err != nil {
+		fmt.Println("Error unmarshalling JSON:", err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to unmarshal JSON: " + err.Error()})
 		return
 	}
 
+	// Set lokasi gambar ke Blog jika file diunggah
+	if fileLocation != "" {
+		blogData.Cover = fileLocation
+	}
+
+	// Validasi data (misalnya title dan content tidak boleh kosong)
+	if blogData.Title == "" || blogData.Content == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "title and content cannot be empty"})
+		return
+	}
+
+	// Gunakan BlogUseCase untuk menyimpan blog ke database
+	if err := bg.us.Add(resp); err != nil {
+		fmt.Println("Error saving blog to database:", err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to save blog to database"})
+		return
+	}
+
+	// Respon sukses
 	ctx.JSON(http.StatusCreated, gin.H{
-		"Message": "Success update article",
+		"Message": "Success add blog",
+		"Blog":    blogData,
 	})
 }
 
@@ -78,7 +113,6 @@ func (bg *blogController) list(ctx *gin.Context) {
 	rest, err := bg.us.List()
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message":"OK", "data":rest})
@@ -103,7 +137,7 @@ func (bg *blogController) delete(ctx *gin.Context) {
 }
 
 func (bg *blogController) update(ctx *gin.Context){
-	_, header, err := ctx.Request.FormFile("photos")
+	_, header, err := ctx.Request.FormFile("image_url")
 	var fileLocation string
 
 	if err != nil {

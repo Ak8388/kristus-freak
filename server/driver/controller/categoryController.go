@@ -113,17 +113,11 @@ func (cc * categoryController) updateCategory(ctx *gin.Context){
 func (cc *categoryController) CategoryRouter(){
 	r:= cc.rg.Group("category")
 	r.GET("/list",cc.listCategory)
-	r.GET("/:id",cc.findById)
-	r.POST("/add",cc.addCategory)
-	r.POST("/delete/:id",cc.deleteCategory)
-	r.PUT("/update/:id",cc.updateCategory)
+	r.GET("/:id",cc.am.JwtVerified("OWNER"),cc.findById)
+	r.POST("/add",cc.am.JwtVerified("OWNER"),cc.addCategory)
+	r.POST("/delete/:id",cc.am.JwtVerified("OWNER"),cc.deleteCategory)
+	r.PUT("/update/:id",cc.am.JwtVerified("OWNER"),cc.updateCategory)
 	
-	// r:= cc.rg.Group("category")
-	// r.GET("/list",cc.am.JwtVerified("OWNER"),cc.listCategory)
-	// r.GET("/:id",cc.am.JwtVerified("OWNER"),cc.findById)
-	// r.POST("/add",cc.am.JwtVerified("OWNER"),cc.addCategory)
-	// r.POST("/delete/:id",cc.am.JwtVerified("OWNER"),cc.deleteCategory)
-	// r.PUT("/update/:id",cc.am.JwtVerified("OWNER"),cc.updateCategory)
 }
 
 

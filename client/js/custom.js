@@ -100,10 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		document.getElementById('historyOrder').addEventListener('click', e => {
 			location.href = './login.html';
 		});
+		
 	}
 });
 
 document.getElementById('apply-coupon').addEventListener('click', async function () {
+	const token = localStorage.getItem('token');
 	const objCoup = JSON.parse(localStorage.getItem('objCoupon'));
 	try {
 		const response = await fetch('http://localhost:8081/api-putra-jaya/coupon', {
@@ -163,3 +165,4 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 	});
 });
+
