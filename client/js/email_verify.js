@@ -27,7 +27,7 @@ async function verifyCode() {
                     localStorage.removeItem('verif-code');
                     localStorage.removeItem('status');
                     localStorage.removeItem('data');
-                    window.location.href = 'login.html';
+                    window.location.href = '../login.html';
                 } else {
                     alert(`Registration failed: ${result.message}`);
                 }

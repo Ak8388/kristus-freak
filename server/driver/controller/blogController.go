@@ -64,6 +64,7 @@ func (bg *blogController) add(ctx *gin.Context) {
 	if fileLocation != "" {
 		blogData.Cover = fileLocation
 	}
+
 	fmt.Println(blogData)
 
 	// Validasi data (misalnya title dan content tidak boleh kosong)

@@ -1,18 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('registerForm');
+    const butnReg = document.getElementById('sign-up');
 
-    form.addEventListener('submit', async (event) => {
+    butnReg.addEventListener('click', async (event) => {
         event.preventDefault();
 
-        const fullName = document.getElementById('inputFirstName').value;
-        const email = document.getElementById('inputEmail').value;
-        const password = document.getElementById('inputPassword').value;
-        const confirmPassword = document.getElementById('inputPasswordConfirm').value;
-
-        if (password !== confirmPassword) {
-            alert('Passwords do not match!');
-            return;
-        }
+        const fullName = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPass').value;
 
         const data = {
             name: fullName,
@@ -39,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .then(resData => {
                     localStorage.setItem('verif-code', resData.code);
-                    location.href = '../html/email_verify.html';
+                    location.href = './html/email_verify.html';
                 })
         } catch (error) {
             console.error('Error:', error);
