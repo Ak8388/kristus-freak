@@ -23,9 +23,9 @@ type blogRepo struct {
 
 // Add implements BlogRepo.
 func (b *blogRepo) Add(resp model.Blog) error {
-	query := "INSERT INTO article (title, content, author, image_url) VALUES ($1, $2, $3, $4)"
+	query := "INSERT INTO article (title, content, author, image_url, company_id) VALUES ($1, $2, $3, $4,$5)"
 	fmt.Println("Respository :", resp)
-	_, err := b.db.Exec(query, resp.Title, resp.Content, resp.Author, resp.Cover)
+	_, err := b.db.Exec(query, resp.Title, resp.Content, resp.Author, resp.Cover,1)
 	return err
 }
 
@@ -39,7 +39,7 @@ func (b *blogRepo) Delete(Id int) error {
 // FindById implements BlogRepo.
 func (b *blogRepo) FindById(Id int) (blog model.Blog, err error) {
 	query := "SELECT * FROM article WHERE id = $1"
-	err = b.db.QueryRow(query, Id).Scan(&blog.Id, &blog.Title, &blog.Content, &blog.Author, &blog.UpdatedAt, &blog.Cover, &blog.CreatedAt, &blog.UpdatedAt, &blog.DeletedAt)
+	err = b.db.QueryRow(query, Id).Scan(&blog.Id, &blog.Title, &blog.Content, &blog.Author, &blog.Cover, &blog.CreatedAt, &blog.UpdatedAt, &blog.DeletedAt, &blog.IDCompany)
 	return
 }
 
@@ -57,7 +57,7 @@ func (b *blogRepo) List() (resp []model.Blog, err error) {
 	for rows.Next() {
 		var blog model.Blog
 
-		if err := rows.Scan(&blog.Id, &blog.Title, &blog.Content, &blog.Author, &blog.UpdatedAt, &blog.Cover, &blog.CreatedAt, &blog.UpdatedAt, &blog.DeletedAt); err != nil {
+		if err := rows.Scan(&blog.Id, &blog.Title, &blog.Content, &blog.Author, &blog.Cover, &blog.CreatedAt, &blog.UpdatedAt, &blog.DeletedAt, &blog.IDCompany); err != nil {
 			return nil, err
 		}
 

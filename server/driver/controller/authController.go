@@ -88,6 +88,7 @@ func (au *authController) emailVerify(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&ReqEmailVerify); err != nil {
+		fmt.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
 		return
 	}
@@ -95,6 +96,7 @@ func (au *authController) emailVerify(c *gin.Context) {
 	res, err := au.uc.EmailVerify(ReqEmailVerify.Email, ReqEmailVerify.Status)
 
 	if err != nil {
+		fmt.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
 		return
 	}

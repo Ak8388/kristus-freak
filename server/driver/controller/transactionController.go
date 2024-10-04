@@ -69,6 +69,7 @@ func (cc *transactionController) validateTransaction(c *gin.Context) {
 	id, exist := c.Get("Id")
 
 	if !exist {
+		fmt.Println("failed get id user")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed get id user"})
 		return
 	}
@@ -76,6 +77,7 @@ func (cc *transactionController) validateTransaction(c *gin.Context) {
 	val := cc.uc.ValidateTransaction(id.(float64))
 
 	if !val {
+		fmt.Println("failed validate transaction")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "transaction not valid"})
 		return
 	}

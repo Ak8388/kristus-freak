@@ -26,6 +26,13 @@ async function handleFormSubmit(event) {
 
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         let index = 1;
+        const totalDisc = localStorage.getItem('discountTotal');
+        if(totalDisc != undefined){
+            cart.map((product) => {
+                product.price = product.price - (parseFloat(localStorage.getItem(`discount${index}`)) / product.quantity);            
+                index++;
+            })
+        }
         
         const sc = localStorage.getItem('shipping-cost');
         let totalAmount = cart.reduce((total, product) => total + (product.price * product.quantity), 0);
@@ -75,28 +82,36 @@ async function handleFormSubmit(event) {
         })
             .then(response => response.json())
             .then(async data => {
-                const response = await fetch('http://localhost:8081/api-putra-jaya/coupon', {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    },
-                    body:JSON.stringify(kupon),
-                });
-        
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                if(kupon != undefined || kupon != null) {
+                    const response = await fetch('http://localhost:8081/api-putra-jaya/coupon', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body:JSON.stringify({
+                            'code': kupon.code,
+                            'discount': parseInt(kupon.discount)
+                        }),
+                    });
+            
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+            
+                    const dat = await response.json();        
+    
+                    index = 1;
+                    cart.map(e => {
+                        localStorage.removeItem(`discount${index}`)
+                        index++
+                    });
+    
+                    localStorage.removeItem('discountTotal');
+                    localStorage.removeItem('kupon');
                 }
-        
-                const dat = await response.json();        
 
-                index = 1;
-                cart.map(e => {
-                    localStorage.removeItem(`discount${index}`)
-                    index++
-                })
-                localStorage.removeItem('kupon');
-                localStorage.removeItem('discount');
+                localStorage.removeItem('shipping-cost');
                 localStorage.removeItem('cart');
                 localStorage.setItem('redirectUrl', data.data.redirect_url);
                 window.location.href = data.data.redirect_url;
@@ -110,6 +125,20 @@ async function handleFormSubmit(event) {
 
 document.addEventListener('DOMContentLoaded', async e => {
     const token = localStorage.getItem('token');
+
+    if (token != undefined && token != "") {
+		document.getElementById('log-btn').style.display = 'none';
+		document.getElementById('historyOrder').addEventListener('click', e => {
+			location.href = './history.html';
+		});
+	} else if (token == undefined || token == "") {
+		document.getElementById('logout-btn').style.display = 'none';
+
+		document.getElementById('historyOrder').addEventListener('click', e => {
+			location.href = './login.html';
+		});
+		
+	}
 
     try {
         // Fetch provinces
@@ -165,10 +194,12 @@ document.addEventListener('DOMContentLoaded', async e => {
 
                 // Event listener for city selection
                 city.addEventListener('change', async () => {
-                    const cart = JSON.parse(localStorage.getItem('cartFix')) || [];
+                    const cart = JSON.parse(localStorage.getItem('cart')) || [];
                     let sum = 0;
 
                     cart.forEach(total => {
+                        console.log('weight :',total.weight);
+                        
                         sum += (total.weight * total.quantity);
                     });
 
@@ -192,6 +223,8 @@ document.addEventListener('DOMContentLoaded', async e => {
                         if (!responseCost.ok) throw new Error('Failed to fetch shipping cost');
 
                         const resCostData = await responseCost.json();
+                        console.log(resCostData);
+                        
                         const shippingCost = resCostData.data.rajaongkir.results[0].costs[0].cost[0].value;
                         localStorage.setItem('shipping-cost', shippingCost);
                         document.getElementById('cost-text').textContent = shippingCost;
@@ -215,37 +248,12 @@ document.addEventListener('DOMContentLoaded', async e => {
     document.getElementById('place-order-btn').addEventListener('click', handleFormSubmit);
 });
 
-document.addEventListener('DOMContentLoaded', function(){
-    const availableCoupons = [
-        {code : 'PUTRAJAYA10', discount:50, limit:10},
-        {code : 'PJLAS10', discount:35, limit:10},
-    ];
-
-
-    function applyCoupon(code) {
-        const coupon = availableCoupons.find(coupon => coupon.code === code);
-
-        if (coupon) {
-            if (coupon.limit > 0){
-                coupon.limit -= 1;
-                alert(`Kupon berhasil diterapkan ! Diskon ${coupon.discount}% diterapkan`);
-            }else {
-                alert('Maaf, kupon ini telah mencapai batas penggunaan.');
-            }
-        }else {
-            alert('Kode kupon tidak valid!');
-        }
-    }
-
-    document.getElementById('button-addon2').addEventListener('click', function() {
-        const couponCode = document.getElementById('c_code').value.trim();
-        if (couponCode) {
-            applyCoupon(couponCode); // Validasi dan apply kupon
-        } else {
-            alert('Silakan masukkan kode kupon.');
-        }
-    });
-});
-
 
 // !!!! //
+function logout() {
+	// Tambahkan logika untuk logout, misalnya menghapus token dari local storage
+	localStorage.removeItem('token');
+
+	// Redirect ke halaman login atau home
+	window.location.href = './login.html';
+}

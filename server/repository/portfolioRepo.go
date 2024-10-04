@@ -23,8 +23,8 @@ type portfolioRepo struct {
 
 // AddPortfolio implements PortfolioRepo.
 func (p *portfolioRepo) AddPortfolio(resp model.Portfolio) error {
-	query := "INSERT INTO portfolio (service_id, project_name,project_description,project_image,project_date,created_at) VALUES ($1,$2,$3,$4,$5,$6)"
-	_, err := p.db.Exec(query, resp.IdService, resp.ProjectName, resp.ProjectDescription, resp.ProjectImage, resp.ProjectDate, resp.CreatedAt)
+	query := "INSERT INTO portfolio (service_id, project_name,project_description,project_image,project_date,created_at, company_id) VALUES ($1,$2,$3,$4,$5,$6,$7)"
+	_, err := p.db.Exec(query, resp.IdService, resp.ProjectName, resp.ProjectDescription, resp.ProjectImage, resp.ProjectDate, resp.CreatedAt,1)
 	return err
 }
 
@@ -38,7 +38,7 @@ func (p *portfolioRepo) Delete(Id int) error {
 // FindById implements PortfolioRepo.
 func (p *portfolioRepo) FindById(Id int) (resp model.Portfolio, err error) {
 	query := "SELECT * FROM portfolio WHERE id=$1"
-	err = p.db.QueryRow(query, Id).Scan(&resp.Id, &resp.IdService, &resp.ProjectName, &resp.ProjectDescription, &resp.ProjectImage, &resp.ProjectDate, &resp.CreatedAt, &resp.UpdatedAt, &resp.DeletedAt)
+	err = p.db.QueryRow(query, Id).Scan(&resp.Id, &resp.IdService, &resp.ProjectName, &resp.ProjectDescription, &resp.ProjectImage, &resp.ProjectDate, &resp.CreatedAt, &resp.UpdatedAt, &resp.DeletedAt,&resp.IDCompany)
 
 	return
 }

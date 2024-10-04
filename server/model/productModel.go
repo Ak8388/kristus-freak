@@ -9,7 +9,7 @@ type Product struct {
 	Name        string     `json:"name"`
 	Price       int        `json:"price"`
 	Photos      string     `json:"photos"`
-	Weight      int        `json:"weight"`
+	Weight      any        `json:"weight"`
 	Stock       int        `json:"stock"`
 	Description string     `json:"description"`
 	CreatedAt   *time.Time `json:"created_at"`

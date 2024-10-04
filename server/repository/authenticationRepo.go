@@ -59,7 +59,7 @@ func (auth *authRepo) EmailVerify(email string) (string, error) {
 		smtpHost     = "smtp.gmail.com"
 		smtpPort     = "587"
 		smtpUsername = "kriserhl907@gmail.com"
-		smtpPassword = "knrt nkpf wbgu vrjt"
+		smtpPassword = "jbve nlho nogj xexa"
 	)
 
 	to := []string{email}

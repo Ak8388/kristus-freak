@@ -276,7 +276,7 @@ async function fetchData(status) {
                             const orderId = item.detailTransaction.order_id.toString();
                             row.appendChild(tdAct);
                             tdAct.innerHTML = `
-                                <a href='${link}' target='blank'><button class="btn btn-warning btn-sm" onclick="editDetail(${item.id})">Bayar</button></a>
+                                <a href='${link}' target='blank'><button class="btn btn-warning btn-sm")">Bayar</button></a>
                                 <button class="btn btn-danger btn-sm" onclick="editDetail('${orderId}')">Cancel</button>
                             `;
                         } else if (item.status == 2) {
@@ -325,7 +325,7 @@ async function fetchData(status) {
                         const orderId = item.detailTransaction.order_id.toString();
                         row.appendChild(tdAct);
                         tdAct.innerHTML = `
-                        <a href='${link}' target='blank'><button class="btn btn-warning btn-sm" onclick="editDetail(${item.id})">Bayar</button></a>
+                        <a href='${link}' target='blank'><button class="btn btn-warning btn-sm" onclick="">Bayar</button></a>
                         <button class="btn btn-danger btn-sm" onclick="editDetail('${orderId}')">Cancel</button>
                         `;
                     } else if (item.status == 2) {
@@ -348,29 +348,6 @@ async function fetchData(status) {
 
 window.editDetail = async function (id) {
     try {
-        // const response = await fetch(`http://localhost:8081/api-putra-jaya/transaction/${id}`);
-        // const detail = await response.json();
-        // console.log(detail);
-
-        // document.getElementById('EditInputIdTransaction').value = detail.id;
-        // document.getElementById('EditInputProduct').value = detail.price;
-        // document.getElementById('EditInputIdUser').value = detail.photos;
-        // document.getElementById('EditInputAmount').value = detail.stock;
-        // document.getElementById('EditInputTypeProduct').value = detail.description;
-        // document.getElementById('EditInputQuantity').value = detail.description;
-        // document.getElementById('EditInputAddressShipping').value = detail.description;
-        // document.getElementById('EditInputNote').value = detail.description;
-        // document.getElementById('EditInputOrderId').value = detail.description;
-        // document.getElementById('EditInputStatusId').value = detail.description;
-
-
-        // editTransactionForm.dataset.detailId = id;
-
-        // const editTransactionModal = new bootstrap.Modal(document.getElementById('editTransactionModal'), {
-        //     backdrop: 'static',
-        //     keyboard: false
-        // });
-        // editTransactionModal.show();
         const token = localStorage.getItem('token');
 
         try {
@@ -381,10 +358,10 @@ window.editDetail = async function (id) {
             }
 
             const data = await response.json();
-            alert('mastin!! Good')
+            alert('Success cancel transaction');
             fetchData("")
         } catch (error) {
-            alert("error nih boss")
+            alert("something went wrong")
         }
     } catch (error) {
         console.error('Error fetching product data:', error);
@@ -428,3 +405,11 @@ buttons.forEach(button => {
         this.classList.add('active');
     });
 });
+
+function logout() {
+	// Tambahkan logika untuk logout, misalnya menghapus token dari local storage
+	localStorage.removeItem('token');
+
+	// Redirect ke halaman login atau home
+	window.location.href = './login.html';
+}

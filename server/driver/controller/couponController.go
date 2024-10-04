@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 	"strconv"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kriserohalia/SI-COMPANY-PROFILE/server/driver/middleware"
@@ -27,6 +28,7 @@ func (coupon *couponController) couponAdd(ctx *gin.Context) {
 		if exist {
 			idNum = int(ida.(float64))
 		} else {
+			fmt.Println("this error 1")
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": "id user null"})
 			return
 		}
@@ -37,6 +39,7 @@ func (coupon *couponController) couponAdd(ctx *gin.Context) {
 	coupenReq.IdUser = idNum
 
 	if err := ctx.ShouldBind(&coupenReq); err != nil {
+		fmt.Println("this error 2",err.Error())
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -44,6 +47,7 @@ func (coupon *couponController) couponAdd(ctx *gin.Context) {
 	err := coupon.usecaseCoupon.CouponAdd(coupenReq)
 
 	if err != nil {
+		fmt.Println("this error 3",err.Error())
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -71,7 +75,7 @@ func (coupon *couponController) couponGet(ctx *gin.Context) {
 		ID:       id,
 		IdUser:   idNum,
 		Code:     "",
-		Discount: "",
+		Discount: 0,
 	}
 
 	res, err := coupon.usecaseCoupon.CouponGet(couponReq)

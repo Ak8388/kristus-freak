@@ -29,7 +29,7 @@ func (cr *categoryRepo) FindById(id int) (resp model.Category,err error) {
 
 // ListCategory implements CategoryRepo.
 func (cr *categoryRepo) ListCategory() (resp []model.Category, err error) {
-	query := "SELECT id, name, created_at,updated_at,deleted_at FROM tb_category"
+	query := "SELECT id, name, created_at,updated_at,deleted_at FROM tb_category WHERE DELETED_AT IS NULL"
 	rows, err := cr.db.Query(query)
 	if err != nil {
 		return nil, err

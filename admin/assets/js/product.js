@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     const token = localStorage.getItem('token');
     const productId = urlParams.get('id');
-    const addProductForm = document.getElementById('addRowButton');
+    const addProductForm = document.getElementById('addProdButton');
     const editProductForm = document.getElementById('editProductForm');
 
     fetchData()
@@ -22,13 +22,13 @@ document.addEventListener('DOMContentLoaded', function () {
         addProductForm.addEventListener('click', async function (event) {
             event.preventDefault();
 
-            const name = document.getElementById('addName').value;
-            const idCategory = document.getElementById('addCategory').value;
-            const price = document.getElementById('addPrice').value;
-            const photos = document.getElementById('addFoto');
-            const stock = document.getElementById('addStock').value;
-            const description = document.getElementById('addDeskripsi').value;
-            const weight = document.getElementById('addWeight').value;
+            const name = document.getElementById('InputNameProduct').value;
+            const idCategory = document.getElementById('InputIdCategory').value;
+            const price = document.getElementById('price').value;
+            const photos = document.getElementById('photos');
+            const stock = document.getElementById('stock').value;
+            const description = document.getElementById('description').value;
+            const weight = document.getElementById('weight').value;
 
             const formData = new FormData();
 
@@ -152,8 +152,8 @@ async function fetchData() {
                     <td><img class="img-prod" src="../../server/${item.photos}"></td>
                     <td>${item.price}</td>
                     <td>${item.stock}</td>
-                    <td>${item.description}</td>
                     <td>${item.weight}</td>
+                    <td>${item.description}</td>
                     <td>
                         <button class="btn btn-warning btn-sm" onclick="editProduct (${item.id})">Edit</button>
                         <button type="button" class="btn btn-link btn-danger delete-button" data-id="${item.id}" title="Remove" onclick="showDeleteConfirmation(${item.id})">

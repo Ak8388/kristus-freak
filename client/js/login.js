@@ -43,7 +43,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event){
 
         if (role === "OWNER") {
             // window.location.href = 'admin.html';
-            window.location.href = '../admin/index.html';
+            window.location.href = '.././admin/index.html';
 
         } else if (role === "CUSTOMER") {
             window.location.href = 'index.html';

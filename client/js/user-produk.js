@@ -1,6 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
     displayProducts("")
     updateCartCount();
+    const token = localStorage.getItem('token');
+	if(token != undefined && token != ""){
+		document.getElementById('log-btn').style.display='none';
+		document.getElementById('historyOrder').addEventListener('click',e=>{
+			location.href='./history.html';
+		});
+	}else if(token == undefined || token==""){
+		document.getElementById('logout-btn').style.display='none';
+
+		document.getElementById('historyOrder').addEventListener('click',e=>{
+			location.href='./login.html';
+		});
+	}
 });
 
 function formatIDR(amount) {
@@ -247,3 +260,10 @@ window.addEventListener('click', function (event) {
     }
 });
 
+function logout() {
+	// Tambahkan logika untuk logout, misalnya menghapus token dari local storage
+	localStorage.removeItem('token');
+
+	// Redirect ke halaman login atau home
+	window.location.href = './login.html';
+}

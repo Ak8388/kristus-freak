@@ -315,8 +315,8 @@ func (tr *transactionRepo) UpdateStatus(orderId string, newStatusID int) (err er
 }
 
 func (tr *transactionRepo) DeleteTransaction(orderId string) (err error) {
-	qry := "Update tb_transaksi Set updated_at=$1 Where order_id=$2"
-	_, err = tr.db.Exec(qry, time.Now(), orderId)
+	qry := "Update tb_transaksi Set updated_at=$1,deleted_at=$2 Where order_id=$3"
+	_, err = tr.db.Exec(qry, time.Now(), time.Now(), orderId)
 
 	return
 }

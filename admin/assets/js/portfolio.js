@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const editPortfolioForm = document.getElementById('editPortfolioForm');
-    const addPortfolioForm = document.getElementById('addPortfolioForm');
+    const addPortfolioForm = document.getElementById('addRowButton');
     const addPortfolioBtn = document.querySelector('[data-bs-target="#addPortfolioModal"]');
+    // const token = localStorage.getItem('token');
 
     fetchData()
     if (addPortfolioBtn) {
@@ -15,8 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
     // Add new portfolio
-    if (addPortfolioForm) {
-        addPortfolioForm.addEventListener('submit', async function (event) {
+    if (addRowButton) {
+        addPortfolioForm.addEventListener('click', async function (event) {
             event.preventDefault();
 
             const serviceId = document.getElementById('addService').value;
@@ -27,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const formData = new FormData();
 
-            if (project_image.files.length > 0) {
+            if (image.files.length > 0) {
                 formData.append('project_image', image.files[0]);
             }
 

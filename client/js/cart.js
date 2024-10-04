@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const kupon = JSON.parse(localStorage.getItem('kupon'));
+    const token = localStorage.getItem('token');
     if (kupon) {
         const couponField = document.getElementById('coupon');
         if (couponField) {
@@ -11,12 +12,19 @@ document.addEventListener('DOMContentLoaded', function () {
     displayCartItems(); // Tampilkan item di cart
     updateCartTotals(); // Update subtotal dan total di halaman
 
-    const applyButton = document.getElementById('apply');
-    if (applyButton) {
-        applyButton.addEventListener('click', applyCoupon);
-    } else {
-        console.error('Apply button not found.');
-    }
+    if (token != undefined && token != "") {
+		document.getElementById('log-btn').style.display = 'none';
+		document.getElementById('historyOrder').addEventListener('click', e => {
+			location.href = './history.html';
+		});
+	} else if (token == undefined || token == "") {
+		document.getElementById('logout-btn').style.display = 'none';
+
+		document.getElementById('historyOrder').addEventListener('click', e => {
+			location.href = './login.html';
+		});
+		
+	}
 });
 
 // Fungsi untuk menampilkan item di cart
@@ -29,18 +37,18 @@ function displayCartItems() {
         console.error('Element with ID "cart-items" not found.');
         return;
     }
-
+    
     tbody.innerHTML = ''; // Kosongkan isi sebelumnya
 
-    cart.forEach(product => {
-        const row = document.createElement('tr');
+    cart.forEach(prod => {
 
+        const row = document.createElement('tr');
         // Kolom gambar produk
         const imgTd = document.createElement('td');
         imgTd.classList.add('product-thumbnail');
         const img = document.createElement('img');
-        img.src = `../server/${product.photos}`; // Path ke gambar produk
-        img.alt = product.name;
+        img.src = `../server/${prod.photos}`; // Path ke gambar produk
+        img.alt = prod.name;
         img.classList.add('img-fluid');
         imgTd.appendChild(img);
 
@@ -49,12 +57,12 @@ function displayCartItems() {
         nameTd.classList.add('product-name');
         const productName = document.createElement('h2');
         productName.classList.add('h5', 'text-black');
-        productName.textContent = product.name;
+        productName.textContent = prod.name;
         nameTd.appendChild(productName);
 
         // Kolom harga produk
         const priceTd = document.createElement('td');
-        priceTd.textContent = formatIDR(product.price);
+        priceTd.textContent = formatIDR(prod.price);
 
         // Kolom kuantitas produk
         const qtyTd = document.createElement('td');
@@ -65,17 +73,17 @@ function displayCartItems() {
         const decreaseBtn = document.createElement('button');
         decreaseBtn.classList.add('btn', 'btn-outline-black', 'decrease');
         decreaseBtn.textContent = '−';
-        decreaseBtn.onclick = () => updateQuantity(product.id, -1);
+        decreaseBtn.onclick = () => updateQuantity(prod.id, -1);
 
         const qtyInput = document.createElement('input');
         qtyInput.type = 'text';
         qtyInput.classList.add('form-control', 'text-center', 'quantity-amount');
-        qtyInput.value = product.quantity;
+        qtyInput.value = prod.quantity;
 
         const increaseBtn = document.createElement('button');
         increaseBtn.classList.add('btn', 'btn-outline-black', 'increase');
         increaseBtn.textContent = '+';
-        increaseBtn.onclick = () => updateQuantity(product.id, 1);
+        increaseBtn.onclick = () => updateQuantity(prod.id, 1);
 
         quantityContainer.appendChild(decreaseBtn);
         quantityContainer.appendChild(qtyInput);
@@ -84,7 +92,7 @@ function displayCartItems() {
 
         // Kolom total harga per produk
         const totalTd = document.createElement('td');
-        totalTd.textContent = formatIDR(product.price * product.quantity);
+        totalTd.textContent = formatIDR(prod.price * prod.quantity);
 
         // Kolom hapus produk
         const removeTd = document.createElement('td');
@@ -92,7 +100,7 @@ function displayCartItems() {
         removeBtn.href = '#';
         removeBtn.classList.add('btn', 'btn-black', 'btn-sm');
         removeBtn.textContent = 'X';
-        removeBtn.onclick = () => removeProductFromCart(product.id);
+        removeBtn.onclick = () => removeProductFromCart(prod.id);
 
         removeTd.appendChild(removeBtn);
 
@@ -139,7 +147,7 @@ function removeProductFromCart(productId) {
 }
 
 // Fungsi untuk mengaplikasikan kupon
-async function applyCoupon() {
+document.getElementById('apply').addEventListener('click', async function applyCoupon() {
     const token = localStorage.getItem('token');
     const kupon = JSON.parse(localStorage.getItem('kupon'));
 
@@ -167,21 +175,14 @@ async function applyCoupon() {
                     throw new Error('This coupon has already been used.');
                 }
             });
+            discountCheck();
         } else {
-            cartNew.forEach(product => {
-                const price = parseFloat(product.price) || 0;
-                const quantity = parseInt(product.quantity) || 1;
-                const discount = (price * quantity) * (kupon.discount / 100);
-                product.price = Math.max(0, (price * quantity) - discount); // Pastikan harga tidak negatif
-            });
-
-            localStorage.setItem('cartNew', JSON.stringify(cartNew));
-            updateCartTotals(); // Update total keranjang
+            discountCheck();      
         }
     } catch (error) {
         alert(error.message);
     }
-}
+})
 
 // Fungsi untuk cek dan hitung diskon
 function discountCheck() {
@@ -196,7 +197,7 @@ function discountCheck() {
         const price = parseFloat(product.price) || 0;
         const quantity = parseInt(product.quantity) || 1;
         discount += (price * quantity) * (kupon.discount / 100);
-        localStorage.setItem(`discount${index + 1}`, discount);
+        localStorage.setItem(`discount${index + 1}`, (price * quantity) * (kupon.discount / 100));
     });
 
     localStorage.setItem('discountTotal', discount);
@@ -209,17 +210,19 @@ function updateCartTotals() {
     if (cart.length < 1) {
         cart = JSON.parse(localStorage.getItem('cart')) || [];
     }
-
+    
+    const discount = localStorage.getItem('discountTotal');
     const subtotalElem = document.getElementById('subtotal');
     const totalElem = document.getElementById('total');
-
+    console.log(discount);
+    
     if (!subtotalElem || !totalElem) {
         console.error('Subtotal or Total element not found.');
         return;
     }
 
     const subtotal = cart.reduce((acc, product) => acc + (product.price * product.quantity), 0);
-    const total = subtotal;
+    const total = subtotal-discount;
 
     subtotalElem.textContent = formatIDR(subtotal); // Tampilkan subtotal dalam format Rupiah
     totalElem.textContent = formatIDR(total); // Tampilkan total dalam format Rupiah

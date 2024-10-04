@@ -22,8 +22,8 @@ type serviceRepo struct {
 
 // AddService implements ServiceRepo.
 func (s *serviceRepo) AddService(resp model.Services) error {
-	query := "INSERT INTO services (name,description) VALUES ($1,$2)"
-	_, err := s.db.Exec(query, resp.Name, resp.Description)
+	query := "INSERT INTO services (name,description,company_id) VALUES ($1,$2,$3)"
+	_, err := s.db.Exec(query, resp.Name, resp.Description, 1)
 	return err
 }
 
@@ -37,7 +37,7 @@ func (s *serviceRepo) DeleteService(Id int) error {
 // FindById implements ServiceRepo.
 func (s *serviceRepo) FindById(id int) (resp model.Services, err error) {
 	query := "SELECT * FROM services WHERE id=$1"
-	err = s.db.QueryRow(query,id).Scan(&resp.Id,&resp.Name,&resp.Description,&resp.CreatedAt,&resp.UpdatedAt, &resp.DeletedAt)
+	err = s.db.QueryRow(query,id).Scan(&resp.Id,&resp.Name,&resp.Description,&resp.CreatedAt,&resp.UpdatedAt, &resp.DeletedAt, & resp.IDCompany)
 	fmt.Println("cekkkk di repo")
 	return 
 }

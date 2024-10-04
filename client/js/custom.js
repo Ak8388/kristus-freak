@@ -87,8 +87,21 @@ document.addEventListener('DOMContentLoaded', () => {
 	const dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
 		return new bootstrap.Dropdown(dropdownToggleEl);
 	});
-
+	
 	const token = localStorage.getItem('token');
+	const availableCoupons = { code: 'PJ10', discount: 50 };
+	localStorage.setItem('objCoupon', JSON.stringify(availableCoupons));
+	
+	const kupon = JSON.parse(localStorage.getItem('kupon'));
+	
+	if (kupon != "" && kupon != undefined) {
+		document.getElementById('coupon-popup').style.display = 'none';
+	} else {
+		setTimeout(function () {
+			document.getElementById('coupon-popup').style.display = 'flex';
+		}, 2000); // Show after 2 seconds
+	}
+
 	if (token != undefined && token != "") {
 		document.getElementById('log-btn').style.display = 'none';
 		document.getElementById('historyOrder').addEventListener('click', e => {
@@ -102,6 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 		
 	}
+
+	document.getElementById('close-popup').addEventListener('click',e=>{
+		document.getElementById('coupon-popup').style.display = 'none';
+	})
 });
 
 document.getElementById('apply-coupon').addEventListener('click', async function () {
@@ -121,10 +138,11 @@ document.getElementById('apply-coupon').addEventListener('click', async function
         }
 
         const data = await response.json();
-
+		console.log(data);
+		
         if (data.data != null) {
-            data.data.map(res=>{
-                if(kupon.code == data.data.res){
+            data.data.map(res =>{
+                if(objCoup.code == res.code){
                     throw new Error('this coupon already used');
                 }
             })
@@ -139,30 +157,5 @@ document.getElementById('apply-coupon').addEventListener('click', async function
     } catch (error) {
         alert(error);
     }
-});
-
-document.addEventListener('DOMContentLoaded', async function () {
-	const availableCoupons = { code: 'WELLCOME10', discount: 50 };
-	localStorage.setItem('objCoupon', JSON.stringify(availableCoupons));
-
-	const kupon = JSON.parse(localStorage.getItem('kupon'));
-	
-	if (kupon != "" && kupon != undefined) {
-		document.getElementById('coupon-popup').style.display = 'none';
-	} else {
-		setTimeout(function () {
-			document.getElementById('coupon-popup').style.display = 'flex';
-		}, 2000); // Show after 2 seconds
-	}
-
-	document.getElementById('button-addon2').addEventListener('click', function () {
-		const couponCode = document.getElementById('c_code').value.trim();
-		if (couponCode) {
-			applyCoupon(couponCode);
-		} else {
-			alert('Silakan masukkan kode kupon.');
-		}
-
-	});
 });
 

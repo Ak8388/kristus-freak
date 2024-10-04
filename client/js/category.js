@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const addCategoryForm = document.getElementById('addCategoryForm');
     const editCategoryForm = document.getElementById('editCategoryForm');
-
+    
     fetchData();
 
     document.getElementById('addRowButton').addEventListener('click', async function(event) {
@@ -131,10 +131,10 @@ async function fetchData() {
         if (categoryButtons) {
             categoryButtons.innerHTML = ''; // Kosongkan tombol sebelum memasukkan data baru
             items.forEach(item => {
-                const button = document.createElement('button');
-                button.innerHTML = `<a href="#">${item.name}</a>`;
                 // button.classList.add('btn', 'btn-category');
-                categoryButtons.appendChild(button);
+                categoryButtons.innerHTML +=`
+                    <button style="border: none; background-color: white;" onclick="category(${item.id})"><a href="#">${item.name}</a></button>
+                `;
             });
         }
     } catch (error) {
@@ -201,4 +201,10 @@ function deleteCategory (id) {
     
 };
 
+document.getElementById('close-btn').addEventListener('click', function() {
+    window.location.reload();
+});
 
+document.getElementById('btnCls').addEventListener('click', function() {
+    window.location.reload();
+});

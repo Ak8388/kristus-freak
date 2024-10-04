@@ -88,6 +88,7 @@ func (cc *productController) findById(ctx *gin.Context) {
 func (cc *productController) listProduct(ctx *gin.Context) {
 	rest, err := cc.us.ListProduct()
 	if err != nil {
+		fmt.Println(err.Error())
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "OK", "data": rest})
